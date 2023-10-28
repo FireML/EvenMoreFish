@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.oheers.evenmorefish</groupId>
-    <artifactId>even-more-fish</artifactId>
+    <artifactId>EvenMoreFish</artifactId>
     <version>1.6.11.16</version>
 
     <properties>
