@@ -219,7 +219,7 @@
         <dependency>
             <groupId>com.github.Archy-X</groupId>
             <artifactId>AureliumSkills</artifactId>
-            <version>Beta1.3.23</version>
+            <version>1.4.3-alpha</version>
             <scope>provided</scope>
         </dependency>
 
