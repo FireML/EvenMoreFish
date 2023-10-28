@@ -20,10 +20,12 @@ import com.oheers.fish.gui.FillerStyle;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
+import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
@@ -87,12 +89,14 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean isUpdateAvailable;
     public static boolean usingPAPI;
     public static boolean usingMcMMO;
+    public static boolean usingHeadsDB;
 
     public static boolean itemsAdderLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
     public static DatabaseV3 databaseV3;
+    public static HeadDatabaseAPI HDBapi;
     private static EvenMoreFish instance;
     public static FillerStyle guiFillerStyle;
     private EMFAPI api;
@@ -258,6 +262,11 @@ public class EvenMoreFish extends JavaPlugin {
             if (mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(McMMOTreasureEvent.getInstance(), this);
             }
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("HeadDatabase") != null) {
+            usingHeadsDB = true;
+            getServer().getPluginManager().registerEvents(new HeadDBIntegration(), this);
         }
 
         if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
