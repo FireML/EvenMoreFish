@@ -2,9 +2,9 @@ name: EvenMoreFish
 author: Oheers
 version: ${project.version}
 main: com.oheers.fish.EvenMoreFish
-api-version: 1.16
+api-version: '1.20'
 depend: [ Vault ]
-softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder ]
+softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder, HeadDatabase ]
 loadbefore: [ AntiAC ]
 
 commands:
@@ -12,9 +12,9 @@ commands:
     usage: /<command> [name]
     aliases: [ emf ]
 libraries:
-  - com.zaxxer:HikariCP:${hikaricp.version}
-  - org.flywaydb:flyway-core:${flyway.version}
-  - com.github.ben-manes.caffeine:caffeine:${caffiene.version}
+  - com.zaxxer:HikariCP:5.0.1
+  - org.flywaydb:flyway-core:9.22.3
+  - com.github.ben-manes.caffeine:caffeine:3.1.8
 
 
 
