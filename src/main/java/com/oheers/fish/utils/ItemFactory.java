@@ -144,11 +144,12 @@ public class ItemFactory {
         if (uValue != null) {
             ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
             if (meta != null) {
-                meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uValue)));
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uValue));
+                if (player != null && player.hasPlayedBefore()) {
+                    meta.setOwnerProfile(player.getPlayerProfile());
+                }
             }
-
             skull.setItemMeta(meta);
             return skull;
         }
