@@ -287,7 +287,7 @@ public class FishUtils {
                 ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
                 profileNbt.setUUID("id", headUuid);
                 ReadWriteNBT propertiesNbt = profileNbt.getCompoundList("properties").addCompound();
-                propertiesNbt.setString("name", "EMFFish");
+                propertiesNbt.setString("name", "textures");
                 propertiesNbt.setString("value", base64EncodedString);
             });
         // 1.20.4 and below handling
