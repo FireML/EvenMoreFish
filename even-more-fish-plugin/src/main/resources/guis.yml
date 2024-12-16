@@ -109,6 +109,17 @@ main-menu:
     character: "b"
     click-action: "open-baits-menu"
 
+  open-competitions:
+    item:
+      material: clock
+      displayname: "&6»           View Competitions"
+    lore:
+      - "&f&m                                 "
+      - "&7Shows the next 5 scheduled competitions"
+      - "&f&m                                 "
+    character: "c"
+
+  # TODO need to automatically remove this for config-version 5
   coming-soon-competitions:
     item:
       material: barrier
