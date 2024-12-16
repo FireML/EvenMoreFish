@@ -280,6 +280,46 @@ baits-menu:
     character: "p"
     click-action: "previous-page"
 
+competitions-menu:
+  title: "&1View Scheduled Competitions"
+  layout:
+    - "  23232  "
+    - "23 4 4 32"
+    - "4 ccccc 4"
+    - "23 4 4 32"
+    - "p 23x32 n"
+  filler: black_stained_glass_pane
+  # The character to use for the competition displays.
+  competition-character: "c"
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-main-menu"
+
+  next-page:
+    item:
+      material: paper
+      displayname: "&eNext Page"
+    lore:
+      - "&eNavigate to the next page"
+    character: "n"
+    click-action: "next-page"
+
+  previous-page:
+    item:
+      material: paper
+      displayname: "&ePrevious Page"
+    lore:
+      - "&eNavigate to the previous page"
+    character: "p"
+    click-action: "previous-page"
+
 apply-baits-menu:
   title: "&1&lApply Baits"
   layout:
@@ -303,4 +343,4 @@ apply-baits-menu:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 4
+config-version: 5
