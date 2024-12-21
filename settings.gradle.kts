@@ -12,7 +12,7 @@ dependencyResolutionManagement {
             library("paper-api", "io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
-            library("bstats", "org.bstats:bstats-bukkit:3.0.2")
+            library("bstats", "org.bstats:bstats-bukkit:3.1.0")
 
             version("worldguard", "7.0.5") //We must use 7.0.5 until we compile against a newer Minecraft version
             library("worldguard-core", "com.sk89q.worldguard","worldguard-core").versionRef("worldguard")
@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.13.3-SNAPSHOT")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.14.1")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
             library("oraxen", "io.th0rgal:oraxen:1.173.0") // We must use 1.173.0 as later versions require Java 21
 
