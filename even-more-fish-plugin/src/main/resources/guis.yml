@@ -291,6 +291,16 @@ competitions-menu:
   filler: black_stained_glass_pane
   # The character to use for the competition displays.
   competition-character: "c"
+  # The display for each competition.
+  competition-display:
+    item:
+      material: writable_book
+      displayname: "{timestamp}"
+    lore:
+      - "Competition ID: {id}"
+      - "Competition Type: {type}"
+      - "Duration: {duration} Minutes"
+      - "Allowed Rarities: {raritylist}"
 
   exit:
     item:
