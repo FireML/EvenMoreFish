@@ -45,7 +45,7 @@ public class FishingProcessor extends Processor<PlayerFishEvent> {
         }
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), event.getPlayer().getInventory().getItemInMainHand());
+            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), event.getPlayer().getInventory().getItemInMainHand(), event);
 
             if (fish == null) {
                 return;

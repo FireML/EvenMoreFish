@@ -81,7 +81,7 @@ public abstract class Processor<E extends Event> implements Listener {
         return fish;
     }
 
-    protected ItemStack getFish(@NotNull Player player, @NotNull Location location, @NotNull ItemStack fishingRod) {
+    protected ItemStack getFish(@NotNull Player player, @NotNull Location location, @NotNull ItemStack fishingRod, @NotNull Event originalEvent) {
         if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
             return null;
         }
@@ -127,7 +127,7 @@ public abstract class Processor<E extends Event> implements Listener {
 
         fish.init();
 
-        EMFFishEvent cEvent = new EMFFishEvent(fish, player);
+        EMFFishEvent cEvent = new EMFFishEvent(fish, player, originalEvent);
         Bukkit.getPluginManager().callEvent(cEvent);
         if (cEvent.isCancelled()) return null;
 

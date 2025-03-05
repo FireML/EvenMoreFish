@@ -46,7 +46,7 @@ public class HuntingProcessor extends Processor<EntityDeathEvent> {
             return;
         }
 
-        ItemStack fish = getFish(player, fishEntity.getLocation(), player.getInventory().getItemInMainHand());
+        ItemStack fish = getFish(player, fishEntity.getLocation(), player.getInventory().getItemInMainHand(), event);
 
         if (fish == null) {
             return;
