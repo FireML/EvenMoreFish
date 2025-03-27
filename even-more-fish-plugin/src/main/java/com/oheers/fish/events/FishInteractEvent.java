@@ -31,8 +31,8 @@ public class FishInteractEvent implements Listener {
         // Creates a replica of the fish we can use
         Fish fish = FishUtils.getFish(event.getItem());
         if (fish != null) {
-            fish.checkIntEvent();
-            if (fish.hasIntRewards()) {
+            fish.checkInteractEvent();
+            if (fish.hasInteractRewards()) {
                 // Cancel the interact event
                 event.setCancelled(true);
                 // Take one item from the player's event hand itemstack so we know that it's gone
