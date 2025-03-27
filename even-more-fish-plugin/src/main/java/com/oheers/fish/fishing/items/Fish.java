@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.fishing.items.IFish;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -28,7 +29,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class Fish {
+public class Fish implements IFish {
 
     private final @NotNull Section section;
     private final String name;
@@ -88,7 +89,7 @@ public class Fish {
 
         setSize();
         checkEatEvent();
-        checkIntEvent();
+        checkInteractEvent();
         checkSilent();
 
         checkFishEvent();
@@ -198,10 +199,12 @@ public class Fish {
         }
     }
 
+    @Override
     public double getWorthMultiplier() {
         return section.getDouble("worth-multiplier", 0.0D);
     }
 
+    @Override
     public boolean hasEatRewards() {
         if (eventType != null) {
             return eventType.equals("eat");
@@ -210,15 +213,18 @@ public class Fish {
         }
     }
 
+    @Override
     public boolean hasFishRewards() {
         return !fishRewards.isEmpty();
     }
 
+    @Override
     public boolean hasSellRewards() {
         return !sellRewards.isEmpty();
     }
 
-    public boolean hasIntRewards() {
+    @Override
+    public boolean hasInteractRewards() {
         if (eventType != null) {
             return eventType.equals("int");
         } else {
@@ -295,6 +301,7 @@ public class Fish {
     }
 
     // prepares it to be given to the player
+    @Override
     public void init() {
         generateSize();
         checkMessage();
@@ -354,10 +361,12 @@ public class Fish {
         return newLoreLine.getComponentListMessage();
     }
 
+    @Override
     public void checkDisplayName() {
         this.displayName = section.getString("displayname");
     }
 
+    @Override
     public void checkEatEvent() {
         List<String> configRewards = section.getStringList("eat-event");
         // Checks if the player has actually set rewards for an eat event
@@ -375,6 +384,7 @@ public class Fish {
         }
     }
 
+    @Override
     public void checkFishEvent() {
         fishRewards = new ArrayList<>();
         List<String> configRewards = section.getStringList("catch-event");
@@ -387,6 +397,7 @@ public class Fish {
         }
     }
 
+    @Override
     public void checkSellEvent() {
         sellRewards = new ArrayList<>();
         List<String> configRewards = section.getStringList("sell-event");
@@ -398,7 +409,8 @@ public class Fish {
         }
     }
 
-    public void checkIntEvent() {
+    @Override
+    public void checkInteractEvent() {
         List<String> configRewards = section.getStringList("interact-event");
         // Checks if the player has actually set rewards for an interact event
         if (!configRewards.isEmpty()) {
@@ -418,68 +430,85 @@ public class Fish {
     /**
      * Checks if the fish has silent: true enabled, which stops the "You caught ... fish" from being broadcasted to anyone.
      */
+    @Override
     public void checkSilent() {
         this.silent = section.getBoolean("silent", false);
     }
 
-    public Fish createCopy() {
+    @Override
+    public @NotNull Fish createCopy() {
         return create(rarity, section);
     }
 
+    @Override
     public boolean hasFishermanDisabled() {
         return disableFisherman;
     }
 
-    public UUID getFisherman() {
+    @Override
+    public @Nullable UUID getFisherman() {
         return fisherman;
     }
 
+    @Override
     public void setFisherman(UUID fisherman) {
         this.fisherman = fisherman;
     }
 
+    @Override
     public boolean isCompExemptFish() {
         return isCompExemptFish;
     }
 
+    @Override
     public void setCompExemptFish(boolean compExemptFish) {
         isCompExemptFish = compExemptFish;
     }
 
+    @Override
     public double getSetWorth() {
         return setWorth;
     }
 
-    public String getName() {
+    @Override
+    public @NotNull String getName() {
         return name;
     }
 
-    public Rarity getRarity() {
+    @Override
+    public @NotNull Rarity getRarity() {
         return rarity;
     }
 
-    public Float getLength() {
+    @Override
+    public float getLength() {
         return length;
     }
 
-    public void setLength(Float length) {
+    @Override
+    public void setLength(@Nullable Float length) {
         this.length = length == null ? -1 : length;
     }
 
-    public List<Reward> getActionRewards() {
+    @Override
+    public @NotNull List<Reward> getActionRewards() {
         return actionRewards;
     }
 
-    public List<Reward> getFishRewards() {
+    @Override
+    public @NotNull List<Reward> getFishRewards() {
         return fishRewards;
     }
 
-    public List<Reward> getSellRewards() { return sellRewards; }
+    @Override
+    public @NotNull List<Reward> getSellRewards() { return sellRewards; }
 
+    @Override
     public double getWeight() {
         return weight;
     }
 
+    @Override
     public void setWeight(double weight) {
         this.weight = weight;
     }
@@ -496,40 +525,48 @@ public class Fish {
         return factory;
     }
 
-    public Requirement getRequirement() {
+    @Override
+    public @NotNull Requirement getRequirement() {
         return this.requirement;
     }
 
-    public void setRequirement(Requirement requirement) {
+    @Override
+    public void setRequirement(@NotNull Requirement requirement) {
         this.requirement = requirement;
     }
 
+    @Override
     public boolean isWasBaited() {
         return wasBaited;
     }
 
+    @Override
     public void setWasBaited(boolean wasBaited) {
         this.wasBaited = wasBaited;
     }
 
+    @Override
     public void setDay(int day) {
         this.day = day;
     }
 
+    @Override
     public int getDay() {
         return day;
     }
 
+    @Override
     public boolean isSilent() {
         return silent;
     }
 
+    @Override
     public void setSilent(boolean silent) {
         this.silent = silent;
     }
 
-    public String parseEventPlaceholders(String rewardString) {
-
+    @Override
+    public @NotNull String parseEventPlaceholders(@NotNull String rewardString) {
         // {length} Placeholder
         rewardString = rewardString.replace("{length}", String.valueOf(length));
 
