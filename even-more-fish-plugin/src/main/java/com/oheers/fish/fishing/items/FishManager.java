@@ -3,6 +3,9 @@ package com.oheers.fish.fishing.items;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.FileUtil;
+import com.oheers.fish.api.fishing.items.AbstractFishManager;
+import com.oheers.fish.api.fishing.items.IFish;
+import com.oheers.fish.api.fishing.items.IRarity;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
@@ -18,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 
-public class FishManager {
+public class FishManager extends AbstractFishManager {
 
     private static FishManager instance;
 
@@ -48,6 +51,7 @@ public class FishManager {
         loaded = true;
     }
 
+    @Override
     public void reload() {
         if (!isLoaded()) {
             return;
@@ -65,16 +69,19 @@ public class FishManager {
         loaded = false;
     }
 
+    @Override
     public boolean isLoaded() {
         return loaded;
     }
 
     // Getters for Rarities and Fish
 
+    @Override
     public @Nullable Rarity getRarity(@NotNull String rarityName) {
         return rarityMap.get(rarityName);
     }
 
+    @Override
     public @Nullable Fish getFish(@NotNull String rarityName, @NotNull String fishName) {
         Rarity rarity = getRarity(rarityName);
         if (rarity == null) {
@@ -84,7 +91,7 @@ public class FishManager {
     }
 
     // TODO cleanup
-    public Rarity getRandomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities, Set<Rarity> totalRarities) {
+    public @Nullable Rarity getRandomWeightedRarity(@Nullable Player fisher, double boostRate, @Nullable Set<Rarity> boostedRarities, @NotNull Set<Rarity> totalRarities) {
         Map<UUID, Rarity> decidedRarities = EvenMoreFish.getInstance().getDecidedRarities();
         if (fisher != null && decidedRarities.containsKey(fisher.getUniqueId())) {
             Rarity chosenRarity = decidedRarities.get(fisher.getUniqueId());
@@ -126,22 +133,22 @@ public class FishManager {
 
         double totalWeight = 0;
 
-        for (Rarity r : allowedRarities) {
-            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(r)) {
-                totalWeight += (r.getWeight() * boostRate);
+        for (Rarity rarity : allowedRarities) {
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(rarity)) {
+                totalWeight += (rarity.getWeight() * boostRate);
             } else {
-                totalWeight += r.getWeight();
+                totalWeight += rarity.getWeight();
             }
         }
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
+        for (double rand = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
             if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
-                r -= allowedRarities.get(idx).getWeight() * boostRate;
+                rand -= allowedRarities.get(idx).getWeight() * boostRate;
             } else {
-                r -= allowedRarities.get(idx).getWeight();
+                rand -= allowedRarities.get(idx).getWeight();
             }
-            if (r <= 0.0) break;
+            if (rand <= 0.0) break;
         }
 
         if (!Competition.isActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {
@@ -153,7 +160,7 @@ public class FishManager {
         return null;
     }
 
-    public Fish getRandomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
+    public Fish getRandomWeightedFish(@NotNull List<Fish> fishList, double boostRate, @Nullable List<Fish> boostedFish) {
         final double totalWeight = FishUtils.getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
@@ -174,18 +181,18 @@ public class FishManager {
         return fishList.get(idx);
     }
 
-    public Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
-        if (r == null) return null;
+    public Fish getFish(Rarity rarity, Location location, Player player, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
+        if (rarity == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (r.getOriginalFishList().isEmpty()) {
-            r = getRandomWeightedRarity(p, 1, null, Set.copyOf(rarityMap.values()));
+        if (rarity.getOriginalFishList().isEmpty()) {
+            rarity = getRandomWeightedRarity(player, 1, null, Set.copyOf(rarityMap.values()));
         }
 
-        RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
+        RequirementContext context = new RequirementContext(location.getWorld(), location, player, null, null);
 
-        List<Fish> available = r.getFishList().stream()
+        List<Fish> available = rarity.getFishList().stream()
             .filter(fish -> {
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(fish))) {
                     return false;
@@ -200,7 +207,7 @@ public class FishManager {
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().warning("There are no fish of the rarity " + r.getId() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
+            EvenMoreFish.getInstance().getLogger().warning("There are no fish of the rarity " + rarity.getId() + " that can be fished at (x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ() + ")");
             return null;
         }
 
@@ -216,8 +223,8 @@ public class FishManager {
         }
     }
 
-    public TreeMap<String, Rarity> getRarityMap() {
-        return rarityMap;
+    public @NotNull TreeMap<String, Rarity> getRarityMap() {
+        return new TreeMap<>(rarityMap);
     }
 
     // Loading things

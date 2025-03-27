@@ -1,11 +1,17 @@
 package com.oheers.fish.api.fishing.items;
 
 import com.oheers.fish.api.requirement.Requirement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * An interface representing a rarity in the EvenMoreFish plugin.
+ * Do not implement this interface or things will break.
+ */
+@ApiStatus.Internal
 public interface IRarity {
 
     @NotNull String getId();
