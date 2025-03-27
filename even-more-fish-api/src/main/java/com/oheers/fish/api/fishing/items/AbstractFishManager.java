@@ -11,9 +11,8 @@ import java.util.*;
 
 /**
  * An abstract class representing the FishManager in the EvenMoreFish plugin.
- * Do not extend this class or things will break.
+ * @apiNote This class should not be implemented by users.
  */
-@ApiStatus.Internal
 public abstract class AbstractFishManager {
 
     private static AbstractFishManager instance;

@@ -143,7 +143,8 @@ public class Fish implements IFish {
      *                    be rolled.
      * @return An ItemStack version of the fish.
      */
-    public ItemStack give(int randomIndex) {
+    @Override
+    public @NotNull ItemStack give(int randomIndex) {
         ItemStack fish = factory.createItem(getFishermanPlayer(), randomIndex);
         if (factory.isRawMaterial()) {
             return fish;

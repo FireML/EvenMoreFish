@@ -9,9 +9,8 @@ import java.util.List;
 
 /**
  * An interface representing a rarity in the EvenMoreFish plugin.
- * Do not implement this interface or things will break.
+ * @apiNote This interface should not be implemented by users.
  */
-@ApiStatus.Internal
 public interface IRarity {
 
     @NotNull String getId();

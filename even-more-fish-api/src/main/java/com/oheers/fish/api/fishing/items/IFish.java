@@ -2,6 +2,7 @@ package com.oheers.fish.api.fishing.items;
 
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,10 +12,11 @@ import java.util.UUID;
 
 /**
  * An interface representing a fish in the EvenMoreFish plugin.
- * Do not implement this interface or things will break.
+ * @apiNote This interface should not be implemented by users.
  */
-@ApiStatus.Internal
 public interface IFish {
+
+    @NotNull ItemStack give(int randomIndex);
 
     double getWorthMultiplier();
 
