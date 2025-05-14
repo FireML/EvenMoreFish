@@ -29,7 +29,6 @@ fishing:
 # Supports EssentialsX and CMI.
 respect-vanished: true
 
-# WARNING EXPERIMENTAL: This feature is experimental and may not work properly.
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
