@@ -65,7 +65,7 @@ random-durability: true
 economy:
   # Allows fish to pay out with your Vault economy plugin
   vault:
-    enabled: false
+    enabled: true
     multiplier: 1.0
   # Allows fish to pay out with PlayerPoints
   playerpoints:
