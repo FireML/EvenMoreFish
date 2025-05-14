@@ -673,7 +673,6 @@ public class Database implements DatabaseAPI {
                         .filter(Objects::nonNull)
                         .map(log -> {
                             FishLogRecord logRecord = new FishLogRecord();
-                            EvenMoreFish.getInstance().debug(("USER ID " + log.getUserId()));
                             logRecord.setUserId(log.getUserId());
                             logRecord.setFishLength(log.getLength());
                             logRecord.setCompetitionId(log.getCompetitionId());
