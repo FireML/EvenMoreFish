@@ -653,7 +653,8 @@ public class Database implements DatabaseAPI {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.fetchExists(Tables.USER_FISH_STATS,
-                    Tables.USER_FISH_STATS.FISH_RARITY.eq(rarity)
+                        Tables.USER_FISH_STATS.USER_ID.eq(id)
+                                .and(Tables.USER_FISH_STATS.FISH_RARITY.eq(rarity))
                 );
             }
 
