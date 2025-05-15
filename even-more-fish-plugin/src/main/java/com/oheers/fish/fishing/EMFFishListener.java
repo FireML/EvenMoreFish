@@ -95,8 +95,8 @@ public class EMFFishListener implements Listener {
         }
 
         stats.incrementQuantity();
-        EvenMoreFish.getInstance().debug("Fish Stats: %s".formatted( stats.toString()));
         fishStatsDataManager.update(fishRarityKey.toString(), stats);
+        EvenMoreFish.getInstance().debug("Fish Stats: %s".formatted( stats.toString()));
     }
 
     private void handleFishLog(final int userId, final Fish fish, final LocalDateTime catchTime) {
@@ -104,7 +104,7 @@ public class EMFFishListener implements Listener {
         final String competitionId = Competition.getCurrentlyActive() != null ? Competition.getCurrentlyActive().getCompetitionName() : null;
         final FishLog log = new FishLog(userId, fish, catchTime, competitionId);
         final String key = UserFishRarityKey.of(userId,fish).toString();
-        fishLogDataManager.update(key, Collections.singletonList(log)); //todo, what if there are multiple logs? we can fix this later, just don't forget
+        fishLogDataManager.update(key, Collections.singletonList(log));
     }
 
     private void handleUserFishStats(final int userId, final @NotNull Fish fish) {
