@@ -110,7 +110,7 @@ public class EMFFishListener implements Listener {
     private void handleUserFishStats(final int userId, final @NotNull Fish fish) {
         final DataManager<UserFishStats> userFishStatsDataManager = EvenMoreFish.getInstance().getUserFishStatsDataManager();
         final UserFishStats stats = userFishStatsDataManager.getOrCreate(
-                String.valueOf(userId),
+                UserFishRarityKey.of(userId,fish).toString(),
                 id -> EvenMoreFish.getInstance().getDatabase().getUserFishStats(userId, fish.getName(), fish.getRarity().getId()),
                 () -> new UserFishStats(userId, fish, LocalDateTime.now())
         );
