@@ -81,7 +81,7 @@ public class EMFFishListener implements Listener {
         final FishStats stats = fishStatsDataManager.getOrCreate(
                 fishRarityKey.toString(),
                 key -> EvenMoreFish.getInstance().getDatabase().getFishStats(fish.getName(),fish.getRarity().getId()),
-                () -> new FishStats(fish.getName(),fish.getRarity().getId(),LocalDateTime.now(),fish.getFisherman(),fish.getLength(),fish.getFisherman(),fish.getLength(),fish.getFisherman(),1)
+                () -> FishStats.empty(fish,LocalDateTime.now())
         );
 
         if (stats.getLongestLength() < fish.getLength()) {
