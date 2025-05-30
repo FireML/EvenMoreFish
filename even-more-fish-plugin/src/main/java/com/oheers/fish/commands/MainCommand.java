@@ -8,7 +8,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.guis.FishJournalGui;
-import com.oheers.fish.gui.guis.ApplyBaitsGui;
 import com.oheers.fish.gui.guis.MainMenuGui;
 import com.oheers.fish.gui.guis.SellGui;
 import com.oheers.fish.messages.ConfigMessage;
@@ -194,7 +193,8 @@ public class MainCommand {
         return new CommandAPICommand(name)
             .withPermission(UserPerms.APPLYBAITS)
             .executesPlayer(info -> {
-                new ApplyBaitsGui(info.sender(), null).open();
+                info.sender().sendPlainMessage("Will implement later soontm");
+                //new ApplyBaitsGui(info.sender(), null).open();
             });
     }
 

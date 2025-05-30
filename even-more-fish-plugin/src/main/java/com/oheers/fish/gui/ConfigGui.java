@@ -2,69 +2,76 @@ package com.oheers.fish.gui;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.GuiFillerConfig;
+import com.oheers.fish.commands.MainCommand;
+import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.gui.guis.BaitsGui;
+import com.oheers.fish.gui.guis.FishJournalGui;
+import com.oheers.fish.gui.guis.MainMenuGui;
+import com.oheers.fish.gui.guis.SellGui;
+import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
-import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.utils.ItemUtils;
-import de.themoep.inventorygui.GuiElement;
-import de.themoep.inventorygui.GuiStorageElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import com.oheers.fish.utils.Logging;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.components.GuiType;
+import dev.triumphteam.gui.components.util.GuiFiller;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.GuiItem;
+import dev.triumphteam.gui.guis.PaginatedGui;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.TreeMap;
+import java.util.function.Consumer;
 
+// TODO figure out dynamically updating icons
 public class ConfigGui {
 
-    protected final Map<String, BiConsumer<ConfigGui, GuiElement.Click>> actions = GuiUtils.getActionMap();
+    protected final TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     protected final Section config;
     protected final Player player;
-    private final @NotNull Map<String, EMFMessage> replacements = new HashMap<>();
 
-    private InventoryGui gui;
-    private InventoryGui.CloseAction closeAction = null;
+    protected BaseGui gui;
 
-    // TODO Bring the action map to this class when we switch to Triumph
-    public ConfigGui(@Nullable Section config, @NotNull HumanEntity player) {
+    public ConfigGui(@Nullable Section config, @NotNull Player player) {
+        actions.put("close", event -> event.getWhoClicked().closeInventory());
+        actions.put("full-exit", event -> event.getWhoClicked().closeInventory());
+        actions.put("open-main-menu", event -> new MainMenuGui(event.getWhoClicked()).open());
+        actions.put("fish-toggle", event -> EvenMoreFish.getInstance().performFishToggle((Player) event.getWhoClicked()));
+        actions.put("open-shop", event -> new SellGui((Player) event.getWhoClicked(), SellGui.SellState.NORMAL, null).open());
+        actions.put("show-command-help", event -> Bukkit.dispatchCommand(event.getWhoClicked(), "emf help"));
+        actions.put("open-baits-menu", event -> new BaitsGui(event.getWhoClicked()).open());
+        actions.put("open-journal-menu", event -> {
+            if (!MainConfig.getInstance().isDatabaseOnline()) {
+                return;
+            }
+            new FishJournalGui(event.getWhoClicked(), null).open();
+        });
+
         this.config = config;
-        // HumanEntity's only subclass is Player, so this is a safe cast
-        this.player = (Player) player;
+        this.player = player;
+
+        if (config == null) {
+            this.gui = Gui.gui()
+                .disableAllInteractions()
+                .rows(6)
+                .create();
+        }
     }
 
-    public void addReplacement(@NotNull String variable, @NotNull String replacement) {
-        this.replacements.put(variable, EMFSingleMessage.fromString(replacement));
-    }
-
-    public void addReplacement(@NotNull String variable, @NotNull Component replacement) {
-        this.replacements.put(variable, EMFSingleMessage.of(replacement));
-    }
-
-    public void addReplacement(@NotNull String variable, @NotNull EMFSingleMessage replacement) {
-        this.replacements.put(variable, replacement);
-    }
-
-    public void addReplacements(@NotNull Map<String, EMFSingleMessage> replacements) {
-        this.replacements.putAll(replacements);
-    }
-
-    public void setCloseAction(@NotNull InventoryGui.CloseAction closeAction) {
-        this.closeAction = closeAction;
-    }
-
-    public @NotNull InventoryGui getGui() {
+    public BaseGui getGui() {
         if (this.gui == null) {
-            throw new IllegalStateException("ConfigGui#createGui has not been called!");
+            this.gui = createGui();
         }
         return this.gui;
     }
@@ -74,114 +81,155 @@ public class ConfigGui {
     }
 
     public void open() {
-        getGui().show(this.player);
+        getGui().open(this.player);
     }
 
-    public void createGui() {
-        if (this.config == null) {
-            this.gui = new InventoryGui(
-                EvenMoreFish.getInstance(),
-                "Empty Gui",
-                new String[0]
-            );
-            return;
-        }
-        String title = this.config.getString("title");
-        String[] layout = this.config.getStringList("layout").stream().limit(6).toArray(String[]::new);
-        InventoryGui gui = new InventoryGui(
-            EvenMoreFish.getInstance(),
-            title == null ? null : EMFSingleMessage.fromString(title).getLegacyMessage(),
-            layout
+    public void addActions(@NotNull Map<String, Consumer<InventoryClickEvent>> actions) {
+        actions.forEach(this::addAction);
+    }
+
+    public void addAction(@NotNull String name, @NotNull Consumer<InventoryClickEvent> action) {
+        this.actions.putIfAbsent(name, action);
+    }
+
+    // Loading Things
+
+    public BaseGui createGui() {
+        return createGui(null);
+    }
+
+    protected BaseGui createGui(@Nullable Map<String, ?> replacements) {
+        GuiType type = FishUtils.getEnumValue(
+            GuiType.class,
+            config.getString("type", "CHEST"),
+            GuiType.CHEST
         );
-        loadFiller(gui, this.config);
-        loadItems(gui, this.config);
-        gui.setCloseAction(closeAction);
 
-        this.gui = gui;
-    }
-
-    private void loadFiller(@NotNull InventoryGui gui, @NotNull Section config) {
-        String fillerStr = config.getString("filler");
-        if (fillerStr == null) {
-            return;
-        }
-        Material filler = ItemUtils.getMaterial(fillerStr);
-        if (filler == null) {
-            return;
-        }
-        ItemStack item = new ItemStack(filler);
-        item.editMeta(meta -> meta.displayName(Component.empty()));
-        gui.setFiller(item);
-        gui.addElements(GuiFillerConfig.getInstance().getDefaultFillerItems(this));
-    }
-
-    private void loadItems(@NotNull InventoryGui gui, @NotNull Section config) {
-        // This needs to be done first so individual configs can override them
-        gui.addElements(
-            GuiUtils.getFirstPageButton(),
-            GuiUtils.getPreviousPageButton(),
-            GuiUtils.getNextPageButton(),
-            GuiUtils.getLastPageButton()
+        EMFSingleMessage title = EMFSingleMessage.fromString(
+            config.getString("title", "Gui")
         );
-        config.getRoutesAsStrings(false).forEach(key -> {
-            Section itemSection = config.getSection(key);
-            if (itemSection == null || !itemSection.contains("item")) {
+        title.setVariables(replacements);
+
+        BaseGui gui = Gui.gui(type)
+            .disableAllInteractions()
+            .title(title.getComponentMessage())
+            .rows(config.getInt("rows", 6))
+            .create();
+
+        // Load filler
+        loadFiller(gui);
+
+        // Load configured items
+        loadItems(gui, replacements);
+
+        return gui;
+    }
+
+    protected void loadItems(@NotNull BaseGui gui, @Nullable Map<String, ?> replacements) {
+        Section itemSection = this.config.getSection("items");
+        if (itemSection == null) {
+            return;
+        }
+        itemSection.getRoutesAsStrings(false).forEach(key -> {
+            Section section = itemSection.getSection(key);
+            if (section == null) {
                 return;
             }
-            addGuiItem(gui, itemSection);
+            addGuiItem(gui, section, replacements);
         });
     }
 
-    protected void addGuiItem(@NotNull InventoryGui gui, @NotNull Section itemSection) {
-        char character = FishUtils.getCharFromString(itemSection.getString("character", "#"), '#');
-        if (character == '#') {
+    protected void addGuiItem(@NotNull BaseGui gui, @NotNull Section itemSection, @Nullable Map<String, ?> replacements) {
+        ItemStack item = ItemFactory.itemFactory(itemSection).createItem(replacements);
+        if (item.getType().isEmpty()) {
             return;
         }
-        ItemFactory factory = ItemFactory.itemFactory(itemSection);
-        ItemStack item = factory.createItem(this.player.getUniqueId(), this.replacements);
-        if (item.getType() == Material.AIR) {
-            return;
-        }
-        Section actionSection = itemSection.getSection("click-action");
+        GuiItem guiItem;
+        Section actionSection = itemSection.getSection("click-actions");
         if (actionSection != null) {
-            StaticGuiElement actionElement = new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = switch (click.getType()) {
+            guiItem = new GuiItem(item, event -> {
+                Consumer<InventoryClickEvent> action = switch (event.getClick()) {
                     case LEFT -> actions.get(actionSection.getString("left", ""));
                     case RIGHT -> actions.get(actionSection.getString("right", ""));
                     case MIDDLE -> actions.get(actionSection.getString("middle", ""));
                     case DROP -> actions.get(actionSection.getString("drop", ""));
                     default -> null;
                 };
-                if (action != null) {
-                    action.accept(this, click);
+                if (action == null) {
+                    event.setCancelled(true);
+                    return;
                 }
-                return true;
+                action.accept(event);
             });
-            gui.addElement(actionElement);
         } else {
-            StaticGuiElement element = new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = actions.get(itemSection.getString("click-action", ""));
-                if (action != null) {
-                    action.accept(this, click);
-                }
-                return true;
-            });
-            gui.addElement(element);
+            guiItem = new GuiItem(item, event -> event.setCancelled(true));
         }
+        // Put the item in all of its configured locations
+        itemSection.getStringList("locations").forEach(locationStr -> {
+            Integer slot = FishUtils.getInteger(locationStr);
+            if (slot == null) {
+                Logging.warn("Invalid slot in GUI item configuration: " + locationStr);
+                return;
+            }
+            gui.setItem(slot, guiItem);
+        });
     }
 
-    public void doRescue() {
-        gui.getElements().forEach(element -> {
-            if (!(element instanceof GuiStorageElement storageElement)) {
-                return;
+    protected void loadFiller(@NotNull BaseGui gui) {
+        Section fillerSection = this.config.getSection("filler");
+        if (fillerSection == null) {
+            return;
+        }
+
+        // Prepare Enum
+        FillerType fillerType = FishUtils.getEnumValue(
+            FillerType.class,
+            fillerSection.getString("type")
+        );
+        if (fillerType == null) {
+            return;
+        }
+
+        // Prepare the filler item
+        ItemStack fillerItem = new ItemStack(
+            ItemUtils.getMaterial(fillerSection.getString("material"), Material.AIR)
+        );
+        fillerItem.editMeta(meta -> meta.displayName(Component.empty()));
+
+        // Handle filler
+        GuiItem item = new GuiItem(fillerItem);
+        GuiFiller filler = gui.getFiller();
+
+        switch (fillerType) {
+            case ALL -> {
+                if (gui instanceof PaginatedGui) {
+                    Logging.warn("Paginated GUIs cannot use FillerType.ALL");
+                    return;
+                }
+                filler.fill(item);
             }
-            Inventory inv = storageElement.getStorage();
-            if (inv.isEmpty()) {
-                return;
+            case BORDER -> filler.fillBorder(item);
+            case SIDE -> {
+                GuiFiller.Side side = FishUtils.getEnumValue(
+                    GuiFiller.Side.class,
+                    fillerSection.getString("side")
+                );
+                if (side == null) {
+                    return;
+                }
+                filler.fillSide(side, List.of(item));
             }
-            FishUtils.giveItems(inv.getStorageContents(), player);
-            inv.clear();
-        });
+            case BETWEEN -> {
+                int rowFrom = fillerSection.getInt("between-points.rowFrom", -1);
+                int columnFrom = fillerSection.getInt("between-points.columnFrom", -1);
+                int rowTo = fillerSection.getInt("between-points.rowTo", -1);
+                int columnTo = fillerSection.getInt("between-points.columnTo", -1);
+                if (rowFrom == -1 || columnFrom == -1 || rowTo == -1 || columnTo == -1) {
+                    return;
+                }
+                filler.fillBetweenPoints(rowFrom, columnFrom, rowTo, columnTo, item);
+            }
+        }
     }
 
 }

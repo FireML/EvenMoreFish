@@ -20,7 +20,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.GuiConfig;
-import com.oheers.fish.config.GuiFillerConfig;
 import com.oheers.fish.config.MessageConfig;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.data.FishLogKey;
@@ -51,7 +50,6 @@ import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.utils.ItemProtectionListener;
 import com.oheers.fish.utils.nbt.NbtKeys;
-import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -64,6 +62,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -189,7 +188,6 @@ public class EvenMoreFish extends EMFPlugin {
         loadAddonManager();
 
         new GuiConfig();
-        new GuiFillerConfig();
 
         checkPapi();
 
@@ -412,12 +410,7 @@ public class EvenMoreFish extends EMFPlugin {
 
     // gets called on server shutdown to simulate all players closing their Guis
     private void terminateGuis() {
-        getServer().getOnlinePlayers().forEach(player -> {
-            InventoryGui inventoryGui = InventoryGui.getOpen(player);
-            if (inventoryGui != null) {
-                inventoryGui.close();
-            }
-        });
+        getServer().getOnlinePlayers().forEach(HumanEntity::closeInventory);
     }
 
 
@@ -455,7 +448,6 @@ public class EvenMoreFish extends EMFPlugin {
         MainConfig.getInstance().reload();
         MessageConfig.getInstance().reload();
         GuiConfig.getInstance().reload();
-        GuiFillerConfig.getInstance().reload();
 
         FishManager.getInstance().reload();
         BaitManager.getInstance().reload();

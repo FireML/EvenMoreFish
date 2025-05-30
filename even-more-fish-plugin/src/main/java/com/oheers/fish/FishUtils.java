@@ -725,4 +725,53 @@ public class FishUtils {
         );
     }
 
+    public static @NotNull <E extends Enum<E>> E getEnumValue(@NotNull Class<E> enumClass, @Nullable String value, @NotNull E def) {
+        E enumValue = getEnumValue(enumClass, value);
+        if (enumValue == null) {
+            return def;
+        }
+        return enumValue;
+    }
+
+    public static @Nullable <E extends Enum<E>> E getEnumValue(@NotNull Class<E> enumClass, @Nullable String value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumClass, value.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the provided index from an array, or returns the default value.
+     * @param array The array to use.
+     * @param index The index to return.
+     * @param def The default value.
+     * @return The provided index, or the default value.
+     */
+    public static <T> T getOrDefault(@NotNull T[] array, int index, T def) {
+        try {
+            return array[index];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return def;
+        }
+    }
+
+    /**
+     * Gets the provided index from a list, or returns the default value.
+     * @param list The list to use.
+     * @param index The index to return.
+     * @param def The default value.
+     * @return The provided index, or the default value.
+     */
+    public static <T> T getOrDefault(@NotNull List<T> list, int index, T def) {
+        try {
+            return list.get(index);
+        } catch (IndexOutOfBoundsException ex) {
+            return def;
+        }
+    }
+
 }

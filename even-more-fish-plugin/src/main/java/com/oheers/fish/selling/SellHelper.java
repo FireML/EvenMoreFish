@@ -12,8 +12,6 @@ import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
-import de.themoep.inventorygui.GuiStorageElement;
-import de.themoep.inventorygui.InventoryGui;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -38,7 +36,7 @@ public class SellHelper {
 
     private int fishCount;
 
-    public static void sellInventoryGui(@NotNull InventoryGui gui, @NotNull HumanEntity humanEntity) {
+    public static void sellGui(@NotNull Inventory gui, @NotNull HumanEntity humanEntity) {
         if (!(humanEntity instanceof Player player)) {
             return;
         }
@@ -48,12 +46,7 @@ public class SellHelper {
             return;
         }
 
-        gui.getElements().forEach(element -> {
-            if (!(element instanceof GuiStorageElement storageElement)) {
-                return;
-            }
-            new SellHelper(storageElement.getStorage(), player).sellFish();
-        });
+        new SellHelper(gui, player).sellFish();
     }
 
     public SellHelper(@NotNull Inventory inventory, @NotNull Player player) {
@@ -62,7 +55,6 @@ public class SellHelper {
     }
 
     public boolean sellFish() {
-
         Economy economy = Economy.getInstance();
 
         if (!economy.isEnabled()) {

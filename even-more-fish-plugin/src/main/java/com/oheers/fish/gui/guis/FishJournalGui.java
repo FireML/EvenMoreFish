@@ -17,15 +17,19 @@ import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.utils.ItemUtils;
 import com.oheers.fish.utils.Logging;
-import de.themoep.inventorygui.*;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class FishJournalGui extends ConfigGui {
@@ -37,58 +41,52 @@ public class FishJournalGui extends ConfigGui {
                 GuiConfig.getInstance().getConfig().getSection(
                         rarity == null ? "journal-menu" : "journal-rarity"
                 ),
-                player
+            (Player) player
         );
 
         this.rarity = rarity;
 
         createGui();
+    }
 
+    @Override
+    protected void loadItems(@NotNull BaseGui gui, @Nullable Map<String, ?> replacements) {
         Section config = getGuiConfig();
-        if (config != null) {
-            getGui().addElement(getGroup(config));
+        if (config == null) {
+            Logging.warn("No config found for FishJournalGui, unable to load items.");
+            return;
         }
-    }
-
-    private DynamicGuiElement getGroup(Section section) {
-        if (this.rarity == null) {
-            return getRarityGroup(section);
+        if (rarity == null) {
+            loadFishGroup(gui, config, replacements);
         } else {
-            return getFishGroup(section);
+            loadRarityGroup(gui, config, replacements);
         }
     }
 
-    private DynamicGuiElement getFishGroup(Section section) {
-        char character = FishUtils.getCharFromString(section.getString("fish-character", "f"), 'f');
-
-        return new DynamicGuiElement(
-                character, who -> {
-            GuiElementGroup group = new GuiElementGroup(character);
-            this.rarity.getFishList().forEach(fish ->
-                    group.addElement(new StaticGuiElement(character, getFishItem(fish, section)))
-            );
-            return group;
-        }
-        );
+    private void loadFishGroup(@NotNull BaseGui gui, @NotNull Section section, @Nullable Map<String, ?> replacements) {
+        this.rarity.getFishList().forEach(fish -> {
+            ItemStack item = getFishItem(fish, section, replacements);
+            gui.addItem(new GuiItem(item));
+        });
     }
 
-    private ItemStack getFishItem(Fish fish, Section section) {
+    private ItemStack getFishItem(Fish fish, Section section, @Nullable Map<String, ?> replacements) {
         Database database = EvenMoreFish.getInstance().getDatabase();
 
         if (database == null) {
             Logging.warn("Can not show fish in the Journal Menu, please enable the database!");
             ItemFactory factory = ItemFactory.itemFactory(section, "undiscovered-fish");
-            return factory.createItem(player.getUniqueId());
+            return factory.createItem(player.getUniqueId(), replacements);
         }
 
         boolean hideUndiscovered = section.getBoolean("hide-undiscovered-fish", true);
         // If undiscovered fish should be hidden
         if (hideUndiscovered && !database.userHasFish(fish, player)) {
             ItemFactory factory = ItemFactory.itemFactory(section, "undiscovered-fish");
-            return factory.createItem(player.getUniqueId());
+            return factory.createItem(player.getUniqueId(), replacements);
         }
 
-        ItemStack item = fish.give();
+        ItemStack item = fish.getFactory().createItem(player.getUniqueId(), replacements);
 
         item.editMeta(meta -> {
             EMFSingleMessage display = prepareDisplay(section, fish);
@@ -102,7 +100,8 @@ public class FishJournalGui extends ConfigGui {
     }
 
     private @Nullable EMFSingleMessage prepareDisplay(@NotNull Section section, @NotNull Fish fish) {
-        final String displayStr = section.getString("fish-item.item.displayname");
+        ItemFactory factory = ItemFactory.itemFactory(section, "fish-item");
+        final String displayStr = factory.getDisplayName().getActualValue();
         if (displayStr == null) {
             return null;
         }
@@ -120,8 +119,11 @@ public class FishJournalGui extends ConfigGui {
         final String discoverDate = getValueOrUnknown(() -> userFishStats.getFirstCatchTime().format(DateTimeFormatter.ISO_DATE));
         final String discoverer = getValueOrUnknown(() -> FishUtils.getPlayerName(fishStats.getDiscoverer()));
 
+        ItemFactory factory = ItemFactory.itemFactory(section, "fish-item");
+        List<String> loreCfg = factory.getLore().getActualValue();
+
         EMFListMessage lore = EMFListMessage.fromStringList(
-            section.getStringList("fish-item.lore")
+            loreCfg
         );
 
         lore.setVariable("{times-caught}", getValueOrUnknown(() -> Integer.toString(userFishStats.getQuantity())));
@@ -147,43 +149,30 @@ public class FishJournalGui extends ConfigGui {
     }
 
 
-    private DynamicGuiElement getRarityGroup(Section section) {
-        char character = FishUtils.getCharFromString(section.getString("rarity-character", "r"), 'r');
-
-        return new DynamicGuiElement(
-                character, who -> {
-            GuiElementGroup group = new GuiElementGroup(character);
-            FishManager.getInstance().getRarityMap().values().forEach(rarity ->
-                    group.addElement(
-                            new StaticGuiElement(
-                                    character, getRarityItem(rarity, section), click -> {
-                                new FishJournalGui(player, rarity).open();
-                                return true;
-                            }
-                            ))
-            );
-            return group;
-        }
-        );
+    private void loadRarityGroup(@NotNull BaseGui gui, @NotNull Section section, @Nullable Map<String, ?> replacements) {
+        FishManager.getInstance().getRarityMap().values().forEach(rarity -> {
+            ItemStack item = getRarityItem(rarity, section, replacements);
+            gui.addItem(new GuiItem(item, click -> new FishJournalGui(player, rarity).open()));
+        });
     }
 
-    private ItemStack getRarityItem(Rarity rarity, Section section) {
+    private ItemStack getRarityItem(Rarity rarity, Section section, @Nullable Map<String, ?> replacements) {
         Database database = EvenMoreFish.getInstance().getDatabase();
         boolean hideUndiscovered = section.getBoolean("hide-undiscovered-rarities", true);
 
         if (database == null) {
             Logging.warn("Can not show rarities in the Journal Menu, please enable the database!");
             ItemFactory factory = ItemFactory.itemFactory(section, "undiscovered-rarity");
-            return factory.createItem(player.getUniqueId());
+            return factory.createItem(player.getUniqueId(), replacements);
         }
 
         if (hideUndiscovered && !database.userHasRarity(rarity, player)) {
             ItemFactory factory = ItemFactory.itemFactory(section, "undiscovered-rarity");
-            return factory.createItem(player.getUniqueId());
+            return factory.createItem(player.getUniqueId(), replacements);
         }
 
         final ItemFactory factory = ItemFactory.itemFactory(section, "rarity-item");
-        ItemStack item = factory.createItem(player.getUniqueId());
+        ItemStack item = factory.createItem(player.getUniqueId(), replacements);
         item = ItemUtils.changeMaterial(item, rarity.getMaterial());
 
         item.editMeta(meta -> {
@@ -191,14 +180,12 @@ public class FishJournalGui extends ConfigGui {
             if (originalDisplay != null) {
                 EMFSingleMessage display = EMFSingleMessage.of(originalDisplay);
                 display.setRarity(rarity.getDisplayName());
+                display.setVariables(replacements);
                 meta.displayName(display.getComponentMessage());
             }
         });
 
         return item;
     }
-
-    @Override
-    public void doRescue() {}
 
 }

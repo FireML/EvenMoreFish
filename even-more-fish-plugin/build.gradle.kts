@@ -42,6 +42,7 @@ repositories {
     maven("https://repo.codemc.io/repository/FireML/")
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.triumphteam.dev/snapshots")
 }
 
 dependencies {
@@ -86,7 +87,7 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.commandapi)
-    implementation(libs.inventorygui)
+    implementation(libs.triumphgui)
     implementation(libs.boostedyaml)
     implementation(libs.vanishchecker)
     implementation(libs.universalscheduler)
@@ -306,7 +307,7 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbtapi")
         relocate("org.bstats", "com.oheers.fish.libs.bstats")
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
-        relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
+        relocate("dev.triumphteam.gui", "com.oheers.fish.libs.triumphgui")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
         relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
         relocate("dev.jorel.commandapi", "com.oheers.fish.libs.commandapi")
