@@ -1,1 +1,3 @@
 Re-add ApplyBaitsGui
+Figure out how to make some buttons dynamically update
+  - Sell GUI sell buttons

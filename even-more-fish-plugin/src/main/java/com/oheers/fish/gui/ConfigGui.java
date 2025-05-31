@@ -34,8 +34,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-// TODO figure out dynamically updating icons
-public class ConfigGui {
+public abstract class ConfigGui {
 
     protected final TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     protected final Section config;
@@ -71,7 +70,7 @@ public class ConfigGui {
 
     public BaseGui getGui() {
         if (this.gui == null) {
-            this.gui = createGui();
+            this.gui = createGui(getReplacements());
         }
         return this.gui;
     }
@@ -93,10 +92,6 @@ public class ConfigGui {
     }
 
     // Loading Things
-
-    public BaseGui createGui() {
-        return createGui(null);
-    }
 
     protected BaseGui createGui(@Nullable Map<String, ?> replacements) {
         GuiType type = FishUtils.getEnumValue(
@@ -231,5 +226,7 @@ public class ConfigGui {
             }
         }
     }
+
+    public abstract @NotNull Map<String, ?> getReplacements();
 
 }

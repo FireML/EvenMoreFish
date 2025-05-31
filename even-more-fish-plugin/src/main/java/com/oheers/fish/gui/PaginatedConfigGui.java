@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * A version of ConfigGui that supports pages.
  * This GUI allows multiple pages of items to be displayed.
  */
-public class PaginatedConfigGui extends ConfigGui {
+public abstract class PaginatedConfigGui extends ConfigGui {
 
     public PaginatedConfigGui(@Nullable Section config, @NotNull Player player) {
         super(config, player);

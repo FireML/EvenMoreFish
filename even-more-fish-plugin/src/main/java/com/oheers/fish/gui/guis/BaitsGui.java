@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class BaitsGui extends PaginatedConfigGui {
 
     public BaitsGui(@NotNull HumanEntity player) {
@@ -16,8 +18,6 @@ public class BaitsGui extends PaginatedConfigGui {
             GuiConfig.getInstance().getConfig().getSection("baits-menu"),
             (Player) player
         );
-
-        createGui();
 
         loadBaits();
     }
@@ -29,6 +29,11 @@ public class BaitsGui extends PaginatedConfigGui {
                 getGui().addItem(new GuiItem(baitItem));
             }
         });
+    }
+
+    @Override
+    public @NotNull Map<String, ?> getReplacements() {
+        return Map.of();
     }
 
 }

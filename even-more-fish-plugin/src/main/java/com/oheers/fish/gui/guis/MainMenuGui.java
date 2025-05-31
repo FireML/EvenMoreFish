@@ -6,6 +6,8 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class MainMenuGui extends ConfigGui {
 
     public MainMenuGui(@NotNull HumanEntity viewer) {
@@ -13,7 +15,11 @@ public class MainMenuGui extends ConfigGui {
             GuiConfig.getInstance().getConfig().getSection("main-menu"),
             (Player) viewer
         );
-        createGui();
+    }
+
+    @Override
+    public @NotNull Map<String, ?> getReplacements() {
+        return Map.of();
     }
 
 }

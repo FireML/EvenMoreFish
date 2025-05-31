@@ -45,8 +45,6 @@ public class FishJournalGui extends ConfigGui {
         );
 
         this.rarity = rarity;
-
-        createGui();
     }
 
     @Override
@@ -61,6 +59,11 @@ public class FishJournalGui extends ConfigGui {
         } else {
             loadRarityGroup(gui, config, replacements);
         }
+    }
+
+    @Override
+    public @NotNull Map<String, ?> getReplacements() {
+        return Map.of();
     }
 
     private void loadFishGroup(@NotNull BaseGui gui, @NotNull Section section, @Nullable Map<String, ?> replacements) {
