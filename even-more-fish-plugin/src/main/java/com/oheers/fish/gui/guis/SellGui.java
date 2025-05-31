@@ -5,12 +5,14 @@ import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.config.GuiConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.gui.ConfigGui;
+import com.oheers.fish.gui.DepositConfigGui;
 import com.oheers.fish.selling.SellHelper;
 import com.oheers.fish.utils.Pair;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
-public class SellGui extends ConfigGui {
+public class SellGui extends DepositConfigGui {
 
     private final Inventory fishInventory;
 
@@ -69,6 +72,11 @@ public class SellGui extends ConfigGui {
             "{sell-price}", economy.getWorthFormat(shopHelper.getTotalWorth(), true),
             "{sell-all-price}", economy.getWorthFormat(playerHelper.getTotalWorth(), true)
         );
+    }
+
+    @Override
+    protected @NotNull Consumer<List<ItemStack>> consumer() {
+        return items -> System.out.println("Item Sale");
     }
 
     public enum SellState {

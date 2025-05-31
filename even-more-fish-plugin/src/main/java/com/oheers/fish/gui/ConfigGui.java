@@ -34,13 +34,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-public abstract class ConfigGui {
+public abstract class ConfigGui<T extends BaseGui> {
 
     protected final TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     protected final Section config;
     protected final Player player;
 
-    protected BaseGui gui;
+    protected T gui;
 
     public ConfigGui(@Nullable Section config, @NotNull Player player) {
         actions.put("close", event -> event.getWhoClicked().closeInventory());
@@ -60,18 +60,15 @@ public abstract class ConfigGui {
         this.config = config;
         this.player = player;
 
-        if (config == null) {
-            this.gui = Gui.gui()
-                .disableAllInteractions()
-                .rows(6)
-                .create();
-        }
+        Map<String, ?> replacements = getReplacements();
+        this.gui = createGui(replacements);
+        // Load filler
+        loadFiller(gui);
+        // Load configured items
+        loadItems(gui, replacements);
     }
 
-    public BaseGui getGui() {
-        if (this.gui == null) {
-            this.gui = createGui(getReplacements());
-        }
+    public T getGui() {
         return this.gui;
     }
 
@@ -93,32 +90,7 @@ public abstract class ConfigGui {
 
     // Loading Things
 
-    protected BaseGui createGui(@Nullable Map<String, ?> replacements) {
-        GuiType type = FishUtils.getEnumValue(
-            GuiType.class,
-            config.getString("type", "CHEST"),
-            GuiType.CHEST
-        );
-
-        EMFSingleMessage title = EMFSingleMessage.fromString(
-            config.getString("title", "Gui")
-        );
-        title.setVariables(replacements);
-
-        BaseGui gui = Gui.gui(type)
-            .disableAllInteractions()
-            .title(title.getComponentMessage())
-            .rows(config.getInt("rows", 6))
-            .create();
-
-        // Load filler
-        loadFiller(gui);
-
-        // Load configured items
-        loadItems(gui, replacements);
-
-        return gui;
-    }
+    protected abstract T createGui(@Nullable Map<String, ?> replacements);
 
     protected void loadItems(@NotNull BaseGui gui, @Nullable Map<String, ?> replacements) {
         Section itemSection = this.config.getSection("items");

@@ -5,6 +5,7 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.StorageGui;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -20,21 +21,22 @@ import java.util.function.Consumer;
  * A GUI for depositing items into a storage.
  * This GUI allows players to deposit items and provides a way to handle the deposited items.
  */
-public abstract class DepositConfigGui extends ConfigGui {
+public abstract class DepositConfigGui extends ConfigGui<StorageGui> {
 
-    private final Consumer<List<ItemStack>> consumer;
-
-    public DepositConfigGui(@Nullable Section config, @NotNull Player player, @NotNull Consumer<List<ItemStack>> consumer) {
+    public DepositConfigGui(@Nullable Section config, @NotNull Player player) {
         super(config, player);
-        this.consumer = consumer;
     }
 
     protected abstract @NotNull Consumer<List<ItemStack>> consumer();
 
     @Override
-    protected BaseGui createGui(@Nullable Map<String, ?> replacements) {
-        Section config = getGuiConfig();
-
+    protected StorageGui createGui(@Nullable Map<String, ?> replacements) {
+        if (config == null) {
+            return Gui.storage()
+                .title(Component.text("Invalid GUI"))
+                .disableAllInteractions()
+                .create();
+        }
         EMFSingleMessage title = EMFSingleMessage.fromString(
             config.getString("title", "Gui")
         );
@@ -53,15 +55,9 @@ public abstract class DepositConfigGui extends ConfigGui {
             if (contents.isEmpty() || event.getPlayer() != player) {
                 return;
             }
-            consumer.accept(contents);
+            consumer().accept(contents);
             event.getInventory().clear();
         });
-
-        // Load filler
-        loadFiller(gui);
-
-        // Load configured items
-        loadItems(gui, replacements);
 
         return gui;
     }

@@ -12,6 +12,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.ConfigGui;
+import com.oheers.fish.gui.PaginatedConfigGui;
 import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.items.ItemFactory;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class FishJournalGui extends ConfigGui {
+public class FishJournalGui extends PaginatedConfigGui {
 
     private final Rarity rarity;
 
