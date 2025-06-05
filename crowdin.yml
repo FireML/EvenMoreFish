@@ -7,6 +7,6 @@
 "files": [
   {
     "source": "even-more-fish-plugin/src/main/resources/locales/messages_en.yml",
-    "translation": "even-more-fish-plugin/src/main/resources/locales/messages_%locale_with_underscore%.yml"
+    "translation": "even-more-fish-plugin/src/main/resources/locales/messages_%two_letters_code%.yml"
   }
 ]
