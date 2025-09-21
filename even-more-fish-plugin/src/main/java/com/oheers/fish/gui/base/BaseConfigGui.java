@@ -26,11 +26,11 @@ import java.util.function.Consumer;
 public abstract class BaseConfigGui<T extends BaseGui> {
 
     private T gui;
-    protected final @NotNull HumanEntity player;
+    protected final @NotNull Player player;
     protected final @NotNull Section config;
     protected final @NotNull TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    public BaseConfigGui(@NotNull HumanEntity player, @Nullable Section config) throws InvalidGuiException {
+    public BaseConfigGui(@NotNull Player player, @Nullable Section config) throws InvalidGuiException {
         if (config == null) {
             throw new InvalidGuiException("GUI config does not exist!");
         }

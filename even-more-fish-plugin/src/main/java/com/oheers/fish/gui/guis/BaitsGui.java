@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BaitsGui extends PaginatedConfigGui {
 
-    public BaitsGui(@NotNull HumanEntity player) throws InvalidGuiException {
+    public BaitsGui(@NotNull Player player) throws InvalidGuiException {
         super(
             player,
             GuiConfig.getInstance().getConfig().getSection("baits-menu")
@@ -29,7 +29,7 @@ public class BaitsGui extends PaginatedConfigGui {
     private GuiItem[] getGuiItems() {
         return BaitManager.getInstance().getItemMap().values()
             .stream()
-            .map(bait -> bait.create((Player) player))
+            .map(bait -> bait.create(player))
             .map(GuiItem::new)
             .toArray(GuiItem[]::new);
     }
