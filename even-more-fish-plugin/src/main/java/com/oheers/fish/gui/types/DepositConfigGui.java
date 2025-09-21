@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DepositConfigGui extends BaseConfigGui<StorageGui> {
 
-    public DepositConfigGui(@NotNull HumanEntity player, @Nullable Section config) throws InvalidGuiException {
+    public DepositConfigGui(@NotNull Player player, @Nullable Section config) throws InvalidGuiException {
         super(player, config);
     }
 
