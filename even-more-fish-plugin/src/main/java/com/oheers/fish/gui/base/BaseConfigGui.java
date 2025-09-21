@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.commands.MainCommand;
 import com.oheers.fish.database.DatabaseUtil;
+import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.gui.guis.BaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
 import com.oheers.fish.gui.guis.MainMenuGui;
@@ -17,6 +18,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -24,11 +26,14 @@ import java.util.function.Consumer;
 public abstract class BaseConfigGui<T extends BaseGui> {
 
     private T gui;
-    protected final HumanEntity player;
-    protected final Section config;
-    protected final TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    protected final @NotNull HumanEntity player;
+    protected final @NotNull Section config;
+    protected final @NotNull TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    public BaseConfigGui(@NotNull HumanEntity player, @NotNull Section config) {
+    public BaseConfigGui(@NotNull HumanEntity player, @Nullable Section config) throws InvalidGuiException {
+        if (config == null) {
+            throw new InvalidGuiException("GUI config does not exist!");
+        }
         this.player = player;
         this.config = config;
         loadDefaultActions();
@@ -100,6 +105,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         });
         actions.put("fish-toggle", event -> {
             if (!(player instanceof Player p)) {
+                player.sendPlainMessage("You are not a player?");
                 return;
             }
             EvenMoreFish.getInstance().performFishToggle(p);
