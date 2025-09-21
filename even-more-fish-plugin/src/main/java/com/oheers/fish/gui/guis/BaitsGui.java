@@ -3,39 +3,35 @@ package com.oheers.fish.gui.guis;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.baits.manager.BaitManager;
 import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.gui.ConfigGuiOld;
+import com.oheers.fish.gui.types.PaginatedConfigGui;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BaitsGui extends ConfigGuiOld {
+public class BaitsGui extends PaginatedConfigGui {
 
-    public BaitsGui(@NotNull HumanEntity player) {
+    public BaitsGui(@NotNull HumanEntity player) throws InvalidGuiException {
         super(
-            GuiConfig.getInstance().getConfig().getSection("baits-menu"),
-            player
+            player,
+            GuiConfig.getInstance().getConfig().getSection("baits-menu")
         );
 
-        createGui();
-
-        Section config = getGuiConfig();
-        if (config != null) {
-            getGui().addElements(getBaitsGroup(config));
-        }
+        init(gui -> gui.addItem(getGuiItems()));
     }
 
-    private DynamicGuiElement getBaitsGroup(Section section) {
-        char character = FishUtils.getCharFromString(section.getString("bait-character", "b"), 'b');
-
-        return new DynamicGuiElement(character, who -> {
-            GuiElementGroup group = new GuiElementGroup(character);
-            BaitManager.getInstance().getItemMap().values()
-                .forEach(bait -> group.addElement(new StaticGuiElement(character, bait.create(player))));
-            return group;
-        });
+    private GuiItem[] getGuiItems() {
+        return BaitManager.getInstance().getItemMap().values()
+            .stream()
+            .map(bait -> bait.create((Player) player))
+            .map(GuiItem::new)
+            .toArray(GuiItem[]::new);
     }
 
 }
