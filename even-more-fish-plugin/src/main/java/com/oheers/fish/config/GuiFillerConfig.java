@@ -2,7 +2,7 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.gui.ConfigGui;
+import com.oheers.fish.gui.ConfigGuiOld;
 import com.oheers.fish.gui.GuiUtils;
 import com.oheers.fish.items.ItemFactory;
 import de.themoep.inventorygui.GuiElement;
@@ -27,9 +27,9 @@ public class GuiFillerConfig extends ConfigBase {
 
     public static GuiFillerConfig getInstance() { return instance; }
 
-    // TODO these were copied from ConfigGui and won't be needed after the switch to Triumph
+    // TODO these were copied from ConfigGuiOld and won't be needed after the switch to Triumph
 
-    public List<GuiElement> getDefaultFillerItems(@NotNull ConfigGui gui) {
+    public List<GuiElement> getDefaultFillerItems(@NotNull ConfigGuiOld gui) {
         List<GuiElement> elements = new ArrayList<>();
         getConfig().getRoutesAsStrings(false).forEach(key -> {
             Section itemSection = getConfig().getSection(key);
@@ -44,7 +44,7 @@ public class GuiFillerConfig extends ConfigBase {
         return elements;
     }
 
-    private StaticGuiElement getGuiItem(@NotNull ConfigGui gui, @NotNull Section itemSection) {
+    private StaticGuiElement getGuiItem(@NotNull ConfigGuiOld gui, @NotNull Section itemSection) {
         char character = FishUtils.getCharFromString(itemSection.getString("character", "#"), '#');
         if (character == '#') {
             return null;
@@ -57,7 +57,7 @@ public class GuiFillerConfig extends ConfigBase {
         Section actionSection = itemSection.getSection("click-action");
         if (actionSection != null) {
             return new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = switch (click.getType()) {
+                BiConsumer<ConfigGuiOld, GuiElement.Click> action = switch (click.getType()) {
                     case LEFT -> GuiUtils.getActionMap().get(actionSection.getString("left", ""));
                     case RIGHT -> GuiUtils.getActionMap().get(actionSection.getString("right", ""));
                     case MIDDLE -> GuiUtils.getActionMap().get(actionSection.getString("middle", ""));
@@ -71,7 +71,7 @@ public class GuiFillerConfig extends ConfigBase {
             });
         } else {
             return new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = GuiUtils.getActionMap().get(itemSection.getString("click-action", ""));
+                BiConsumer<ConfigGuiOld, GuiElement.Click> action = GuiUtils.getActionMap().get(itemSection.getString("click-action", ""));
                 if (action != null) {
                     action.accept(gui, click);
                 }

@@ -1,6 +1,5 @@
 package com.oheers.fish.gui;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GuiFillerConfig;
 import com.oheers.fish.items.ItemFactory;
@@ -12,6 +11,7 @@ import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.guis.BaseGui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,21 +26,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class ConfigGui {
+public abstract class ConfigGuiOld<T extends BaseGui> {
 
-    protected final Map<String, BiConsumer<ConfigGui, GuiElement.Click>> actions = GuiUtils.getActionMap();
     protected final Section config;
     protected final Player player;
     private final @NotNull Map<String, EMFMessage> replacements = new HashMap<>();
 
-    private InventoryGui gui;
-    private InventoryGui.CloseAction closeAction = null;
+    private T gui;
 
     // TODO Bring the action map to this class when we switch to Triumph
-    public ConfigGui(@Nullable Section config, @NotNull HumanEntity player) {
+    public ConfigGuiOld(@Nullable Section config, @NotNull HumanEntity player) {
         this.config = config;
         // HumanEntity's only subclass is Player, so this is a safe cast
         this.player = (Player) player;
+        this.gui = createGui();
     }
 
     public void addReplacement(@NotNull String variable, @NotNull String replacement) {
@@ -59,13 +58,9 @@ public class ConfigGui {
         this.replacements.putAll(replacements);
     }
 
-    public void setCloseAction(@NotNull InventoryGui.CloseAction closeAction) {
-        this.closeAction = closeAction;
-    }
-
-    public @NotNull InventoryGui getGui() {
+    public @NotNull T getGui() {
         if (this.gui == null) {
-            throw new IllegalStateException("ConfigGui#createGui has not been called!");
+            throw new IllegalStateException(getClass().getSimpleName() + "#createGui has not been called!");
         }
         return this.gui;
     }
@@ -75,33 +70,12 @@ public class ConfigGui {
     }
 
     public void open() {
-        getGui().show(this.player);
+        getGui().open(this.player);
     }
 
-    public void createGui() {
-        if (this.config == null) {
-            this.gui = new InventoryGui(
-                EvenMoreFish.getInstance(),
-                "Empty Gui",
-                new String[0]
-            );
-            return;
-        }
-        String title = this.config.getString("title");
-        String[] layout = this.config.getStringList("layout").stream().limit(6).toArray(String[]::new);
-        InventoryGui gui = new InventoryGui(
-            EvenMoreFish.getInstance(),
-            title == null ? null : EMFSingleMessage.fromString(title).getLegacyMessage(),
-            layout
-        );
-        loadFiller(gui, this.config);
-        loadItems(gui, this.config);
-        gui.setCloseAction(closeAction);
+    public abstract T createGui();
 
-        this.gui = gui;
-    }
-
-    private void loadFiller(@NotNull InventoryGui gui, @NotNull Section config) {
+    protected void loadFiller(@NotNull InventoryGui gui, @NotNull Section config) {
         String fillerStr = config.getString("filler");
         if (fillerStr == null) {
             return;
@@ -146,7 +120,7 @@ public class ConfigGui {
         Section actionSection = itemSection.getSection("click-action");
         if (actionSection != null) {
             StaticGuiElement actionElement = new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = switch (click.getType()) {
+                BiConsumer<ConfigGuiOld, GuiElement.Click> action = switch (click.getType()) {
                     case LEFT -> actions.get(actionSection.getString("left", ""));
                     case RIGHT -> actions.get(actionSection.getString("right", ""));
                     case MIDDLE -> actions.get(actionSection.getString("middle", ""));
@@ -164,7 +138,7 @@ public class ConfigGui {
             gui.addElement(actionElement);
         } else {
             StaticGuiElement element = new StaticGuiElement(character, item, click -> {
-                BiConsumer<ConfigGui, GuiElement.Click> action = actions.get(itemSection.getString("click-action", ""));
+                BiConsumer<ConfigGuiOld, GuiElement.Click> action = actions.get(itemSection.getString("click-action", ""));
                 if (action != null) {
                     action.accept(this, click);
                 }

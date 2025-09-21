@@ -709,4 +709,82 @@ public class FishUtils {
         };
     }
 
+    public static @NotNull <E extends Enum<E>> E getEnumValue(@NotNull Class<E> enumClass, @Nullable String value, @NotNull E def) {
+        E enumValue = getEnumValue(enumClass, value);
+        if (enumValue == null) {
+            return def;
+        }
+        return enumValue;
+    }
+
+    public static @Nullable <E extends Enum<E>> E getEnumValue(@NotNull Class<E> enumClass, @Nullable String value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumClass, value.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the provided index from an array, or returns the default value.
+     * @param array The array to use.
+     * @param index The index to return.
+     * @param def The default value.
+     * @return The provided index, or the default value.
+     */
+    public static <T> T getOrDefault(@NotNull T[] array, int index, T def) {
+        try {
+            return array[index];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return def;
+        }
+    }
+
+    /**
+     * Gets the provided index from a list, or returns the default value.
+     * @param list The list to use.
+     * @param index The index to return.
+     * @param def The default value.
+     * @return The provided index, or the default value.
+     */
+    public static <T> T getOrDefault(@NotNull List<T> list, int index, T def) {
+        try {
+            return list.get(index);
+        } catch (IndexOutOfBoundsException ex) {
+            return def;
+        }
+    }
+
+    /**
+     * Gets an Integer from a String
+     * @param str The string to use.
+     * @return The Integer, or null if it isn't an Integer.
+     */
+    public static @Nullable Integer getInt(@NotNull String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Gets an int from a String or returns the default
+     * @param str The string to use.
+     * @return The int, or the default value if it isn't an int.
+     */
+    public static int getIntOrDefault(@Nullable String str, int defaultInt) {
+        if (str == null) {
+            return defaultInt;
+        }
+        Integer value = getInt(str);
+        if (value == null) {
+            return defaultInt;
+        }
+        return value;
+    }
+
 }
