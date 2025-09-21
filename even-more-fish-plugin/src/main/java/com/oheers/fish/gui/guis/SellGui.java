@@ -1,57 +1,44 @@
 package com.oheers.fish.gui.guis;
 
-import com.oheers.fish.FishUtils;
-import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.config.GuiConfig;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.gui.ConfigGuiOld;
+import com.oheers.fish.gui.types.DepositConfigGui;
 import com.oheers.fish.selling.SellHelper;
-import de.themoep.inventorygui.GuiStorageElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
-import org.bukkit.Bukkit;
+import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 // TODO look into dynamically updating the sell items when a fish is added/removed - AFTER we switch to TriumphGui
-public class SellGui extends ConfigGuiOld {
-
-    private final Inventory fishInventory;
+public class SellGui extends DepositConfigGui {
 
     public SellGui(@NotNull Player player, @NotNull SellState sellState, @Nullable Inventory fishInventory) {
-        super(sellState.getGuiConfig(), player);
+        super(
+            player,
+            sellState.getGuiConfig()
+        );
+        addActions();
 
-        this.fishInventory = Objects.requireNonNullElseGet(fishInventory, () -> Bukkit.createInventory(player, 54));
-
-        Economy economy = Economy.getInstance();
-
-        SellHelper shopHelper = new SellHelper(this.fishInventory, player);
-        addReplacement("{sell-price}", economy.getWorthFormat(shopHelper.getTotalWorth(), true));
-
-        SellHelper playerHelper = new SellHelper(player.getInventory(), player);
-        addReplacement("{sell-all-price}", economy.getWorthFormat(playerHelper.getTotalWorth(), true));
-
-        setCloseAction(close -> {
+        init();
+        StorageGui gui = getGui();
+        gui.setCloseGuiAction(event -> {
             if (MainConfig.getInstance().sellOverDrop()) {
-                new SellHelper(this.fishInventory, this.player).sellFish();
+                new SellHelper(getGui().getInventory(), this.player).sellFish();
             }
             doRescue();
-            return false;
         });
-
-        createGui();
-
-        Section config = getGuiConfig();
-        if (config != null) {
-            getGui().addElement(new GuiStorageElement(FishUtils.getCharFromString(getGuiConfig().getString("deposit-character", "i"), 'i'), this.fishInventory));
+        if (fishInventory != null) {
+            ItemStack[] add = Arrays.stream(fishInventory.getContents())
+                .filter(Objects::nonNull)
+                .toArray(ItemStack[]::new);
+            gui.getInventory().addItem(add);
         }
-    }
-
-    public Inventory getFishInventory() {
-        return this.fishInventory;
     }
 
     public enum SellState {
@@ -67,6 +54,25 @@ public class SellGui extends ConfigGuiOld {
         public Section getGuiConfig() {
             return GuiConfig.getInstance().getConfig().getSection(configLocation);
         }
+    }
+
+    private void addActions() {
+        actions.put("sell-inventory", event -> {
+            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
+        });
+        actions.put("sell-inventory-confirm", event -> {
+            new SellHelper(player.getInventory(), player).sellFish();
+            doRescue();
+            player.closeInventory();
+        });
+        actions.put("sell-shop", event -> {
+            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
+        });
+        actions.put("sell-shop-confirm", event -> {
+            new SellHelper(getGui().getInventory(), player).sellFish();
+            doRescue();
+            player.closeInventory();
+        });
     }
 
 }

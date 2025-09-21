@@ -8,7 +8,6 @@ import com.oheers.fish.commands.arguments.RarityArgument;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.DatabaseUtil;
-import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.guis.ApplyBaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
@@ -209,11 +208,7 @@ public class MainCommand {
                     ConfigMessage.BAIT_INVALID_ROD.getMessage().send(player);
                     return;
                 }
-                try {
-                    new ApplyBaitsGui(player).open();
-                } catch (InvalidGuiException exception) {
-                    ConfigMessage.INVALID_GUI.getMessage().send(player);
-                }
+                new ApplyBaitsGui(player).open();
             });
     }
 
