@@ -76,8 +76,8 @@ public class GuiUtils {
         return factory.createItem();
     }
 
-    public static Map<String, BiConsumer<ConfigGui, GuiElement.Click>> getActionMap() {
-        Map<String, BiConsumer<ConfigGui, GuiElement.Click>> newActionMap = new HashMap<>();
+    public static Map<String, BiConsumer<ConfigGuiOld, GuiElement.Click>> getActionMap() {
+        Map<String, BiConsumer<ConfigGuiOld, GuiElement.Click>> newActionMap = new HashMap<>();
         // Exiting the main menu should close the Gui
         newActionMap.put("full-exit", (gui, click) -> {
             if (gui != null) {

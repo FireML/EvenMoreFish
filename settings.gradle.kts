@@ -73,6 +73,7 @@ dependencyResolutionManagement {
 
             library("commandapi", "dev.jorel:commandapi-bukkit-shade:10.1.2")
             library("inventorygui", "de.themoep:inventorygui:1.6.4-SNAPSHOT")
+            library("triumphgui", "dev.triumphteam:triumph-gui:3.1.11")
 
             plugin("shadow", "com.gradleup.shadow").version("9.0.2")
             plugin("plugin-yml", "de.eldoria.plugin-yml.bukkit").version("0.8.0")

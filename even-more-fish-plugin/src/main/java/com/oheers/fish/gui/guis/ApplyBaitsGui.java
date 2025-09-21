@@ -10,7 +10,7 @@ import com.oheers.fish.baits.model.ApplicationResult;
 import com.oheers.fish.config.GuiConfig;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
-import com.oheers.fish.gui.ConfigGui;
+import com.oheers.fish.gui.ConfigGuiOld;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import de.themoep.inventorygui.GuiStorageElement;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ApplyBaitsGui extends ConfigGui {
+public class ApplyBaitsGui extends ConfigGuiOld {
 
     private final Inventory baitInventory;
 
