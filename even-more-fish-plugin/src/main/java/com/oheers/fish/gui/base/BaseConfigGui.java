@@ -27,7 +27,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         }
         this.gui = createGui();
         FillerLoader.getInstance().load(this);
-        ItemLoader.getInstance().loadItems(this);
+        ItemLoader.getInstance().load(this);
     }
 
     public abstract T createGui();
