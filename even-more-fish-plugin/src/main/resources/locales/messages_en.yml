@@ -175,10 +175,12 @@ no-competition-running-fish: No competition running right now.
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
 no-competition-running-size: No competition running right now.
 
-# HOw should %emf_custom_fishing_status% be formatted?
+# How should %emf_custom_fishing_status% be formatted?
 custom-fishing-enabled: <green>Enabled
 custom-fishing-disabled: <red>Disabled
 
+# What should the player be told when a GUI is invalid?
+invalid-gui: <red>Failed to open GUI, please notify an admin.
 
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: '{length}cm <b>{rarity}</b> {fish}'
@@ -301,4 +303,4 @@ bait:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-version: 5
+version: 6

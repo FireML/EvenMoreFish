@@ -8,9 +8,11 @@ import com.oheers.fish.baits.manager.BaitManager;
 import com.oheers.fish.baits.manager.BaitNBTManager;
 import com.oheers.fish.baits.model.ApplicationResult;
 import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.gui.ConfigGuiOld;
+import com.oheers.fish.gui.types.DepositConfigGui;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import de.themoep.inventorygui.GuiStorageElement;
@@ -26,29 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ApplyBaitsGui extends ConfigGuiOld {
+public class ApplyBaitsGui extends DepositConfigGui {
 
-    private final Inventory baitInventory;
-
-    public ApplyBaitsGui(@NotNull Player player, @Nullable Inventory baitInventory) {
+    public ApplyBaitsGui(@NotNull Player player) throws InvalidGuiException {
         super(
-            GuiConfig.getInstance().getConfig().getSection("apply-baits-menu"),
-            player
+            player,
+            GuiConfig.getInstance().getConfig().getSection("apply-baits-menu")
         );
-        this.baitInventory = Objects.requireNonNullElseGet(baitInventory, () -> Bukkit.createInventory(player, 54));
 
-        setCloseAction(close -> {
+        init();
+        getGui().setCloseGuiAction(event -> {
             processBaits();
             doRescue();
-            return false;
         });
-
-        createGui();
-
-        Section config = getGuiConfig();
-        if (config != null) {
-            getGui().addElement(new GuiStorageElement(FishUtils.getCharFromString(getGuiConfig().getString("bait-character", "b"), 'b'), this.baitInventory));
-        }
     }
 
     private void processBaits() {
@@ -56,6 +48,7 @@ public class ApplyBaitsGui extends ConfigGuiOld {
         if (!Checks.canUseRod(handItem)) {
             return;
         }
+        Inventory baitInventory = getGui().getInventory();
         boolean changedRod = false;
         List<String> ignoredBaits = new ArrayList<>();
         for (ItemStack item : baitInventory.getContents()) {
@@ -92,7 +85,7 @@ public class ApplyBaitsGui extends ConfigGuiOld {
             }
 
             // Remove the bait items from the inventory.
-            this.baitInventory.remove(item);
+            baitInventory.remove(item);
             // Set the handItem variable.
             handItem = result.getFishingRod();
             changedRod = true;
