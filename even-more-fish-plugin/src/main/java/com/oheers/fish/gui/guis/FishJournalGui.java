@@ -8,24 +8,17 @@ import com.oheers.fish.database.data.FishRarityKey;
 import com.oheers.fish.database.data.UserFishRarityKey;
 import com.oheers.fish.database.model.fish.FishStats;
 import com.oheers.fish.database.model.user.UserFishStats;
-import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.gui.ConfigGuiOld;
 import com.oheers.fish.gui.types.PaginatedConfigGui;
 import com.oheers.fish.items.ItemFactory;
-import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.api.Logging;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.StaticGuiElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,7 +34,7 @@ public class FishJournalGui extends PaginatedConfigGui {
 
     private final Rarity rarity;
 
-    public FishJournalGui(@NotNull Player player, @Nullable Rarity rarity) throws InvalidGuiException {
+    public FishJournalGui(@NotNull Player player, @Nullable Rarity rarity) {
         super(
             player,
             GuiConfig.getInstance().getConfig().getSection(
@@ -142,11 +135,7 @@ public class FishJournalGui extends PaginatedConfigGui {
             .map(rarity -> {
                 ItemStack item = getRarityItem(rarity, section);
                 return new GuiItem(item, event -> {
-                    try {
-                        new FishJournalGui(player, rarity).open();
-                    } catch (InvalidGuiException exception) {
-                        ConfigMessage.INVALID_GUI.getMessage().send(player);
-                    }
+                    new FishJournalGui(player, rarity).open();
                 });
             })
             .toArray(GuiItem[]::new);

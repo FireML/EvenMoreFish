@@ -14,7 +14,6 @@ import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
 import com.oheers.fish.fishing.items.FishManager;

@@ -170,8 +170,6 @@ public enum ConfigMessage {
     CUSTOM_FISHING_ENABLED("<green>Enabled", PrefixType.NONE, false, true, "custom-fishing-enabled"),
     CUSTOM_FISHING_DISABLED("<red>Disabled", PrefixType.NONE, false, true, "custom-fishing-disabled"),
 
-    INVALID_GUI("<red>Failed to open GUI, please notify an admin.", PrefixType.ERROR, false, true, "invalid-gui"),
-
     PLACEHOLDER_FISH_FORMAT("{length}cm <b>{rarity}</b> {fish}", PrefixType.NONE, true, false, "emf-competition-fish-format"),
     PLACEHOLDER_FISH_LENGTHLESS_FORMAT("<b>{rarity}</b> {fish}", PrefixType.NONE, true, false, "emf-lengthless-fish-format"),
     PLACEHOLDER_FISH_MOST_FORMAT("{amount} fish", PrefixType.NONE, true, false, "emf-most-fish-format"),

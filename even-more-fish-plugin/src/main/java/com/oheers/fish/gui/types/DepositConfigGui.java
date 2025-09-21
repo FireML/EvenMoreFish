@@ -1,20 +1,17 @@
 package com.oheers.fish.gui.types;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.gui.base.BaseConfigGui;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.StorageGui;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class DepositConfigGui extends BaseConfigGui<StorageGui> {
 
-    public DepositConfigGui(@NotNull Player player, @Nullable Section config) throws InvalidGuiException {
+    public DepositConfigGui(@NotNull Player player, @NotNull Section config) {
         super(player, config);
     }
 
@@ -29,10 +26,10 @@ public class DepositConfigGui extends BaseConfigGui<StorageGui> {
     @Override
     public void doRescue() {
         Inventory inv = getGui().getInventory();
-        if (inv.isEmpty() || !(player instanceof Player p)) {
+        if (inv.isEmpty()) {
             return;
         }
-        FishUtils.giveItems(inv.getStorageContents(), p);
+        FishUtils.giveItems(inv.getStorageContents(), player);
         inv.clear();
     }
 

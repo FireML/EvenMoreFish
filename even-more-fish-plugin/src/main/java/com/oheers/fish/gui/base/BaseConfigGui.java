@@ -4,7 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.commands.MainCommand;
 import com.oheers.fish.database.DatabaseUtil;
-import com.oheers.fish.exceptions.InvalidGuiException;
 import com.oheers.fish.gui.guis.BaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
 import com.oheers.fish.gui.guis.MainMenuGui;
@@ -14,11 +13,10 @@ import com.oheers.fish.messages.EMFSingleMessage;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.components.GuiType;
 import dev.triumphteam.gui.guis.BaseGui;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import uk.firedev.messagelib.replacer.Replacer;
 
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -26,14 +24,12 @@ import java.util.function.Consumer;
 public abstract class BaseConfigGui<T extends BaseGui> {
 
     private T gui;
+    private final Replacer replacer = Replacer.replacer();
     protected final @NotNull Player player;
     protected final @NotNull Section config;
     protected final @NotNull TreeMap<String, Consumer<InventoryClickEvent>> actions = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    public BaseConfigGui(@NotNull Player player, @Nullable Section config) throws InvalidGuiException {
-        if (config == null) {
-            throw new InvalidGuiException("GUI config does not exist!");
-        }
+    public BaseConfigGui(@NotNull Player player, @NotNull Section config) {
         this.player = player;
         this.config = config;
         loadDefaultActions();
@@ -91,6 +87,10 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         return config.getInt("page-size", 54);
     }
 
+    public void editReplacer(Consumer<Replacer> edit) {
+        edit.accept(replacer);
+    }
+
     public abstract void doRescue();
 
     // Loading actions. Big single method :D
@@ -106,12 +106,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         });
         actions.put("open-main-menu", event -> {
             doRescue();
-            try {
-                new MainMenuGui(player).open();
-            } catch (InvalidGuiException exception) {
-                ConfigMessage.INVALID_GUI.getMessage().send(player);
-                player.closeInventory();
-            }
+            new MainMenuGui(player).open();
         });
         actions.put("fish-toggle", event -> {
             EvenMoreFish.getInstance().performFishToggle(player);
@@ -135,21 +130,11 @@ public abstract class BaseConfigGui<T extends BaseGui> {
                 player.closeInventory();
                 return;
             }
-            try {
-                new FishJournalGui(player, null).open();
-            } catch (InvalidGuiException exception) {
-                ConfigMessage.INVALID_GUI.getMessage().send(player);
-                player.closeInventory();
-            }
+            new FishJournalGui(player, null).open();
         });
         actions.put("open-baits-menu", event -> {
             doRescue();
-            try {
-                new BaitsGui(player).open();
-            } catch (InvalidGuiException exception) {
-                ConfigMessage.INVALID_GUI.getMessage().send(player);
-                player.closeInventory();
-            }
+            new BaitsGui(player).open();
         });
     }
 

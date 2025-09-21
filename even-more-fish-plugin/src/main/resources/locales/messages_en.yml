@@ -179,9 +179,6 @@ no-competition-running-size: No competition running right now.
 custom-fishing-enabled: <green>Enabled
 custom-fishing-disabled: <red>Disabled
 
-# What should the player be told when a GUI is invalid?
-invalid-gui: <red>Failed to open GUI, please notify an admin.
-
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: '{length}cm <b>{rarity}</b> {fish}'
 # How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?
