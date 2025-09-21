@@ -2,7 +2,9 @@ package com.oheers.fish.gui.base;
 
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.items.ItemFactory;
+import com.oheers.fish.utils.Logging;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.components.exception.GuiException;
 import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +20,7 @@ public class ItemLoader {
         return instance;
     }
 
-    public void loadItems(BaseConfigGui<?> gui) {
+    public void load(BaseConfigGui<?> gui) {
         Section itemSection = gui.config.getSection("items");
         if (itemSection == null) {
             return;
@@ -64,7 +66,11 @@ public class ItemLoader {
             String rowStr = FishUtils.getOrDefault(splitLocation, 1, null);
             int column = FishUtils.getIntOrDefault(columnStr, -1);
             int row = FishUtils.getIntOrDefault(rowStr, -1);
-            gui.getGui().setItem(row, column, guiItem);
+            try {
+                gui.getGui().setItem(row, column, guiItem);
+            } catch (GuiException exception) {
+                Logging.error("Invalid location provided in GUI config: " + location + ". Skipping...");
+            }
         });
     }
 
