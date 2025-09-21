@@ -1,11 +1,19 @@
 package com.oheers.fish.gui.base;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.commands.MainCommand;
+import com.oheers.fish.database.DatabaseUtil;
+import com.oheers.fish.gui.guis.FishJournalGui;
+import com.oheers.fish.gui.guis.MainMenuGui;
+import com.oheers.fish.gui.guis.SellGui;
+import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.components.GuiType;
 import dev.triumphteam.gui.guis.BaseGui;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +30,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
     public BaseConfigGui(@NotNull HumanEntity player, @NotNull Section config) {
         this.player = player;
         this.config = config;
+        loadDefaultActions();
     }
 
     public void init() {
@@ -40,6 +49,11 @@ public abstract class BaseConfigGui<T extends BaseGui> {
             throw new IllegalStateException(getClass().getSimpleName() + "#init has not been called!");
         }
         return this.gui;
+    }
+
+    public void resetGui() {
+        this.gui = null;
+        init();
     }
 
     public @NotNull Section getConfig() {
@@ -64,6 +78,56 @@ public abstract class BaseConfigGui<T extends BaseGui> {
 
     public int getPageSize() {
         return config.getInt("page-size", 54);
+    }
+
+    public abstract void doRescue();
+
+    // Loading actions. Big single method :D
+
+    private void loadDefaultActions() {
+        actions.put("close", event -> {
+            doRescue();
+            event.getWhoClicked().closeInventory();
+        });
+        actions.put("full-exit", event -> {
+            doRescue();
+            event.getWhoClicked().closeInventory();
+        });
+        actions.put("open-main-menu", event -> {
+            doRescue();
+            new MainMenuGui(player).open();
+        });
+        actions.put("fish-toggle", event -> {
+            if (!(player instanceof Player p)) {
+                return;
+            }
+            EvenMoreFish.getInstance().performFishToggle(p);
+            // TODO look into possible performance issues.
+            resetGui();
+            open();
+        });
+        actions.put("open-shop", event -> {
+            if (!(player instanceof Player p)) {
+                player.sendPlainMessage("You are not a player?");
+                return;
+            }
+            doRescue();
+            new SellGui(p, SellGui.SellState.NORMAL, null).open();
+        });
+        actions.put("show-command-help", event -> {
+            doRescue();
+            player.closeInventory();
+            MainCommand.HELP_MESSAGE.sendMessage(player);
+        });
+        actions.put("open-journal-menu", event -> {
+            doRescue();
+            if (!DatabaseUtil.isDatabaseOnline()) {
+                ConfigMessage.JOURNAL_DISABLED.getMessage().send(player);
+                player.closeInventory();
+                return;
+            }
+            new FishJournalGui(player, null).open();
+        });
     }
 
 }

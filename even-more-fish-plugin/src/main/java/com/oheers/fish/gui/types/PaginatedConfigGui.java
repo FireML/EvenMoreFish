@@ -11,6 +11,8 @@ public class PaginatedConfigGui extends BaseConfigGui<PaginatedGui> {
 
     public PaginatedConfigGui(@NotNull HumanEntity player, @NotNull Section config) {
         super(player, config);
+        actions.put("next-page", event -> getGui().next());
+        actions.put("previous-page", event -> getGui().previous());
     }
 
     @Override
@@ -22,5 +24,8 @@ public class PaginatedConfigGui extends BaseConfigGui<PaginatedGui> {
             .rows(getRows())
             .create();
     }
+
+    @Override
+    public void doRescue() {}
 
 }
