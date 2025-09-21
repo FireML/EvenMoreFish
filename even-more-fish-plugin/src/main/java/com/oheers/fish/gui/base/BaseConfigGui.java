@@ -106,25 +106,22 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         });
         actions.put("open-main-menu", event -> {
             doRescue();
-            new MainMenuGui(player).open();
+            try {
+                new MainMenuGui(player).open();
+            } catch (InvalidGuiException exception) {
+                ConfigMessage.INVALID_GUI.getMessage().send(player);
+                player.closeInventory();
+            }
         });
         actions.put("fish-toggle", event -> {
-            if (!(player instanceof Player p)) {
-                player.sendPlainMessage("You are not a player?");
-                return;
-            }
-            EvenMoreFish.getInstance().performFishToggle(p);
+            EvenMoreFish.getInstance().performFishToggle(player);
             // TODO look into possible performance issues.
             resetGui();
             open();
         });
         actions.put("open-shop", event -> {
-            if (!(player instanceof Player p)) {
-                player.sendPlainMessage("You are not a player?");
-                return;
-            }
             doRescue();
-            new SellGui(p, SellGui.SellState.NORMAL, null).open();
+            new SellGui(player, SellGui.SellState.NORMAL, null).open();
         });
         actions.put("show-command-help", event -> {
             doRescue();
@@ -138,11 +135,21 @@ public abstract class BaseConfigGui<T extends BaseGui> {
                 player.closeInventory();
                 return;
             }
-            new FishJournalGui(player, null).open();
+            try {
+                new FishJournalGui(player, null).open();
+            } catch (InvalidGuiException exception) {
+                ConfigMessage.INVALID_GUI.getMessage().send(player);
+                player.closeInventory();
+            }
         });
         actions.put("open-baits-menu", event -> {
             doRescue();
-            new BaitsGui(player).open();
+            try {
+                new BaitsGui(player).open();
+            } catch (InvalidGuiException exception) {
+                ConfigMessage.INVALID_GUI.getMessage().send(player);
+                player.closeInventory();
+            }
         });
     }
 
