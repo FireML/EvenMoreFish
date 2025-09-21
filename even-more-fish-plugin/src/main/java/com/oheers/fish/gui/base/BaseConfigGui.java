@@ -48,6 +48,11 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         ItemLoader.getInstance().load(this);
     }
 
+    public void init(@NotNull Consumer<T> initLogic) {
+        init();
+        initLogic.accept(gui);
+    }
+
     public abstract T createGui();
 
     public @NotNull T getGui() {
