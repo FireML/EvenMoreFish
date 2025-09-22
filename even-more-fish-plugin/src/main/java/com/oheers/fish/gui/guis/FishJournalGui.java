@@ -11,6 +11,7 @@ import com.oheers.fish.database.model.user.UserFishStats;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.types.PaginatedConfigGui;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.messages.EMFListMessage;
@@ -135,7 +136,7 @@ public class FishJournalGui extends PaginatedConfigGui {
             .map(rarity -> {
                 ItemStack item = getRarityItem(rarity, section);
                 return new GuiItem(item, event -> {
-                    new FishJournalGui(player, rarity).open();
+                    GuiManager.getInstance().openJournalMenu(player, rarity);
                 });
             })
             .toArray(GuiItem[]::new);
