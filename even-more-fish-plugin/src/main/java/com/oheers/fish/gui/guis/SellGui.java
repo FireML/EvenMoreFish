@@ -2,6 +2,7 @@ package com.oheers.fish.gui.guis;
 
 import com.oheers.fish.config.GuiConfig;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.types.DepositConfigGui;
 import com.oheers.fish.selling.SellHelper;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -58,7 +59,7 @@ public class SellGui extends DepositConfigGui {
 
     private void addActions() {
         actions.put("sell-inventory", event -> {
-            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
+            GuiManager.getInstance().openSellMenu(player, SellState.CONFIRM, getGui().getInventory());
         });
         actions.put("sell-inventory-confirm", event -> {
             new SellHelper(player.getInventory(), player).sellFish();
@@ -66,7 +67,7 @@ public class SellGui extends DepositConfigGui {
             player.closeInventory();
         });
         actions.put("sell-shop", event -> {
-            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
+            GuiManager.getInstance().openSellMenu(player, SellState.CONFIRM, getGui().getInventory());
         });
         actions.put("sell-shop-confirm", event -> {
             new SellHelper(getGui().getInventory(), player).sellFish();

@@ -9,6 +9,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.guis.ApplyBaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
 import com.oheers.fish.gui.guis.MainMenuGui;
@@ -56,7 +57,7 @@ public class MainCommand {
                     if (!info.sender().hasPermission(UserPerms.GUI) || MainConfig.getInstance().useOldBaseCommandBehavior()) {
                         sendHelpMessage(info.sender());
                     } else {
-                        new MainMenuGui(info.sender()).open();
+                        GuiManager.getInstance().openMainMenu(info.sender());
                     }
                 })
                 .executes(info -> {
@@ -105,7 +106,7 @@ public class MainCommand {
         return new CommandAPICommand(name)
             .withPermission(UserPerms.GUI)
             .executesPlayer(info -> {
-                new MainMenuGui(info.sender()).open();
+                GuiManager.getInstance().openMainMenu(info.sender());
             });
     }
 
@@ -164,14 +165,14 @@ public class MainCommand {
                     return;
                 }
                 if (sender == player) {
-                    new SellGui(player, SellGui.SellState.NORMAL, null).open();
+                    GuiManager.getInstance().openSellMenu(player);
                     return;
                 }
                 if (!sender.hasPermission(AdminPerms.ADMIN)) {
                     ConfigMessage.NO_PERMISSION.getMessage().send(sender);
                     return;
                 }
-                new SellGui(player, SellGui.SellState.NORMAL, null).open();
+                GuiManager.getInstance().openSellMenu(player);
                 EMFMessage message = ConfigMessage.ADMIN_OPEN_FISH_SHOP.getMessage();
                 message.setPlayer(player);
                 message.send(sender);
@@ -208,7 +209,7 @@ public class MainCommand {
                     ConfigMessage.BAIT_INVALID_ROD.getMessage().send(player);
                     return;
                 }
-                new ApplyBaitsGui(player).open();
+                GuiManager.getInstance().openApplyBaitsMenu(player);
             });
     }
 
@@ -229,7 +230,7 @@ public class MainCommand {
                     return;
                 }
                 Rarity rarity = info.args().getUnchecked("rarity"); // This is allowed to be null.
-                new FishJournalGui(info.sender(), rarity).open();
+                GuiManager.getInstance().openJournalMenu(info.sender(), rarity);
             });
     }
 

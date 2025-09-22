@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.commands.MainCommand;
 import com.oheers.fish.database.DatabaseUtil;
+import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.guis.BaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
 import com.oheers.fish.gui.guis.MainMenuGui;
@@ -106,7 +107,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         });
         actions.put("open-main-menu", event -> {
             doRescue();
-            new MainMenuGui(player).open();
+            GuiManager.getInstance().openMainMenu(player);
         });
         actions.put("fish-toggle", event -> {
             EvenMoreFish.getInstance().performFishToggle(player);
@@ -116,7 +117,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         });
         actions.put("open-shop", event -> {
             doRescue();
-            new SellGui(player, SellGui.SellState.NORMAL, null).open();
+            GuiManager.getInstance().openSellMenu(player);
         });
         actions.put("show-command-help", event -> {
             doRescue();
@@ -130,11 +131,11 @@ public abstract class BaseConfigGui<T extends BaseGui> {
                 player.closeInventory();
                 return;
             }
-            new FishJournalGui(player, null).open();
+            GuiManager.getInstance().openJournalMenu(player, null);
         });
         actions.put("open-baits-menu", event -> {
             doRescue();
-            new BaitsGui(player).open();
+            GuiManager.getInstance().openBaitsMenu(player);
         });
     }
 
