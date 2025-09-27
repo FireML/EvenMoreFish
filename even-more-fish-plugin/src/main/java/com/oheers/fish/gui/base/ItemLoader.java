@@ -40,7 +40,7 @@ public class ItemLoader {
             return;
         }
         GuiItem guiItem;
-        Section actionSection = itemSection.getSection("click-actions");
+        Section actionSection = itemSection.getSection("click-action");
         if (actionSection != null) {
             guiItem = new GuiItem(item, event -> {
                 Consumer<InventoryClickEvent> action = switch (event.getClick()) {
