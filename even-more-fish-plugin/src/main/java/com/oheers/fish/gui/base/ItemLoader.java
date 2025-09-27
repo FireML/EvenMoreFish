@@ -62,8 +62,8 @@ public class ItemLoader {
         // Put the item in all of its configured locations
         itemSection.getStringList("locations").forEach(location -> {
             String[] splitLocation = location.split(",", 2);
-            String columnStr = FishUtils.getOrDefault(splitLocation, 0, null);
-            String rowStr = FishUtils.getOrDefault(splitLocation, 1, null);
+            String rowStr = FishUtils.getOrDefault(splitLocation, 0, null);
+            String columnStr = FishUtils.getOrDefault(splitLocation, 1, null);
             int column = FishUtils.getIntOrDefault(columnStr, -1);
             int row = FishUtils.getIntOrDefault(rowStr, -1);
             try {

@@ -18,13 +18,13 @@ public class GuiConfig {
 
     public GuiConfig() {
         instance = this;
-        applyBaits = new ConfigBase("gui/apply-baits.yml", "gui/apply-baits.yml", EvenMoreFish.getInstance(), false);
-        baits = new ConfigBase("gui/baits.yml", "gui/baits.yml", EvenMoreFish.getInstance(), false);
-        journalMain = new ConfigBase("gui/journal-main.yml", "gui/journal-main.yml", EvenMoreFish.getInstance(), false);
-        journalRarity = new ConfigBase("gui/journal-rarity.yml", "gui/journal-rarity.yml", EvenMoreFish.getInstance(), false);
-        mainMenu = new ConfigBase("gui/main-menu.yml", "gui/main-menu.yml", EvenMoreFish.getInstance(), false);
-        sellNormal = new ConfigBase("gui/sell-normal.yml", "gui/sell-normal.yml", EvenMoreFish.getInstance(), false);
-        sellConfirm = new ConfigBase("gui/sell-confirm.yml", "gui/sell-confirm.yml", EvenMoreFish.getInstance(), false);
+        applyBaits = new ConfigBase("guis/apply-baits.yml", "guis/apply-baits.yml", EvenMoreFish.getInstance(), false);
+        baits = new ConfigBase("guis/baits.yml", "guis/baits.yml", EvenMoreFish.getInstance(), false);
+        journalMain = new ConfigBase("guis/journal-main.yml", "guis/journal-main.yml", EvenMoreFish.getInstance(), false);
+        journalRarity = new ConfigBase("guis/journal-rarity.yml", "guis/journal-rarity.yml", EvenMoreFish.getInstance(), false);
+        mainMenu = new ConfigBase("guis/main-menu.yml", "guis/main-menu.yml", EvenMoreFish.getInstance(), false);
+        sellNormal = new ConfigBase("guis/sell-normal.yml", "guis/sell-normal.yml", EvenMoreFish.getInstance(), false);
+        sellConfirm = new ConfigBase("guis/sell-confirm.yml", "guis/sell-confirm.yml", EvenMoreFish.getInstance(), false);
     }
 
     public static @NotNull GuiConfig getInstance() {

@@ -19,6 +19,8 @@ import com.oheers.fish.events.McMMOTreasureEvent;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.fishing.rods.RodManager;
+import com.oheers.fish.gui.config.GuiConfig;
+import com.oheers.fish.gui.config.GuiConversions;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.plugin.ConfigurationManager;
 import com.oheers.fish.plugin.DependencyManager;
@@ -108,6 +110,8 @@ public class EvenMoreFish extends EMFPlugin {
 
     @Override
     public void onEnable() {
+        new GuiConversions().performCheck();
+
         CommandAPI.onEnable();
 
         scheduler = UniversalScheduler.getScheduler(this);
