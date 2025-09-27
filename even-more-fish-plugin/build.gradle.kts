@@ -105,7 +105,6 @@ dependencies {
     implementation(libs.commandapi)
     implementation(libs.inventorygui)
     implementation(libs.triumphgui)
-    implementation(libs.boostedyaml)
     implementation(libs.vanishchecker)
     implementation(libs.messagelib)
     implementation(libs.universalscheduler)
@@ -128,6 +127,9 @@ dependencies {
     library(libs.maven.artifact)
     library(libs.annotations)
     library(libs.guava)
+
+    compileOnlyApi(libs.boostedyaml)
+    library(libs.boostedyaml)
 
     jooqGenerator(project(":even-more-fish-database-extras"))
     jooqGenerator(libs.jooq.meta.extensions)
@@ -344,7 +346,6 @@ tasks {
         relocate("dev.triumphteam.gui", "com.oheers.fish.libs.triumphgui")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
         relocate("uk.firedev.messagelib", "com.oheers.fish.libs.messagelib")
-        relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
         relocate("dev.jorel.commandapi", "com.oheers.fish.libs.commandapi")
         relocate("org.jooq", "com.oheers.fish.libs.jooq")
         relocate("com.zaxxer", "com.oheers.fish.libs.hikaricp")
