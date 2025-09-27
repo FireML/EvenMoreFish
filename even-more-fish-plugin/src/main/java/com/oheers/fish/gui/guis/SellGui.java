@@ -1,11 +1,10 @@
 package com.oheers.fish.gui.guis;
 
-import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.gui.SellState;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.types.DepositConfigGui;
 import com.oheers.fish.selling.SellHelper;
-import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -22,7 +21,7 @@ public class SellGui extends DepositConfigGui {
     public SellGui(@NotNull Player player, @NotNull SellState sellState, @Nullable Inventory fishInventory) {
         super(
             player,
-            sellState.getGuiConfig()
+            sellState.getGuiConfig().getConfig()
         );
         addActions();
 
@@ -39,21 +38,6 @@ public class SellGui extends DepositConfigGui {
                 .filter(Objects::nonNull)
                 .toArray(ItemStack[]::new);
             gui.getInventory().addItem(add);
-        }
-    }
-
-    public enum SellState {
-        NORMAL("sell-menu-normal"),
-        CONFIRM("sell-menu-confirm");
-
-        private final String configLocation;
-
-        SellState(@NotNull String configLocation) {
-            this.configLocation = configLocation;
-        }
-
-        public Section getGuiConfig() {
-            return GuiConfig.getInstance().getConfig().getSection(configLocation);
         }
     }
 

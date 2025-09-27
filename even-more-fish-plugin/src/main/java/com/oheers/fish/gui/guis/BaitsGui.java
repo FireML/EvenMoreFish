@@ -1,7 +1,7 @@
 package com.oheers.fish.gui.guis;
 
 import com.oheers.fish.baits.manager.BaitManager;
-import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.gui.config.GuiConfig;
 import com.oheers.fish.gui.types.PaginatedConfigGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ public class BaitsGui extends PaginatedConfigGui {
     public BaitsGui(@NotNull Player player) {
         super(
             player,
-            GuiConfig.getInstance().getConfig().getSection("baits-menu")
+            GuiConfig.getInstance().getBaits().getConfig()
         );
 
         init(gui -> gui.addItem(getGuiItems()));

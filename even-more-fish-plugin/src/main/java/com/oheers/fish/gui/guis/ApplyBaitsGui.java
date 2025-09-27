@@ -6,9 +6,10 @@ import com.oheers.fish.baits.BaitHandler;
 import com.oheers.fish.baits.manager.BaitManager;
 import com.oheers.fish.baits.manager.BaitNBTManager;
 import com.oheers.fish.baits.model.ApplicationResult;
-import com.oheers.fish.config.GuiConfig;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import com.oheers.fish.gui.GuiManager;
+import com.oheers.fish.gui.config.GuiConfig;
 import com.oheers.fish.gui.types.DepositConfigGui;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
@@ -25,7 +26,7 @@ public class ApplyBaitsGui extends DepositConfigGui {
     public ApplyBaitsGui(@NotNull Player player) {
         super(
             player,
-            GuiConfig.getInstance().getConfig().getSection("apply-baits-menu")
+            GuiConfig.getInstance().getApplyBaits().getConfig()
         );
 
         init();

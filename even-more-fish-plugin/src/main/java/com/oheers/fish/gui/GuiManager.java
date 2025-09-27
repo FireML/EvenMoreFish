@@ -1,7 +1,6 @@
 package com.oheers.fish.gui;
 
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.fishing.items.config.RarityConversions;
 import com.oheers.fish.gui.guis.ApplyBaitsGui;
 import com.oheers.fish.gui.guis.BaitsGui;
 import com.oheers.fish.gui.guis.FishJournalGui;
@@ -41,14 +40,14 @@ public class GuiManager {
     }
 
     public void openSellMenu(@NotNull Player player) {
-        new SellGui(player, SellGui.SellState.NORMAL, null).open();
+        new SellGui(player, SellState.NORMAL, null).open();
     }
 
-    public void openSellMenu(@NotNull Player player, @NotNull SellGui.SellState state) {
+    public void openSellMenu(@NotNull Player player, @NotNull SellState state) {
         new SellGui(player, state, null).open();
     }
 
-    public void openSellMenu(@NotNull Player player, @NotNull SellGui.SellState state, @Nullable Inventory inventory) {
+    public void openSellMenu(@NotNull Player player, @NotNull SellState state, @Nullable Inventory inventory) {
         new SellGui(player, state, inventory).open();
     }
 

@@ -1,8 +1,8 @@
 package com.oheers.fish.gui.base;
 
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.Logging;
 import com.oheers.fish.items.ItemFactory;
-import com.oheers.fish.utils.Logging;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.components.exception.GuiException;
 import dev.triumphteam.gui.guis.GuiItem;

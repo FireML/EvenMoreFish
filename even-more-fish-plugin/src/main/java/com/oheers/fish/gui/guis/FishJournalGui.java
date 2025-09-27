@@ -2,7 +2,7 @@ package com.oheers.fish.gui.guis;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.data.FishRarityKey;
 import com.oheers.fish.database.data.UserFishRarityKey;
@@ -12,6 +12,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.GuiManager;
+import com.oheers.fish.gui.config.GuiConfig;
 import com.oheers.fish.gui.types.PaginatedConfigGui;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.messages.EMFListMessage;
@@ -38,13 +39,18 @@ public class FishJournalGui extends PaginatedConfigGui {
     public FishJournalGui(@NotNull Player player, @Nullable Rarity rarity) {
         super(
             player,
-            GuiConfig.getInstance().getConfig().getSection(
-                rarity == null ? "journal-menu" : "journal-rarity"
-            )
+            getFile(rarity).getConfig()
         );
         this.rarity = rarity;
 
         init(gui -> gui.addItem(getGuiItems(getConfig())));
+    }
+
+    private static ConfigBase getFile(@Nullable Rarity rarity) {
+        if (rarity == null) {
+            return GuiConfig.getInstance().getJournalMain();
+        }
+        return GuiConfig.getInstance().getJournalRarity();
     }
 
     private GuiItem[] getGuiItems(Section config) {
