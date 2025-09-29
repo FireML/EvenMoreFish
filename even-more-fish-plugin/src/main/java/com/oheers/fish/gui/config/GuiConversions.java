@@ -98,7 +98,7 @@ public class GuiConversions {
         updateFillerFormat(config);
 
         for (String sectionName : config.getRoutesAsStrings(false)) {
-            if (config.get(sectionName + ".item") == null) {
+            if (config.get(sectionName + ".item") == null || config.get(sectionName + ".character") == null) {
                 continue;
             }
             config.move(sectionName, "items." + sectionName);
