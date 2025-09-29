@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 // TODO map filler and general items to the correct areas, and convert the filler key to the new section.
 public class GuiConversions {
@@ -47,20 +48,37 @@ public class GuiConversions {
             return;
         }
 
-        handleSection(gui, "main-menu", "guis/main-menu.yml");
-        handleSection(gui, "sell-menu-normal", "guis/sell-normal.yml");
-        handleSection(gui, "sell-menu-confirm", "guis/sell-confirm.yml");
-        handleSection(gui, "baits-menu", "guis/baits.yml");
-        handleSection(gui, "apply-baits-menu", "guis/apply-baits.yml");
-        handleSection(gui, "journal-menu", "guis/journal-main.yml");
-        handleSection(gui, "journal-rarity", "guis/journal-rarity.yml");
+        handleSection("main-menu", "guis/main-menu.yml");
+        handleSection("sell-menu-normal", "guis/sell-normal.yml", section -> {
+            section.remove("deposit-character");
+        });
+        handleSection("sell-menu-confirm", "guis/sell-confirm.yml", section -> {
+            section.remove("deposit-character");
+        });
+        handleSection("baits-menu", "guis/baits.yml", section -> {
+            section.remove("bait-character");
+        });
+        handleSection("apply-baits-menu", "guis/apply-baits.yml", section -> {
+            section.remove("bait-character");
+        });
+        handleSection("journal-menu", "guis/journal-main.yml", section -> {
+            section.remove("rarity-character");
+        });
+        handleSection("journal-rarity", "guis/journal-rarity.yml", section -> {
+            section.remove("fish-character");
+        });
 
         finalizeConversion();
     }
 
-    private void handleSection(@NotNull ConfigBase guiYml, @NotNull String sectionName, @NotNull String fileName) {
-        Section section = guiYml.getConfig().getSection(sectionName);
+    private void handleSection(@NotNull String sectionName, @NotNull String fileName) {
+        handleSection(sectionName, fileName, section -> {});
+    }
+
+    private void handleSection(@NotNull String sectionName, @NotNull String fileName, @NotNull Consumer<Section> initialChanges) {
+        Section section = gui.getConfig().getSection(sectionName);
         if (section != null) {
+            initialChanges.accept(section);
             Map<Character, List<String>> mappedChars = mapCharacterToSlots(section.getStringList("layout"));
             section.remove("layout");
             ConfigBase base = resolveConfigBase(fileName);
