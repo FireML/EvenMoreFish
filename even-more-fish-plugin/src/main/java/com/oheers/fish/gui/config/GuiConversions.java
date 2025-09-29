@@ -95,6 +95,8 @@ public class GuiConversions {
         config.setAll(generalSection.getRouteMappedValues(true));
         config.setAll(section.getRouteMappedValues(true));
 
+        updateFillerFormat(config);
+
         for (String sectionName : config.getRoutesAsStrings(false)) {
             if (config.get(sectionName + ".item") == null) {
                 continue;
@@ -121,6 +123,17 @@ public class GuiConversions {
             return;
         }
         itemSection.set("locations", locations);
+    }
+
+    private void updateFillerFormat(@NotNull Section section) {
+        String material = section.getString("filler");
+        if (material == null) {
+            return;
+        }
+        section.remove("filler");
+        Section fillerSection = section.createSection("filler");
+        fillerSection.set("material", material);
+        fillerSection.set("type", "ALL");
     }
 
     // This could maybe be optimized? But it does work as intended, so I cannot complain.
