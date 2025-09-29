@@ -4,6 +4,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.Logging;
 import com.oheers.fish.gui.FillerType;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.triumphteam.gui.components.exception.GuiException;
 import dev.triumphteam.gui.components.util.GuiFiller;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -27,6 +28,29 @@ public class FillerLoader {
             return;
         }
 
+        // Prepare the filler item
+        ItemStack fillerItem = FishUtils.getItem(fillerSection.getString("material"));
+        if (fillerItem == null || fillerItem.isEmpty()) {
+            return;
+        }
+        fillerItem.editMeta(meta -> meta.displayName(Component.empty()));
+
+        GuiItem item = new GuiItem(fillerItem);
+
+        // Put in pre-configured locations (these ignore FillerType so we can do it before)
+        fillerSection.getStringList("locations").forEach(location -> {
+            String[] splitLocation = location.split(",", 2);
+            String rowStr = FishUtils.getOrDefault(splitLocation, 0, null);
+            String columnStr = FishUtils.getOrDefault(splitLocation, 1, null);
+            int column = FishUtils.getIntOrDefault(columnStr, -1);
+            int row = FishUtils.getIntOrDefault(rowStr, -1);
+            try {
+                gui.getGui().setItem(row, column, item);
+            } catch (GuiException exception) {
+                Logging.error("Invalid location provided in GUI filler config: " + location + ". Skipping...");
+            }
+        });
+
         // Prepare Enum
         FillerType fillerType = FishUtils.getEnumValue(
             FillerType.class,
@@ -36,15 +60,7 @@ public class FillerLoader {
             return;
         }
 
-        // Prepare the filler item
-        ItemStack fillerItem = FishUtils.getItem(fillerSection.getString("material"));
-        if (fillerItem == null || fillerItem.isEmpty()) {
-            return;
-        }
-        fillerItem.editMeta(meta -> meta.displayName(Component.empty()));
-
         // Handle filler
-        GuiItem item = new GuiItem(fillerItem);
         BaseGui underlying = gui.getGui();
         GuiFiller filler = underlying.getFiller();
 
@@ -60,11 +76,9 @@ public class FillerLoader {
             case SIDE -> {
                 GuiFiller.Side side = FishUtils.getEnumValue(
                     GuiFiller.Side.class,
-                    fillerSection.getString("side")
+                    fillerSection.getString("side"),
+                    GuiFiller.Side.BOTH
                 );
-                if (side == null) {
-                    return;
-                }
                 filler.fillSide(side, List.of(item));
             }
             case BETWEEN -> {
