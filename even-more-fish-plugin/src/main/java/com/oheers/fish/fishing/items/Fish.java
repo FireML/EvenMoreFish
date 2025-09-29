@@ -335,7 +335,7 @@ public class Fish implements IFish {
 
         List<String> fishLore = factory.getLore().getConfiguredValue();
         EMFListMessage fishLoreReplacement = fishLore.isEmpty() ? EMFListMessage.empty() : EMFListMessage.fromStringList(fishLore);
-        newLoreLine.setVariable("{fish_lore}", fishLoreReplacement);
+        newLoreLine.setVariableWithListInsertion("{fish_lore}", fishLoreReplacement);
 
         if (!disableFisherman && fishermanPlayer != null) {
             EMFMessage message = ConfigMessage.FISHERMAN_LORE.getMessage();

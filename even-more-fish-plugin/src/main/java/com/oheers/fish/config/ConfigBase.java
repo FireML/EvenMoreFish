@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.EvenMoreFish;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.settings.Settings;
@@ -9,6 +10,7 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +58,7 @@ public class ConfigBase {
         this.preventIO = true;
         this.fileName = null;
         this.resourceName = null;
-        this.plugin = null;
+        this.plugin = EvenMoreFish.getInstance();
         this.configUpdater = false;
 
         try {
@@ -100,13 +102,13 @@ public class ConfigBase {
         return this.config;
     }
 
-    public final File getFile() { return this.file; }
+    public final @Nullable File getFile() { return this.file; }
 
-    public final Plugin getPlugin() { return this.plugin; }
+    public final @NotNull Plugin getPlugin() { return this.plugin; }
 
-    public final String getFileName() { return this.fileName; }
+    public final @Nullable String getFileName() { return this.fileName; }
 
-    public final String getResourceName() { return this.resourceName; }
+    public final @Nullable String getResourceName() { return this.resourceName; }
 
     public Settings[] getSettings() {
         List<Settings> settingsList = new ArrayList<>(Arrays.asList(

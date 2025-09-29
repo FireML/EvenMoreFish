@@ -54,8 +54,8 @@ public class BaitItemFactory {
      */
     private @NotNull List<Component> createBoostLore(ItemFactory factory) {
         final EMFListMessage lore = getBaseLoreTemplate();
-        lore.setVariable("{boosts}", createBoostsVariable());
-        lore.setVariable("{lore}", createItemLoreVariable(factory).get());
+        lore.setVariableWithListInsertion("{boosts}", createBoostsVariable());
+        lore.setVariableWithListInsertion("{lore}", createItemLoreVariable(factory).get());
         lore.setVariable("{bait_theme}", Component.empty());
 
         return lore.getComponentListMessage();

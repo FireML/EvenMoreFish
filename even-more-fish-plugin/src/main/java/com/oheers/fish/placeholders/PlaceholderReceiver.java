@@ -169,7 +169,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
 
         ConfigMessage message = COMPETITION_TYPE_MESSAGES.get(activeComp.getCompetitionType());
-        return message != null ? message.getMessage().getLegacyMessage() : "";
+        if (message == null) {
+            return "";
+        }
+
+        EMFMessage typeFormat = activeComp.getCompetitionType().getStrategy().getTypeFormat(activeComp, message);
+        return typeFormat.getLegacyMessage();
     }
 
     private String handleCompetitionType(Player player, String identifier) {
