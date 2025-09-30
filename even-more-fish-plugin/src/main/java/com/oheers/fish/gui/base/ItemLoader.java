@@ -3,12 +3,16 @@ package com.oheers.fish.gui.base;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.Logging;
 import com.oheers.fish.items.ItemFactory;
+import de.themoep.inventorygui.GuiElement;
+import de.themoep.inventorygui.StaticGuiElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.components.exception.GuiException;
 import dev.triumphteam.gui.guis.GuiItem;
+import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -40,6 +44,8 @@ public class ItemLoader {
             return;
         }
         GuiItem guiItem;
+
+        // We could possibly clean this up?
         Section actionSection = itemSection.getSection("click-action");
         if (actionSection != null) {
             guiItem = new GuiItem(item, event -> {
@@ -50,15 +56,25 @@ public class ItemLoader {
                     case DROP -> gui.actions.get(actionSection.getString("drop", ""));
                     default -> null;
                 };
-                if (action == null) {
-                    event.setCancelled(true);
-                    return;
+                if (action != null) {
+                    action.accept(event);
                 }
-                action.accept(event);
+                itemSection.getStringList("click-commands").forEach(command ->
+                    Bukkit.dispatchCommand(event.getWhoClicked(), command)
+                );
             });
         } else {
-            guiItem = new GuiItem(item, event -> event.setCancelled(true));
+            guiItem = new GuiItem(item, event -> {
+                Consumer<InventoryClickEvent> action = gui.actions.get(itemSection.getString("click-action", ""));
+                if (action != null) {
+                    action.accept(event);
+                }
+                itemSection.getStringList("click-commands").forEach(command ->
+                    Bukkit.dispatchCommand(event.getWhoClicked(), command)
+                );
+            });
         }
+
         // Put the item in all of its configured locations
         itemSection.getStringList("locations").forEach(location -> {
             String[] splitLocation = location.split(",", 2);
@@ -72,6 +88,14 @@ public class ItemLoader {
                 Logging.error("Invalid location provided in GUI config: " + location + ". Skipping...");
             }
         });
+    }
+
+    private void handleClickEvent(@NotNull InventoryClickEvent event, @Nullable Consumer<InventoryClickEvent> action) {
+        if (action == null) {
+            event.setCancelled(true);
+            return;
+        }
+        action.accept(event);
     }
 
 }
