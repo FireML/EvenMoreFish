@@ -7,6 +7,7 @@ import com.oheers.fish.config.ConfigUtils;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.Comments;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.route.Route;
 import dev.dejvokep.boostedyaml.utils.format.NodeRole;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,9 @@ public class GuiConversions {
     private final ConfigBase guiFiller = resolveConfigBase("gui-fillers.yml");
     private final Section generalSection;
 
+    private final Map<Route, Object> generalMapped;
+    private final Map<Route, Object> fillerMapped;
+
     public GuiConversions() {
         guiFiller.getConfig().remove("version");
         generalSection = ConfigUtils.getOrCreateSection(gui.getConfig(), "general");
@@ -40,6 +44,9 @@ public class GuiConversions {
         if (generalSection.contains("last-page")) {
             generalSection.set("last-page.character", "l");
         }
+
+        fillerMapped = guiFiller.getConfig().getRouteMappedValues(true);
+        generalMapped = generalSection.getRouteMappedValues(true);
     }
 
     public void performCheck() {
@@ -109,11 +116,12 @@ public class GuiConversions {
 
     private void mapSectionToFile(@NotNull Section section, @NotNull ConfigBase file, @NotNull Map<Character, List<String>> mappedChars) {
         YamlDocument config = file.getConfig();
-        config.setAll(guiFiller.getConfig().getRouteMappedValues(true));
-        config.setAll(generalSection.getRouteMappedValues(true));
+        config.setAll(fillerMapped);
+        config.setAll(generalMapped);
         config.setAll(section.getRouteMappedValues(true));
 
-        updateFillerFormat(config);
+        // Filler things
+        updateFillerFormat(config, mappedChars);
 
         for (String sectionName : config.getRoutesAsStrings(false)) {
             if (config.get(sectionName + ".item") == null || config.get(sectionName + ".character") == null) {
@@ -143,7 +151,7 @@ public class GuiConversions {
         itemSection.set("locations", locations);
     }
 
-    private void updateFillerFormat(@NotNull Section section) {
+    private void updateFillerFormat(@NotNull Section section, @NotNull Map<Character, List<String>> mappedChars) {
         String material = section.getString("filler");
         if (material == null) {
             return;
@@ -151,6 +159,8 @@ public class GuiConversions {
         section.remove("filler");
         Section fillerSection = section.createSection("filler");
         fillerSection.set("material", material);
+        // All previously empty slots had filler, reflect that here
+        fillerSection.set("locations", mappedChars.get(' '));
     }
 
     // This could maybe be optimized? But it does work as intended, so I cannot complain.
