@@ -22,14 +22,17 @@ import java.util.function.Consumer;
 public class GuiConversions {
 
     private final String guiYml = "guis.yml";
-    private final ConfigBase gui = resolveConfigBase(guiYml);
-    private final ConfigBase guiFiller = resolveConfigBase("gui-fillers.yml");
-    private final Section generalSection;
+    private ConfigBase gui;
+    private ConfigBase guiFiller;
+    private Section generalSection;
 
-    private final Map<Route, Object> generalMapped;
-    private final Map<Route, Object> fillerMapped;
+    private Map<Route, Object> generalMapped;
+    private Map<Route, Object> fillerMapped;
 
-    public GuiConversions() {
+    private void init() {
+        gui = resolveConfigBase(guiYml);
+        guiFiller = resolveConfigBase("gui-fillers.yml");
+
         guiFiller.getConfig().remove("version");
         generalSection = ConfigUtils.getOrCreateSection(gui.getConfig(), "general");
         if (generalSection.contains("first-page")) {
@@ -54,6 +57,8 @@ public class GuiConversions {
         if (!new File(EvenMoreFish.getInstance().getDataFolder(), this.guiYml).exists()) {
             return;
         }
+
+        init();
 
         handleSection("main-menu", "guis/main-menu.yml");
         handleSection("sell-menu-normal", "guis/sell-normal.yml", section -> {
