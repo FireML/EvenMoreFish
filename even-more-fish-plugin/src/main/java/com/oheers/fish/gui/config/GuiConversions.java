@@ -91,8 +91,10 @@ public class GuiConversions {
         Section section = gui.getConfig().getSection(sectionName);
         if (section != null) {
             initialChanges.accept(section);
-            Map<Character, List<String>> mappedChars = mapCharacterToSlots(section.getStringList("layout"));
+            List<String> layout = section.getStringList("layout");
+            Map<Character, List<String>> mappedChars = mapCharacterToSlots(layout);
             section.remove("layout");
+            section.set("rows", layout.size());
             ConfigBase base = resolveConfigBase(fileName);
             mapSectionToFile(section, base, mappedChars);
         }

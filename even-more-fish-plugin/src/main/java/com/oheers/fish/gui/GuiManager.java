@@ -47,8 +47,4 @@ public class GuiManager {
         new SellGui(player, state, null).open();
     }
 
-    public void openSellMenu(@NotNull Player player, @NotNull SellState state, @Nullable Inventory inventory) {
-        new SellGui(player, state, inventory).open();
-    }
-
 }
