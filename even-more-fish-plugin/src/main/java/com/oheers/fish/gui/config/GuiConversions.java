@@ -151,7 +151,6 @@ public class GuiConversions {
         section.remove("filler");
         Section fillerSection = section.createSection("filler");
         fillerSection.set("material", material);
-        fillerSection.set("type", "ALL");
     }
 
     // This could maybe be optimized? But it does work as intended, so I cannot complain.

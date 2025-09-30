@@ -2,7 +2,6 @@ package com.oheers.fish.gui.base;
 
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.Logging;
-import com.oheers.fish.gui.FillerType;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.components.exception.GuiException;
 import dev.triumphteam.gui.components.util.GuiFiller;
@@ -50,48 +49,6 @@ public class FillerLoader {
                 Logging.error("Invalid location provided in GUI filler config: " + location + ". Skipping...");
             }
         });
-
-        // Prepare Enum
-        FillerType fillerType = FishUtils.getEnumValue(
-            FillerType.class,
-            fillerSection.getString("type")
-        );
-        if (fillerType == null) {
-            return;
-        }
-
-        // Handle filler
-        BaseGui underlying = gui.getGui();
-        GuiFiller filler = underlying.getFiller();
-
-        switch (fillerType) {
-            case ALL -> {
-                if (underlying instanceof PaginatedGui) {
-                    Logging.warn("Paginated GUIs cannot use FillerType.ALL");
-                    return;
-                }
-                filler.fill(item);
-            }
-            case BORDER -> filler.fillBorder(item);
-            case SIDE -> {
-                GuiFiller.Side side = FishUtils.getEnumValue(
-                    GuiFiller.Side.class,
-                    fillerSection.getString("side"),
-                    GuiFiller.Side.BOTH
-                );
-                filler.fillSide(side, List.of(item));
-            }
-            case BETWEEN -> {
-                int rowFrom = fillerSection.getInt("between-points.rowFrom", -1);
-                int columnFrom = fillerSection.getInt("between-points.columnFrom", -1);
-                int rowTo = fillerSection.getInt("between-points.rowTo", -1);
-                int columnTo = fillerSection.getInt("between-points.columnTo", -1);
-                if (rowFrom == -1 || columnFrom == -1 || rowTo == -1 || columnTo == -1) {
-                    return;
-                }
-                filler.fillBetweenPoints(rowFrom, columnFrom, rowTo, columnTo, item);
-            }
-        }
     }
 
 }
