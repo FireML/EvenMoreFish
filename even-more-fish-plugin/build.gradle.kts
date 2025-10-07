@@ -25,7 +25,7 @@ description = "A fishing extension bringing an exciting new experience to fishin
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
@@ -317,6 +317,10 @@ tasks {
     }
 
     shadowJar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
+
         val buildNumberOrDate = getBuildNumberOrDate()
         manifest {
             val buildNumber: String? by project

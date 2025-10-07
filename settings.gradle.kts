@@ -12,7 +12,7 @@ include(":even-more-fish-plugin")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("paper-api", "io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+            library("paper-api", "io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
             library("bstats", "org.bstats:bstats-bukkit:3.1.0")
@@ -39,7 +39,7 @@ dependencyResolutionManagement {
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.18.4")
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.15.2")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.15.3-SNAPSHOT")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
             library("oraxen", "io.th0rgal:oraxen:1.193.2")
             library("nexo", "com.nexomc:nexo:1.10.0")
@@ -71,7 +71,7 @@ dependencyResolutionManagement {
 
             library("vanishchecker", "uk.firedev:VanishChecker:1.0.5")
 
-            library("commandapi", "dev.jorel:commandapi-bukkit-shade:10.1.2")
+            library("commandapi", "dev.jorel:commandapi-paper-shade:11.0.0")
             library("inventorygui", "de.themoep:inventorygui:1.6.4-SNAPSHOT")
 
             plugin("shadow", "com.gradleup.shadow").version("9.2.2")

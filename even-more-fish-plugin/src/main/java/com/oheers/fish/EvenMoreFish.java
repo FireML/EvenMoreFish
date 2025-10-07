@@ -32,6 +32,7 @@ import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPIPaperConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -101,8 +102,8 @@ public class EvenMoreFish extends EMFPlugin {
 
         instance = this;
 
-        CommandAPIBukkitConfig config = new CommandAPIBukkitConfig(this)
-                .shouldHookPaperReload(true)
+        @SuppressWarnings("UnstableApiUsage")
+        CommandAPIPaperConfig config = new CommandAPIPaperConfig(this)
                 .missingExecutorImplementationMessage("You are not able to use this command!");
         CommandAPI.onLoad(config);
     }

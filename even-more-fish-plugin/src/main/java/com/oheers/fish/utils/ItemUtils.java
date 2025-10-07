@@ -41,9 +41,7 @@ public class ItemUtils {
     }
 
     public static void glowify(@NotNull ItemStack item) {
-        // plops on the unbreaking 1 enchantment to make it glow
-        item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        item.editMeta(meta -> meta.addItemFlags(ItemFlag.HIDE_ENCHANTS));
+        item.editMeta(meta -> meta.setEnchantmentGlintOverride(true));
     }
 
     /**
