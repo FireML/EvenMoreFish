@@ -12,6 +12,13 @@ disabled: false
 # See valid types here: https://evenmorefish.github.io/EvenMoreFish/docs/features/competitions/types
 type: LARGEST_FISH
 
+# If the type is RANDOM, which types should it choose from?
+# See valid types here: https://evenmorefish.github.io/EvenMoreFish/docs/features/competitions/types
+random-selection:
+  - LARGEST_FISH
+  - MOST_FISH
+  - LARGEST_TOTAL
+
 # Added in EvenMoreFish 2.0.0. If this is enabled, players can fish in the water to compete in this competition.
 allow-fishing: true
 

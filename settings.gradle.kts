@@ -32,19 +32,19 @@ dependencyResolutionManagement {
             library("redprotect-spigot", "br.net.fabiozumbi12.RedProtect","RedProtect-Spigot-1.13").versionRef("redprotect")
             bundle("redprotect", listOf("redprotect-core", "redprotect-spigot"))
 
-            library("mcmmo", "com.gmail.nossr50.mcMMO:mcMMO:2.2.042")
+            library("mcmmo", "com.gmail.nossr50.mcMMO:mcMMO:2.2.043")
             library("aurelium-skills", "com.github.Archy-X:AureliumSkills:Beta1.2.8")
             library("aura-skills", "dev.aurelium:auraskills-api-bukkit:2.3.7")
             library("headdatabase-api", "com.arcaniax:HeadDatabase-API:1.3.2")
-            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.18.4")
+            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.18.5")
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.15.3-SNAPSHOT")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
-            library("oraxen", "io.th0rgal:oraxen:1.193.2")
+            library("oraxen", "io.th0rgal:oraxen:1.193.3")
             library("nexo", "com.nexomc:nexo:1.10.0")
 
-            version("craftengine", "0.0.63.8")
+            version("craftengine", "0.0.64.1")
             library("craftengine-core", "net.momirealms", "craft-engine-core").versionRef("craftengine")
             library("craftengine-bukkit", "net.momirealms", "craft-engine-bukkit").versionRef("craftengine")
             bundle("craftengine", listOf("craftengine-core", "craftengine-bukkit"))
@@ -82,7 +82,7 @@ dependencyResolutionManagement {
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.3.3")
 
-            version("jooq", "3.19.26")
+            version("jooq", "3.19.27")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
@@ -95,7 +95,7 @@ dependencyResolutionManagement {
             bundle("connectors", listOf("connectors-mysql", "connectors-sqlite"))
             library("maven-artifact", "org.apache.maven:maven-artifact:4.0.0-rc-4")
 
-            version("junit", "5.13.4")
+            version("junit", "5.14.0")
             library("junit-jupiter-api", "org.junit.jupiter","junit-jupiter-api").versionRef("junit")
             library("junit-jupiter-engine","org.junit.jupiter","junit-jupiter-engine").versionRef("junit")
 
