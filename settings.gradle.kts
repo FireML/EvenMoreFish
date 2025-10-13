@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             library("aurelium-skills", "com.github.Archy-X:AureliumSkills:Beta1.2.8")
             library("aura-skills", "dev.aurelium:auraskills-api-bukkit:2.3.7")
             library("headdatabase-api", "com.arcaniax:HeadDatabase-API:1.3.2")
-            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.18.5")
+            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.18.4")
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.15.3")
