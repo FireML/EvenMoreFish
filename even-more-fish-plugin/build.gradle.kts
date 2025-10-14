@@ -145,7 +145,7 @@ bukkit {
     version = project.version.toString()
     description = project.description.toString()
     website = "https://github.com/EvenMoreFish/EvenMoreFish"
-    apiVersion = "1.20"
+    apiVersion = "1.21"
     foliaSupported = true
 
     depend = listOf()

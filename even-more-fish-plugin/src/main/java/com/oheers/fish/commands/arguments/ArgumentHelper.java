@@ -3,6 +3,7 @@ package com.oheers.fish.commands.arguments;
 import dev.jorel.commandapi.SuggestionInfo;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Bukkit;
@@ -25,15 +26,21 @@ public class ArgumentHelper {
         );
     }
 
-    /**
-     * Creates a new EntitySelectorArgument.OnePlayer with only the player names suggested.
-     * We need to use this argument because the other two make Mojang API calls.
-     */
-    public static Argument<Player> getPlayerArgument(@NotNull String name) {
-        return new EntitySelectorArgument.OnePlayer(name)
-                .replaceSuggestions(getAsyncSuggestions(info ->
-                        Bukkit.getOnlinePlayers().stream().map(Player::getName).toArray(String[]::new)
-                ));
+    public static Argument<Player> getPlayerArgument(@NotNull String nodeName) {
+        return new CustomArgument<>(
+            new StringArgument(nodeName), info -> {
+            Player player = Bukkit.getPlayer(info.input());
+            if (player == null) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(
+                    new CustomArgument.MessageBuilder("Player is not online: ").appendArgInput()
+                );
+            }
+            return player;
+        }).includeSuggestions(
+            getAsyncSuggestions(info ->
+                Bukkit.getOnlinePlayers().stream().map(Player::getName).toArray(String[]::new)
+            )
+        );
     }
 
 }
