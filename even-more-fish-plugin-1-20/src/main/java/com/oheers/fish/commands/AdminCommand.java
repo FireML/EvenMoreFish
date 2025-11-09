@@ -52,24 +52,24 @@ public class AdminCommand {
 
     public AdminCommand(@NotNull String name) {
         this.command = new CommandAPICommand(name)
-                .withPermission(AdminPerms.ADMIN)
-                .executes(info -> {
-                    sendHelpMessage(info.sender());
-                })
-                .withSubcommands(
-                        getFish(),
-                        getList(),
-                        getCompetition(),
-                        getCustomRod(),
-                        getBait(),
-                        getClearBaits(),
-                        getReload(),
-                        getVersion(),
-                        getMigrate(),
-                        getRawItem(),
-                        getHelp(),
-                        new AdminDatabaseCommand()
-                );
+            .withPermission(AdminPerms.ADMIN)
+            .executes(info -> {
+                sendHelpMessage(info.sender());
+            })
+            .withSubcommands(
+                getFish(),
+                getList(),
+                getCompetition(),
+                getCustomRod(),
+                getBait(),
+                getClearBaits(),
+                getReload(),
+                getVersion(),
+                getMigrate(),
+                getRawItem(),
+                getHelp(),
+                new AdminDatabaseCommand()
+            );
     }
 
     public CommandAPICommand getCommand() {
@@ -82,111 +82,111 @@ public class AdminCommand {
 
     private CommandAPICommand getFish() {
         HELP_MESSAGE.addUsage(
-                "admin fish",
-                ConfigMessage.HELP_ADMIN_FISH::getMessage
+            "admin fish",
+            ConfigMessage.HELP_ADMIN_FISH::getMessage
         );
         return new CommandAPICommand("fish")
-                .withArguments(
-                        RarityArgument.create(),
-                        FishArgument.create(),
-                        new IntegerArgument("amount", 1).setOptional(true),
-                        new EntitySelectorArgument.ManyPlayers("targets").setOptional(true)
-                )
-                .executes((sender, arguments) -> {
-                    final Fish initialFish = arguments.getUnchecked("fish");
-                    if (initialFish == null) {
-                        return;
+            .withArguments(
+                RarityArgument.create(),
+                FishArgument.create(),
+                new IntegerArgument("amount", 1).setOptional(true),
+                new EntitySelectorArgument.ManyPlayers("targets").setOptional(true)
+            )
+            .executes((sender, arguments) -> {
+                final Fish initialFish = arguments.getUnchecked("fish");
+                if (initialFish == null) {
+                    return;
+                }
+                final int amount = (Integer) arguments.getOptional("amount").orElse(1);
+                final List<Player> targets = (List<Player>) arguments.getOptional("targets").orElseGet(() -> {
+                    if (sender instanceof Player player) {
+                        return List.of(player);
                     }
-                    final int amount = (Integer) arguments.getOptional("amount").orElse(1);
-                    final List<Player> targets = (List<Player>) arguments.getOptional("targets").orElseGet(() -> {
-                        if (sender instanceof Player player) {
-                            return List.of(player);
-                        }
-                        return null;
-                    });
-
-                    if (targets == null) {
-                        ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
-                        return;
-                    }
-
-                    for (Player target : targets) {
-                        Fish fish = initialFish.createCopy();
-                        fish.init();
-
-                        if (fish.hasFishRewards()) {
-                            fish.getFishRewards().forEach(reward -> reward.rewardPlayer(target, target.getLocation()));
-                        }
-
-                        fish.setFisherman(target.getUniqueId());
-
-                        final ItemStack fishItem = fish.give();
-                        fishItem.setAmount(amount);
-
-                        FishUtils.giveItem(fishItem, target);
-                    }
-
-                    EMFMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_FISH.getMessage();
-                    message.setVariable("{player}", CommandUtils.getPlayersVariable(targets));
-
-                    message.setFishCaught(initialFish.getName());
-                    message.send(sender);
+                    return null;
                 });
+
+                if (targets == null) {
+                    ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
+                    return;
+                }
+
+                for (Player target : targets) {
+                    Fish fish = initialFish.createCopy();
+                    fish.init();
+
+                    if (fish.hasFishRewards()) {
+                        fish.getFishRewards().forEach(reward -> reward.rewardPlayer(target, target.getLocation()));
+                    }
+
+                    fish.setFisherman(target.getUniqueId());
+
+                    final ItemStack fishItem = fish.give();
+                    fishItem.setAmount(amount);
+
+                    FishUtils.giveItem(fishItem, target);
+                }
+
+                EMFMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_FISH.getMessage();
+                message.setVariable("{player}", CommandUtils.getPlayersVariable(targets));
+
+                message.setFishCaught(initialFish.getName());
+                message.send(sender);
+            });
     }
 
     private CommandAPICommand getList() {
         return new CommandAPICommand("list")
-                .withArguments(
-                        new MultiLiteralArgument(
-                                "listTarget",
-                                "fish", "rarities", "requirementTypes", "rewardTypes", "itemAddons"
-                        ),
-                        RarityArgument.create().setOptional(true)
-                )
-                .executes((sender, args) -> {
-                    String listTarget = Objects.requireNonNull(args.getUnchecked("listTarget"));
-                    switch (listTarget) {
-                        case "fish" -> {
-                            final Rarity rarity = args.getUnchecked("rarity");
-                            if (rarity == null) {
-                                ConfigMessage.RARITY_INVALID.getMessage().send(sender);
-                                return;
-                            }
-                            TextComponent.Builder builder = Component.text();
-                            builder.append(rarity.getDisplayName().getComponentMessage());
-                            builder.append(Component.space());
-                            for (Fish fish : rarity.getOriginalFishList()) {
-                                TextComponent.Builder fishBuilder = Component.text();
-                                EMFSingleMessage message = EMFSingleMessage.fromString("<gray>[</gray>{fish}<gray>]</gray>");
-                                message.setVariable("{fish}", fish.getDisplayName());
-                                fishBuilder.append(message.getComponentMessage());
-                                fishBuilder.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to receive fish")));
-                                fishBuilder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getId() + " " + fish.getName().replace(" ", "_")));
-                                builder.append(fishBuilder);
-                            }
-                            sender.sendMessage(builder.build());
+            .withArguments(
+                new MultiLiteralArgument(
+                    "listTarget",
+                    "fish", "rarities", "requirementTypes", "rewardTypes", "itemAddons"
+                ),
+                RarityArgument.create().setOptional(true)
+            )
+            .executes((sender, args) -> {
+                String listTarget = Objects.requireNonNull(args.getUnchecked("listTarget"));
+                switch (listTarget) {
+                    case "fish" -> {
+                        final Rarity rarity = args.getUnchecked("rarity");
+                        if (rarity == null) {
+                            ConfigMessage.RARITY_INVALID.getMessage().send(sender);
+                            return;
                         }
-                        case "rarities" -> {
-                            TextComponent.Builder builder = Component.text();
-                            for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
-                                TextComponent.Builder rarityBuilder = Component.text();
-                                EMFSingleMessage message = EMFSingleMessage.fromString("<gray>[</gray>{rarity}<gray>]</gray>");
-                                message.setVariable("{rarity}", rarity.getDisplayName());
-                                rarityBuilder.append(message.getComponentMessage());
-                                rarityBuilder.hoverEvent(HoverEvent.hoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
-                                        EMFSingleMessage.fromString("Click to view " + rarity.getId() + " fish.").getComponentMessage()
-                                ));
-                                rarityBuilder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getId()));
-                                builder.append(rarityBuilder);
-                            }
-                            sender.sendMessage(builder.build());
+                        TextComponent.Builder builder = Component.text();
+                        builder.append(rarity.getDisplayName().getComponentMessage());
+                        builder.append(Component.space());
+                        for (Fish fish : rarity.getOriginalFishList()) {
+                            TextComponent.Builder fishBuilder = Component.text();
+                            EMFSingleMessage message = EMFSingleMessage.fromString("<gray>[</gray>{fish}<gray>]</gray>");
+                            message.setVariable("{fish}", fish.getDisplayName());
+                            fishBuilder.append(message.getComponentMessage());
+                            fishBuilder.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to receive fish")));
+                            fishBuilder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getId() + " " + fish.getName().replace(" ", "_")));
+                            builder.append(fishBuilder);
                         }
-                        case "requirementTypes" -> CommandUtils.listRequirementTypes(sender);
-                        case "rewardTypes" -> CommandUtils.listRewardTypes(sender);
-                        case "itemAddons" -> CommandUtils.listItemAddons(sender);
+                        sender.sendMessage(builder.build());
                     }
-                });
+                    case "rarities" -> {
+                        TextComponent.Builder builder = Component.text();
+                        for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
+                            TextComponent.Builder rarityBuilder = Component.text();
+                            EMFSingleMessage message = EMFSingleMessage.fromString("<gray>[</gray>{rarity}<gray>]</gray>");
+                            message.setVariable("{rarity}", rarity.getDisplayName());
+                            rarityBuilder.append(message.getComponentMessage());
+                            rarityBuilder.hoverEvent(HoverEvent.hoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                EMFSingleMessage.fromString("Click to view " + rarity.getId() + " fish.").getComponentMessage()
+                            ));
+                            rarityBuilder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getId()));
+                            builder.append(rarityBuilder);
+                        }
+                        sender.sendMessage(builder.build());
+                    }
+                    case "requirementTypes" -> CommandUtils.listRequirementTypes(sender);
+                    case "rewardTypes" -> CommandUtils.listRewardTypes(sender);
+                    case "itemAddons" -> CommandUtils.listItemAddons(sender);
+                }
+            });
     }
 
     private CommandAPICommand getCustomRod() {
@@ -228,148 +228,148 @@ public class AdminCommand {
 
     private CommandAPICommand getBait() {
         HELP_MESSAGE.addUsage(
-                "admin bait",
-                ConfigMessage.HELP_ADMIN_BAIT::getMessage
+            "admin bait",
+            ConfigMessage.HELP_ADMIN_BAIT::getMessage
         );
         return new CommandAPICommand("bait")
-                .withArguments(
-                        BaitArgument.create(),
-                        new IntegerArgument("quantity", 1).setOptional(true),
-                        new EntitySelectorArgument.ManyPlayers("targets").setOptional(true)
-                )
-                .executes((sender, args) -> {
-                    final BaitHandler bait = Objects.requireNonNull(args.getUnchecked("bait"));
-                    final int quantity = (int) args.getOptional("quantity").orElse(1);
-                    final List<Player> targets = (List<Player>) args.getOptional("targets").orElseGet(() -> {
-                        if (sender instanceof Player p) {
-                            return List.of(p);
-                        }
-                        return null;
-                    });
-
-                    if (targets == null) {
-                        ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
-                        return;
+            .withArguments(
+                BaitArgument.create(),
+                new IntegerArgument("quantity", 1).setOptional(true),
+                new EntitySelectorArgument.ManyPlayers("targets").setOptional(true)
+            )
+            .executes((sender, args) -> {
+                final BaitHandler bait = Objects.requireNonNull(args.getUnchecked("bait"));
+                final int quantity = (int) args.getOptional("quantity").orElse(1);
+                final List<Player> targets = (List<Player>) args.getOptional("targets").orElseGet(() -> {
+                    if (sender instanceof Player p) {
+                        return List.of(p);
                     }
-
-                    for (Player target : targets) {
-                        ItemStack baitItem = bait.create(target);
-                        baitItem.setAmount(quantity);
-                        FishUtils.giveItems(List.of(baitItem), target);
-                    }
-                    EMFMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_BAIT.getMessage();
-                    message.setVariable("{player}", CommandUtils.getPlayersVariable(targets));
-                    message.setBait(bait.getId());
-                    message.send(sender);
+                    return null;
                 });
+
+                if (targets == null) {
+                    ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
+                    return;
+                }
+
+                for (Player target : targets) {
+                    ItemStack baitItem = bait.create(target);
+                    baitItem.setAmount(quantity);
+                    FishUtils.giveItems(List.of(baitItem), target);
+                }
+                EMFMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_BAIT.getMessage();
+                message.setVariable("{player}", CommandUtils.getPlayersVariable(targets));
+                message.setBait(bait.getId());
+                message.send(sender);
+            });
     }
 
     private CommandAPICommand getClearBaits() {
         HELP_MESSAGE.addUsage(
-                "admin clearbaits",
-                ConfigMessage.HELP_ADMIN_CLEARBAITS::getMessage
+            "admin clearbaits",
+            ConfigMessage.HELP_ADMIN_CLEARBAITS::getMessage
         );
         return new CommandAPICommand("clearbaits")
-                .withArguments(
-                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
-                )
-                .executes(((sender, args) -> {
-                    final Player player = (Player) args.getOptional("target").orElseGet(() -> {
-                        if (sender instanceof Player p) {
-                            return p;
-                        }
-                        return null;
-                    });
-
-                    if (player == null) {
-                        ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
-                        return;
+            .withArguments(
+                ArgumentHelper.getPlayerArgument("target").setOptional(true)
+            )
+            .executes(((sender, args) -> {
+                final Player player = (Player) args.getOptional("target").orElseGet(() -> {
+                    if (sender instanceof Player p) {
+                        return p;
                     }
+                    return null;
+                });
 
-                    if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
-                        ConfigMessage.ADMIN_NOT_HOLDING_ROD.getMessage().send(player);
-                        return;
-                    }
+                if (player == null) {
+                    ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
+                    return;
+                }
 
-                    ItemStack fishingRod = player.getInventory().getItemInMainHand();
-                    if (!BaitNBTManager.isBaitedRod(fishingRod)) {
-                        ConfigMessage.NO_BAITS.getMessage().send(player);
-                        return;
-                    }
+                if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
+                    ConfigMessage.ADMIN_NOT_HOLDING_ROD.getMessage().send(player);
+                    return;
+                }
 
-                    int totalDeleted = BaitNBTManager.deleteAllBaits(fishingRod);
-                    if (totalDeleted > 0) {
-                        fishingRod.editMeta(meta -> meta.lore(BaitNBTManager.deleteOldLore(fishingRod)));
-                    }
+                ItemStack fishingRod = player.getInventory().getItemInMainHand();
+                if (!BaitNBTManager.isBaitedRod(fishingRod)) {
+                    ConfigMessage.NO_BAITS.getMessage().send(player);
+                    return;
+                }
 
-                    EMFMessage message = ConfigMessage.BAITS_CLEARED.getMessage();
-                    message.setAmount(Integer.toString(totalDeleted));
-                    message.send(player);
-                }));
+                int totalDeleted = BaitNBTManager.deleteAllBaits(fishingRod);
+                if (totalDeleted > 0) {
+                    fishingRod.editMeta(meta -> meta.lore(BaitNBTManager.deleteOldLore(fishingRod)));
+                }
+
+                EMFMessage message = ConfigMessage.BAITS_CLEARED.getMessage();
+                message.setAmount(Integer.toString(totalDeleted));
+                message.send(player);
+            }));
     }
 
     private CommandAPICommand getReload() {
         HELP_MESSAGE.addUsage(
-                "admin reload",
-                ConfigMessage.HELP_ADMIN_RELOAD::getMessage
+            "admin reload",
+            ConfigMessage.HELP_ADMIN_RELOAD::getMessage
         );
         return new CommandAPICommand("reload")
-                .executes(info -> {
-                    EvenMoreFish.getInstance().reload(info.sender());
-                });
+            .executes(info -> {
+                EvenMoreFish.getInstance().reload(info.sender());
+            });
     }
 
     @SuppressWarnings("UnstableApiUsage")
     private CommandAPICommand getVersion() {
         HELP_MESSAGE.addUsage(
-                "admin version",
-                ConfigMessage.HELP_ADMIN_VERSION::getMessage
+            "admin version",
+            ConfigMessage.HELP_ADMIN_VERSION::getMessage
         );
         return new CommandAPICommand("version")
-                .executes(info -> {
-                    int fishCount = FishManager.getInstance().getRarityMap().values().stream()
-                            .mapToInt(rarity -> rarity.getFishList().size())
-                            .sum();
+            .executes(info -> {
+                int fishCount = FishManager.getInstance().getRarityMap().values().stream()
+                    .mapToInt(rarity -> rarity.getFishList().size())
+                    .sum();
 
-                    String databaseEngine = "N/A";
-                    String databaseType = "N/A";
-                    final Database database = EvenMoreFish.getInstance().getPluginDataManager().getDatabase();
-                    if (database != null) {
-                        databaseEngine = database.getDatabaseVersion();
-                        databaseType = database.getType();
-                    }
+                String databaseEngine = "N/A";
+                String databaseType = "N/A";
+                final Database database = EvenMoreFish.getInstance().getPluginDataManager().getDatabase();
+                if (database != null) {
+                    databaseEngine = database.getDatabaseVersion();
+                    databaseType = database.getType();
+                }
 
-                    final String msgString =
-                            """
-                                {prefix} EvenMoreFish by Oheers {version}\s
-                                {prefix} Feature Branch: {branch}\s
-                                {prefix} Feature Build/Date: {build-date}\s
-                                {prefix} MCV: {mcv}\s
-                                {prefix} SSV: {ssv}\s
-                                {prefix} Online: {online}\s
-                                {prefix} Loaded Rarities({rarities}) Fish({fish}) Baits({baits}) Competitions({competitions})\s
-                                {prefix} Database Engine: {engine}\s
-                                {prefix} Database Type: {type}\s
-                                """;
+                final String msgString =
+                    """
+                        {prefix} EvenMoreFish by Oheers {version}\s
+                        {prefix} Feature Branch: {branch}\s
+                        {prefix} Feature Build/Date: {build-date}\s
+                        {prefix} MCV: {mcv}\s
+                        {prefix} SSV: {ssv}\s
+                        {prefix} Online: {online}\s
+                        {prefix} Loaded Rarities({rarities}) Fish({fish}) Baits({baits}) Competitions({competitions})\s
+                        {prefix} Database Engine: {engine}\s
+                        {prefix} Database Type: {type}\s
+                        """;
 
-                    EMFSingleMessage message = EMFSingleMessage.fromString(msgString);
+                EMFSingleMessage message = EMFSingleMessage.fromString(msgString);
 
-                    message.setVariable("{prefix}", PrefixType.DEFAULT.getPrefix());
-                    message.setVariable("{version}", EvenMoreFish.getInstance().getPluginMeta().getVersion());
-                    message.setVariable("{branch}", getFeatureBranchName());
-                    message.setVariable("{build-date}", getFeatureBranchBuildOrDate());
-                    message.setVariable("{mcv}", Bukkit.getServer().getVersion());
-                    message.setVariable("{ssv}", Bukkit.getServer().getBukkitVersion());
-                    message.setVariable("{online}", String.valueOf(Bukkit.getServer().getOnlineMode()));
-                    message.setVariable("{rarities}", String.valueOf(FishManager.getInstance().getRarityMap().size()));
-                    message.setVariable("{fish}", String.valueOf(fishCount));
-                    message.setVariable("{baits}", String.valueOf(BaitManager.getInstance().getItemMap().size()));
-                    message.setVariable("{competitions}", String.valueOf(EvenMoreFish.getInstance().getCompetitionQueue().getSize()));
-                    message.setVariable("{engine}", databaseEngine);
-                    message.setVariable("{type}", databaseType);
+                message.setVariable("{prefix}", PrefixType.DEFAULT.getPrefix());
+                message.setVariable("{version}", EvenMoreFish.getInstance().getPluginMeta().getVersion());
+                message.setVariable("{branch}", getFeatureBranchName());
+                message.setVariable("{build-date}", getFeatureBranchBuildOrDate());
+                message.setVariable("{mcv}", Bukkit.getServer().getVersion());
+                message.setVariable("{ssv}", Bukkit.getServer().getBukkitVersion());
+                message.setVariable("{online}", String.valueOf(Bukkit.getServer().getOnlineMode()));
+                message.setVariable("{rarities}", String.valueOf(FishManager.getInstance().getRarityMap().size()));
+                message.setVariable("{fish}", String.valueOf(fishCount));
+                message.setVariable("{baits}", String.valueOf(BaitManager.getInstance().getItemMap().size()));
+                message.setVariable("{competitions}", String.valueOf(EvenMoreFish.getInstance().getCompetitionQueue().getSize()));
+                message.setVariable("{engine}", databaseEngine);
+                message.setVariable("{type}", databaseType);
 
-                    message.send(info.sender());
-                });
+                message.send(info.sender());
+            });
     }
 
     private String getFeatureBranchName() {
@@ -382,134 +382,153 @@ public class AdminCommand {
 
     private CommandAPICommand getMigrate() {
         HELP_MESSAGE.addUsage(
-                "admin migrate",
-                ConfigMessage.HELP_ADMIN_MIGRATE::getMessage
+            "admin migrate",
+            ConfigMessage.HELP_ADMIN_MIGRATE::getMessage
         );
         return new CommandAPICommand("migrate")
-                .executes(info -> {
-                    if (!DatabaseUtil.isDatabaseOnline()) {
-                        EMFSingleMessage.fromString("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.")
-                                .send(info.sender());
-                        return;
-                    }
-                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getPluginDataManager().getDatabase().getMigrationManager().migrateLegacy(info.sender()));
-                });
+            .executes(info -> {
+                if (!DatabaseUtil.isDatabaseOnline()) {
+                    EMFSingleMessage.fromString("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.")
+                        .send(info.sender());
+                    return;
+                }
+                EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getPluginDataManager().getDatabase().getMigrationManager().migrateLegacy(info.sender()));
+            });
     }
 
     private CommandAPICommand getRawItem() {
         HELP_MESSAGE.addUsage(
-                "admin rawItem",
-                ConfigMessage.HELP_ADMIN_RAWITEM::getMessage
+            "admin rawItem",
+            ConfigMessage.HELP_ADMIN_RAWITEM::getMessage
         );
         return new CommandAPICommand("rawItem")
-                .executesPlayer(info -> {
-                    ItemStack handItem = info.sender().getInventory().getItemInMainHand();
-                    if (handItem.isEmpty()) {
-                        return;
-                    }
+            .executesPlayer(info -> {
+                ItemStack handItem = info.sender().getInventory().getItemInMainHand();
+                if (handItem.isEmpty()) {
+                    return;
+                }
 
-                    String handItemNbt = NBT.itemStackToNBT(handItem).toString();
+                String handItemNbt = NBT.itemStackToNBT(handItem).toString();
 
-                    // Ensure the handItemNbt is escaped for use in YAML
-                    // This could be slightly inefficient, but it is the only way I can currently think of.
-                    YamlDocument document = new ConfigBase().getConfig();
-                    document.set("rawItem", handItemNbt);
-                    handItemNbt = document.dump().replaceFirst("rawItem: ", "");
+                // Ensure the handItemNbt is escaped for use in YAML
+                // This could be slightly inefficient, but it is the only way I can currently think of.
+                YamlDocument document = new ConfigBase().getConfig();
+                document.set("rawItem", handItemNbt);
+                handItemNbt = document.dump().replaceFirst("rawItem: ", "");
 
-                    TextComponent.Builder builder = Component.text().content(handItemNbt);
-                    builder.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to copy to clipboard.")));
-                    builder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, handItemNbt));
-                    info.sender().sendMessage(builder.build());
-                });
+                TextComponent.Builder builder = Component.text().content(handItemNbt);
+                builder.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to copy to clipboard.")));
+                builder.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, handItemNbt));
+                info.sender().sendMessage(builder.build());
+            });
     }
 
     private CommandAPICommand getHelp() {
         HELP_MESSAGE.addUsage(
-                "admin help",
-                ConfigMessage.HELP_GENERAL_HELP::getMessage
+            "admin help",
+            ConfigMessage.HELP_GENERAL_HELP::getMessage
         );
         return new CommandAPICommand("help")
-                .executes(info -> {
-                    sendHelpMessage(info.sender());
-                });
+            .executes(info -> {
+                sendHelpMessage(info.sender());
+            });
     }
 
     // COMPETITION BRANCH
 
     private CommandAPICommand getCompetition() {
         HELP_MESSAGE.addUsage(
-                "admin competition",
-                ConfigMessage.HELP_ADMIN_COMPETITION::getMessage
+            "admin competition",
+            ConfigMessage.HELP_ADMIN_COMPETITION::getMessage
         );
         return new CommandAPICommand("competition")
-                .withSubcommands(
-                        getCompetitionStart(),
-                        getCompetitionEnd(),
-                        getCompetitionTest()
-                );
+            .withSubcommands(
+                getCompetitionStart(),
+                getCompetitionEnd(),
+                getCompetitionTest(),
+                getCompetitionExtend()
+            );
     }
 
     private CommandAPICommand getCompetitionStart() {
         return new CommandAPICommand("start")
-                .withArguments(
-                        // StringArgument containing all loaded competition ids
-                        ArgumentHelper.getAsyncStringsArgument(
-                                "competitionId",
-                                info -> EvenMoreFish.getInstance().getCompetitionQueue().getItemMap().keySet().toArray(String[]::new)
-                        ),
-                        new IntegerArgument("duration", 1).setOptional(true)
-                )
-                .executes((sender, arguments) -> {
-                    final String id = Objects.requireNonNull(arguments.getUnchecked("competitionId"));
-                    final Integer duration = arguments.getUnchecked("duration");
-                    if (Competition.isActive()) {
-                        ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
-                        return;
-                    }
-                    CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getItemMap().get(id);
-                    if (file == null) {
-                        ConfigMessage.INVALID_COMPETITION_ID.getMessage().send(sender);
-                        return;
-                    }
-                    Competition competition = new Competition(file);
-                    competition.setAdminStarted(true);
-                    if (duration != null) {
-                        competition.setMaxDuration(duration);
-                    }
-                    competition.begin();
-                });
+            .withArguments(
+                // StringArgument containing all loaded competition ids
+                ArgumentHelper.getAsyncStringsArgument(
+                    "competitionId",
+                    info -> EvenMoreFish.getInstance().getCompetitionQueue().getItemMap().keySet().toArray(String[]::new)
+                ),
+                new IntegerArgument("duration", 1).setOptional(true)
+            )
+            .executes((sender, arguments) -> {
+                final String id = Objects.requireNonNull(arguments.getUnchecked("competitionId"));
+                final Integer duration = arguments.getUnchecked("duration");
+                if (Competition.isActive()) {
+                    ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
+                    return;
+                }
+                CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getItemMap().get(id);
+                if (file == null) {
+                    ConfigMessage.INVALID_COMPETITION_ID.getMessage().send(sender);
+                    return;
+                }
+                Competition competition = new Competition(file);
+                competition.setAdminStarted(true);
+                if (duration != null) {
+                    competition.setMaxDuration(duration);
+                }
+                competition.begin();
+            });
     }
 
     private CommandAPICommand getCompetitionEnd() {
         return new CommandAPICommand("end")
-                .executes(info -> {
-                    Competition active = Competition.getCurrentlyActive();
-                    if (active != null) {
-                        active.end(false);
-                        return;
-                    }
-                    ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(info.sender());
-                });
+            .executes(info -> {
+                Competition active = Competition.getCurrentlyActive();
+                if (active != null) {
+                    active.end(false);
+                    return;
+                }
+                ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(info.sender());
+            });
     }
 
     private CommandAPICommand getCompetitionTest() {
         return new CommandAPICommand("test")
-                .withArguments(
-                        new IntegerArgument("duration", 1).setOptional(true),
-                        CompetitionTypeArgument.create().setOptional(true)
-                )
-                .executes((sender, args) -> {
-                    if (Competition.isActive()) {
-                        ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
-                        return;
-                    }
-                    final int duration = (int) args.getOptional("duration").orElse(60);
-                    final CompetitionType type = (CompetitionType) args.getOptional("competitionType").orElse(CompetitionType.LARGEST_FISH);
-                    CompetitionFile file = new CompetitionFile("adminTest", type, duration);
-                    Competition competition = new Competition(file);
-                    competition.setAdminStarted(true);
-                    competition.begin();
-                });
+            .withArguments(
+                new IntegerArgument("duration", 1).setOptional(true),
+                CompetitionTypeArgument.create().setOptional(true)
+            )
+            .executes((sender, args) -> {
+                if (Competition.isActive()) {
+                    ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
+                    return;
+                }
+                final int duration = (int) args.getOptional("duration").orElse(60);
+                final CompetitionType type = (CompetitionType) args.getOptional("competitionType").orElse(CompetitionType.LARGEST_FISH);
+                CompetitionFile file = new CompetitionFile("adminTest", type, duration);
+                Competition competition = new Competition(file);
+                competition.setAdminStarted(true);
+                competition.begin();
+            });
+    }
+
+    private CommandAPICommand getCompetitionExtend() {
+        return new CommandAPICommand("extend")
+            .withArguments(new IntegerArgument("duration", 1))
+            .executes(info -> {
+                Competition active = Competition.getCurrentlyActive();
+                if (active == null) {
+                    ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(info.sender());
+                    return;
+                }
+                int duration = Objects.requireNonNull(info.args().getUnchecked("duration"));
+                active.addTime(duration);
+
+                EMFMessage message = ConfigMessage.COMPETITION_TIME_EXTENDED.getMessage();
+                message.setVariable("{duration}", FishUtils.timeFormat(duration));
+                message.broadcast();
+            });
     }
 
 }

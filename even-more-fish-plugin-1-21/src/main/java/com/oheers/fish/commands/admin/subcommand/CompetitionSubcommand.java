@@ -1,6 +1,7 @@
 package com.oheers.fish.commands.admin.subcommand;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.commands.admin.AdminCommand;
 import com.oheers.fish.commands.arguments.CompetitionFileArgument;
 import com.oheers.fish.commands.arguments.CompetitionTypeArgument;
@@ -8,11 +9,14 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.messages.ConfigMessage;
+import com.oheers.fish.messages.abstracted.EMFMessage;
 import net.strokkur.commands.annotations.DefaultExecutes;
 import net.strokkur.commands.annotations.Executes;
 import net.strokkur.commands.annotations.arguments.CustomArg;
 import net.strokkur.commands.annotations.arguments.IntArg;
 import org.bukkit.command.CommandSender;
+
+import java.util.Objects;
 
 public class CompetitionSubcommand {
 
@@ -70,6 +74,20 @@ public class CompetitionSubcommand {
     @Executes("test")
     public void onTest(CommandSender sender) {
         onTest(sender, 60, CompetitionType.LARGEST_FISH);
+    }
+
+    @Executes("extend")
+    public void onExtend(CommandSender sender, @IntArg(min = 1) int duration) {
+        Competition active = Competition.getCurrentlyActive();
+        if (active == null) {
+            ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(sender);
+            return;
+        }
+        active.addTime(duration);
+
+        EMFMessage message = ConfigMessage.COMPETITION_TIME_EXTENDED.getMessage();
+        message.setVariable("{duration}", FishUtils.timeFormat(duration));
+        message.broadcast();
     }
 
 }

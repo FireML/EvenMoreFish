@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +73,7 @@ public class Competition {
         this.playersNeeded = competitionFile.getPlayersNeeded();
         this.startSound = competitionFile.getStartSound();
         this.maxDuration = competitionFile.getDuration() * 60L;
+        this.timeLeft = this.maxDuration;
         this.alertTimes = competitionFile.getAlertTimes();
         this.rewards = competitionFile.getRewards();
         this.competitionType = competitionFile.getType();
@@ -111,6 +115,15 @@ public class Competition {
         this.maxDuration = duration;
     }
 
+    /**
+     * Adds more time to this competition.
+     * @param durationSeconds The duration to add in seconds.
+     */
+    public void addTime(int durationSeconds) {
+        this.maxDuration += durationSeconds;
+        this.timeLeft += durationSeconds;
+    }
+
     public static boolean isActive() {
         return getCurrentlyActive() != null;
     }
@@ -142,8 +155,6 @@ public class Competition {
                 active = null;
                 return;
             }
-
-            this.timeLeft = this.maxDuration;
 
             this.leaderboard = new Leaderboard(competitionType);
 
@@ -552,6 +563,13 @@ public class Competition {
 
     public long getTimeLeft() {
         return this.timeLeft;
+    }
+
+    /**
+     * @return The configured max duration.
+     */
+    public long getMaxDuration() {
+        return this.maxDuration;
     }
 
     public boolean chooseFish() {
