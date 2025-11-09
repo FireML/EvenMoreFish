@@ -63,10 +63,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 
 public class FishUtils {
+
+    private static final DurationFormatter durationFormatter = new DurationFormatter(TimeUnit.SECONDS);
 
     private FishUtils() {
         throw new UnsupportedOperationException();
@@ -291,6 +294,10 @@ public class FishUtils {
         }
 
         return whitelistedWorlds.contains(l.getWorld().getName());
+    }
+
+    public static @NotNull EMFMessage timeFormat(long timeLeft) {
+        return EMFSingleMessage.of(durationFormatter.format(timeLeft));
     }
 
     public static @NotNull String timeRaw(long timeLeft) {

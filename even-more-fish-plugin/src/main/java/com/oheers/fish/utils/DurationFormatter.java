@@ -16,11 +16,15 @@ import java.util.function.Supplier;
 
 public class DurationFormatter {
 
-    public static Component format(@NotNull TimeUnit timeUnit, long value) {
-        return formatSeconds(timeUnit.toSeconds(value));
+    private final TimeUnit timeUnit;
+
+    public DurationFormatter(@NotNull TimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
     }
 
-    public static Component formatSeconds(long seconds) {
+    public Component format(long value) {
+        long seconds = timeUnit.toSeconds(value);
+
         // Convert seconds to a Duration
         Duration duration = Duration.ofSeconds(seconds);
 

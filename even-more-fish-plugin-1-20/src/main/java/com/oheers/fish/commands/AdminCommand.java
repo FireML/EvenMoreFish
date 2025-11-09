@@ -527,7 +527,7 @@ public class AdminCommand {
                 active.addTime(duration);
 
                 EMFMessage message = ConfigMessage.COMPETITION_TIME_EXTENDED.getMessage();
-                message.setVariable("{duration}", DurationFormatter.formatSeconds(duration));
+                message.setVariable("{duration}", FishUtils.timeFormat(duration));
                 message.broadcast();
             });
     }

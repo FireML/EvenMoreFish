@@ -80,7 +80,7 @@ public interface CompetitionStrategy {
      */
     default @NotNull EMFMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         EMFMessage message = configMessage.getMessage();
-        message.setTimeFormatted(DurationFormatter.formatSeconds(competition.getTimeLeft()));
+        message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
         message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));
         message.setCompetitionType(competition.getCompetitionType().getTypeVariable().getMessage());
         return message;
