@@ -55,6 +55,7 @@ bossbar:
   remaining: left
 # Formatting for time duration.
 duration:
+  day: <white>{day}d
   hour: <white>{hour}h
   minute: <white>{minute}m
   second: <white>{second}s

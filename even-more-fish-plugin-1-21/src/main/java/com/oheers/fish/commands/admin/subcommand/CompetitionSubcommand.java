@@ -10,6 +10,7 @@ import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
 import net.strokkur.commands.annotations.DefaultExecutes;
 import net.strokkur.commands.annotations.Executes;
 import net.strokkur.commands.annotations.arguments.CustomArg;
@@ -86,7 +87,7 @@ public class CompetitionSubcommand {
         active.addTime(duration);
 
         EMFMessage message = ConfigMessage.COMPETITION_TIME_EXTENDED.getMessage();
-        message.setVariable("{duration}", FishUtils.timeFormat(duration));
+        message.setVariable("{duration}", DurationFormatter.formatSeconds(duration));
         message.broadcast();
     }
 

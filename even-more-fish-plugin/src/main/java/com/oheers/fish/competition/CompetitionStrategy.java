@@ -5,6 +5,7 @@ import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,7 +80,7 @@ public interface CompetitionStrategy {
      */
     default @NotNull EMFMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         EMFMessage message = configMessage.getMessage();
-        message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
+        message.setTimeFormatted(DurationFormatter.formatSeconds(competition.getTimeLeft()));
         message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));
         message.setCompetitionType(competition.getCompetitionType().getTypeVariable().getMessage());
         return message;

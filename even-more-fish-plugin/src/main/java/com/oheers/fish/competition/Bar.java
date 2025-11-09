@@ -4,6 +4,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -56,7 +57,7 @@ public class Bar {
     public void setTitle(long timeLeft) {
         EMFMessage layoutMessage = ConfigMessage.BAR_LAYOUT.getMessage();
         layoutMessage.setVariable("{prefix}", prefix);
-        layoutMessage.setVariable("{time-formatted}", FishUtils.timeFormat(timeLeft));
+        layoutMessage.setVariable("{time-formatted}", DurationFormatter.formatSeconds(timeLeft));
         layoutMessage.setVariable("{remaining}", ConfigMessage.BAR_REMAINING.getMessage());
         bar.name(layoutMessage.getComponentMessage());
     }

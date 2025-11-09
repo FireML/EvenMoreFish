@@ -49,6 +49,7 @@ public enum ConfigMessage {
     DURATION_SECOND("<white>{second}s", PrefixType.NONE, true, false, "duration.second"),
     DURATION_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "duration.minute"),
     DURATION_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "duration.hour"),
+    DURATION_DAY("<white>{day}d", PrefixType.NONE, true, false, "duration.day"),
 
     COMPETITION_ALREADY_RUNNING("<white>There's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 

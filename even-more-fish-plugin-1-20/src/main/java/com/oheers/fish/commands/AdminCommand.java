@@ -22,6 +22,7 @@ import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.PrefixType;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import com.oheers.fish.permissions.AdminPerms;
+import com.oheers.fish.utils.DurationFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -526,7 +527,7 @@ public class AdminCommand {
                 active.addTime(duration);
 
                 EMFMessage message = ConfigMessage.COMPETITION_TIME_EXTENDED.getMessage();
-                message.setVariable("{duration}", FishUtils.timeFormat(duration));
+                message.setVariable("{duration}", DurationFormatter.formatSeconds(duration));
                 message.broadcast();
             });
     }
