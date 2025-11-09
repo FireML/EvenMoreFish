@@ -533,9 +533,8 @@ public class Competition {
 
     private static long getRemainingTime() {
         long startTime = EvenMoreFish.getInstance().getCompetitionQueue().getNextCompetition().toMillis();
-        long currentTime = TimeCode.now().toMillis();
-        // TimeCode#toMillis is always the next available time.
-        return startTime - currentTime;
+        long currentTime = System.currentTimeMillis();
+        return Duration.ofMillis(startTime - currentTime).toMinutes();
     }
 
     public void setCompetitionType(CompetitionType competitionType) {
