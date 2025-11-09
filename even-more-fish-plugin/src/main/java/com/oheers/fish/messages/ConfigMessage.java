@@ -44,10 +44,11 @@ public enum ConfigMessage {
     BAIT_INVALID_ROD("<white>You cannot apply bait to this fishing rod!", PrefixType.ERROR, true, false, "bait-invalid-rod"),
 
     BAR_LAYOUT("{prefix}{time-formatted} {remaining}", PrefixType.NONE, true, false, "bossbar.layout"),
-    BAR_SECOND("<white>{second}s", PrefixType.NONE, true, false, "bossbar.second"),
-    BAR_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "bossbar.minute"),
-    BAR_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "bossbar.hour"),
     BAR_REMAINING("left", PrefixType.NONE, true, false, "bossbar.remaining"),
+
+    DURATION_SECOND("<white>{second}s", PrefixType.NONE, true, false, "duration.second"),
+    DURATION_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "duration.minute"),
+    DURATION_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "duration.hour"),
 
     COMPETITION_ALREADY_RUNNING("<white>There's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 

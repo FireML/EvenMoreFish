@@ -300,21 +300,21 @@ public class FishUtils {
         EMFSingleMessage formatted = EMFSingleMessage.empty();
 
         if (hours > 0) {
-            EMFMessage message = ConfigMessage.BAR_HOUR.getMessage();
+            EMFMessage message = ConfigMessage.DURATION_HOUR.getMessage();
             message.setVariable("{hour}", String.valueOf(hours));
             formatted.appendMessage(message);
             formatted.appendComponent(Component.space());
         }
 
         if (minutes > 0) {
-            EMFMessage message = ConfigMessage.BAR_MINUTE.getMessage();
+            EMFMessage message = ConfigMessage.DURATION_MINUTE.getMessage();
             message.setVariable("{minute}", String.valueOf(minutes));
             formatted.appendMessage(message);
             formatted.appendComponent(Component.space());
         }
 
         if (seconds > 0 || (minutes == 0 && hours == 0)) {
-            EMFMessage message = ConfigMessage.BAR_SECOND.getMessage();
+            EMFMessage message = ConfigMessage.DURATION_SECOND.getMessage();
             message.setVariable("{second}", String.valueOf(seconds));
             formatted.appendMessage(message);
             formatted.appendComponent(Component.space());
