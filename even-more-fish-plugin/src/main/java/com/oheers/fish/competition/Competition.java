@@ -101,11 +101,15 @@ public class Competition {
         return bar;
     }
 
-    public Competition(final Integer duration, final CompetitionType type) {
+    public Competition(final long duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
         this.competitionType = type;
+    }
+
+    public @NotNull Competition createCopy() {
+        return new Competition(this.maxDuration, competitionType);
     }
 
     /**

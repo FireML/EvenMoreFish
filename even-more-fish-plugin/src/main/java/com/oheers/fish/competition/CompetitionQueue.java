@@ -17,7 +17,7 @@ import java.util.logging.Level;
 
 public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> {
 
-    private final Map<Integer, Competition> competitions = new TreeMap<>();
+    private final Map<Integer, CompetitionFile> competitions = new TreeMap<>();
 
     public CompetitionQueue() {
         super(RodManager.getInstance());
@@ -61,7 +61,7 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         );
     }
 
-    public Map<Integer, Competition> getCompetitions() {
+    public Map<Integer, CompetitionFile> getCompetitions() {
         return competitions;
     }
 
@@ -72,7 +72,7 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         }
         scheduledDays.forEach((day, times) ->
                 times.forEach(time ->
-                        competitions.put(generateTimeCode(day, time), new Competition(file))
+                        competitions.put(generateTimeCode(day, time), file)
                 )
         );
         return true;
@@ -90,7 +90,7 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
 
         for (String time : repeatedTimes) {
             for (DayOfWeek day : daysToUse) {
-                competitions.put(generateTimeCode(day, time), new Competition(file));
+                competitions.put(generateTimeCode(day, time), file);
             }
         }
         return true;

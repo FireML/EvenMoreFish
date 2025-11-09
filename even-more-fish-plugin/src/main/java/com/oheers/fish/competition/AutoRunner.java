@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.configs.CompetitionFile;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -19,12 +20,11 @@ public class AutoRunner {
                         int weekMinute = getCurrentTimeCode();
 
                         // Beginning the competition set for schedule
-                        Map<Integer, Competition> competitions = EvenMoreFish.getInstance().getCompetitionQueue().getCompetitions();
-                        Competition competition = competitions.get(weekMinute);
-                        if (competition != null && !Competition.isActive()) {
-                            competition.begin();
+                        Map<Integer, CompetitionFile> competitions = EvenMoreFish.getInstance().getCompetitionQueue().getCompetitions();
+                        CompetitionFile file = competitions.get(weekMinute);
+                        if (file != null && !Competition.isActive()) {
+                            new Competition(file).begin();
                         }
-
                     }
                 }, (60 - LocalTime.now().getSecond()) * 20L, 20
         );
