@@ -14,13 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public class DurationFormatter {
-
-    private final TimeUnit timeUnit;
-
-    public DurationFormatter(@NotNull TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
-    }
+public record DurationFormatter(@NotNull TimeUnit timeUnit) {
 
     public Component format(long value) {
         long seconds = timeUnit.toSeconds(value);

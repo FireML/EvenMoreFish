@@ -517,7 +517,6 @@ public class Competition {
         int remainingTime = getRemainingTime();
 
         EMFMessage message = ConfigMessage.PLACEHOLDER_TIME_REMAINING.getMessage();
-        message.setVariable("{time-left}", FishUtils.timeFormat(remainingTime));
         message.setDays(Integer.toString(remainingTime / 1440));
         message.setHours(Integer.toString((remainingTime % 1440) / 60));
         message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
