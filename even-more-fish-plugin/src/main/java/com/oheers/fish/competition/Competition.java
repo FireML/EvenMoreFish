@@ -59,7 +59,7 @@ public class Competition {
     private final Map<Integer, List<Reward>> rewards;
     private int playersNeeded;
     private Sound startSound;
-    private MyScheduledTask timingSystem;
+    private CompetitionTimer timingSystem;
     private CompetitionFile competitionFile;
     private int numberNeeded = 0;
     private Player singleWinner = null;
@@ -176,7 +176,7 @@ public class Competition {
         }
         // Print leaderboard
         if (timingSystem != null) {
-            timingSystem.cancel();
+            timingSystem.stop();
         }
         if (statusBar != null) {
             statusBar.hide();
@@ -248,17 +248,11 @@ public class Competition {
 
     }
 
-    // Starts a runnable to decrease the time left by 1s each second
+    // Starts a TimerTask to decrease the time left by 1s each second
     private void initTimer() {
-        this.timingSystem = new UniversalRunnable() {
-            @Override
-            public void run() {
-                statusBar.timerUpdate(timeLeft, maxDuration);
-                if (decreaseTime()) {
-                    cancel();
-                }
-            }
-        }.runTaskTimer(EvenMoreFish.getInstance(), 0, 20);
+        CompetitionTimer timer = new CompetitionTimer(this);
+        timer.start();
+        this.timingSystem = timer;
     }
 
     /**
@@ -290,25 +284,11 @@ public class Competition {
         return competitionType.getStrategy().getTypeFormat(this, configMessage);
     }
 
-    /**
-     * On servers with low tps, 20 ticks != 1 second, so competitions can last for considerably longer, this re-calibrates
-     * the time left with an epoch version of the time left. It runs through each second skipped to make sure all necessary
-     * processes take place i.e. alerts.
-     */
-    private boolean decreaseTime() {
-        long lagDif;
-        long current = Instant.now().getEpochSecond();
-
-        timeLeft = maxDuration - (current - epochStartTime);
-        // +1 to counteract the seconds starting on 0 (or something like that)
-        if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
-            for (long i = maxDuration - timeLeft; i < lagDif; i++) {
-                if (processCompetitionSecond(timeLeft)) {
-                    return true;
-                }
-                timeLeft--;
-            }
+    protected boolean decreaseTime() {
+        if (processCompetitionSecond(timeLeft)) {
+            return true;
         }
+        timeLeft--;
         return false;
     }
 
