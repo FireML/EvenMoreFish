@@ -40,11 +40,10 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         // Populate the competitions schedule
         competitions.clear();
         getItemMap().values().forEach(file -> {
-            Competition competition = new Competition(file);
-            if (loadSpecificDayTimes(competition)) {
+            if (loadSpecificDayTimes(file)) {
                 return;
             }
-            if (loadRepeatedTiming(competition)) {
+            if (loadRepeatedTiming(file)) {
                 return;
             }
             EvenMoreFish.getInstance().debug(
@@ -66,21 +65,20 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         return competitions;
     }
 
-    private boolean loadSpecificDayTimes(@NotNull Competition competition) {
-        Map<DayOfWeek, List<String>> scheduledDays = competition.getCompetitionFile().getScheduledDays();
+    private boolean loadSpecificDayTimes(@NotNull CompetitionFile file) {
+        Map<DayOfWeek, List<String>> scheduledDays = file.getScheduledDays();
         if (scheduledDays.isEmpty()) {
             return false;
         }
         scheduledDays.forEach((day, times) ->
                 times.forEach(time ->
-                        competitions.put(generateTimeCode(day, time), competition)
+                        competitions.put(generateTimeCode(day, time), new Competition(file))
                 )
         );
         return true;
     }
 
-    private boolean loadRepeatedTiming(@NotNull Competition competition) {
-        CompetitionFile file = competition.getCompetitionFile();
+    private boolean loadRepeatedTiming(@NotNull CompetitionFile file) {
         List<String> repeatedTimes = file.getTimes();
 
         if (repeatedTimes.isEmpty()) {
@@ -92,7 +90,7 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
 
         for (String time : repeatedTimes) {
             for (DayOfWeek day : daysToUse) {
-                competitions.put(generateTimeCode(day, time), competition);
+                competitions.put(generateTimeCode(day, time), new Competition(file));
             }
         }
         return true;
