@@ -6,6 +6,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
+import com.oheers.fish.api.Logging;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
@@ -21,6 +22,7 @@ import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import com.oheers.fish.utils.DurationFormatter;
+import com.oheers.fish.utils.TimeCode;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -108,10 +110,6 @@ public class Competition {
         this.competitionType = type;
     }
 
-    public @NotNull Competition createCopy() {
-        return new Competition(this.maxDuration, competitionType);
-    }
-
     /**
      * Sets the maximum duration of the competition in seconds.
      *
@@ -143,6 +141,11 @@ public class Competition {
     }
 
     public void begin() {
+        // Don't start a comp with no duration.
+        if (maxDuration <= 0) {
+            Logging.warn("Tried to start a competition with an invalid duration: " + competitionFile.getId());
+            return;
+        }
         try {
             if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
@@ -518,29 +521,21 @@ public class Competition {
             return ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP.getMessage();
         }
 
-        int remainingTime = getRemainingTime();
+        long remainingTime = getRemainingTime();
 
         EMFMessage message = ConfigMessage.PLACEHOLDER_TIME_REMAINING.getMessage();
-        message.setDays(Integer.toString(remainingTime / 1440));
-        message.setHours(Integer.toString((remainingTime % 1440) / 60));
-        message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
+        message.setDays(Long.toString(remainingTime / 1440));
+        message.setHours(Long.toString((remainingTime % 1440) / 60));
+        message.setMinutes(Long.toString((((remainingTime % 1440) % 60) % 60)));
 
         return message;
     }
 
-    private static int getRemainingTime() {
-        int competitionStartTime = EvenMoreFish.getInstance().getCompetitionQueue().getNextCompetition();
-        int currentTime = AutoRunner.getCurrentTimeCode();
-        if (competitionStartTime > currentTime) {
-            return competitionStartTime - currentTime;
-        }
-
-        return getRemainingTimeOverWeek(competitionStartTime, currentTime);
-    }
-
-    // time left of the current week + the time next week until next competition
-    private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
-        return (10080 - currentTime) + competitionStartTime;
+    private static long getRemainingTime() {
+        long startTime = EvenMoreFish.getInstance().getCompetitionQueue().getNextCompetition().toMillis();
+        long currentTime = TimeCode.now().toMillis();
+        // TimeCode#toMillis is always the next available time.
+        return startTime - currentTime;
     }
 
     public void setCompetitionType(CompetitionType competitionType) {
