@@ -12,7 +12,10 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 
-public record TimeCode(String code) {
+/**
+ * A time code representing an exact minute of a day.
+ */
+public record TimeCode(@NotNull String code) {
 
     public static TimeCode now() {
         return fromDateTime(LocalDateTime.now());
