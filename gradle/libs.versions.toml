@@ -34,7 +34,7 @@ worldedit-bukkit = { module = "com.sk89q.worldedit:worldedit-bukkit", version.re
 # Protection Plugins
 redprotect-core = { module = "br.net.fabiozumbi12.RedProtect:RedProtect-Core", version.ref = "redprotect" }
 redprotect-spigot = { module = "br.net.fabiozumbi12.RedProtect:RedProtect-Spigot-1.13", version.ref = "redprotect" }
-griefprevention = "com.github.TechFortress:GriefPrevention:16.18.5"
+griefprevention = "com.github.TechFortress:GriefPrevention:16.18.4"
 
 # Skills & Economy
 mcmmo = "com.gmail.nossr50.mcMMO:mcMMO:2.2.045"
