@@ -2,8 +2,10 @@ package com.oheers.fish.database;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.connection.ConnectionFactory;
+import org.eclipse.sisu.launch.Main;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.SQLDialect;
 
@@ -66,11 +68,32 @@ public class DatabaseUtil {
         }
     }
 
-    public static boolean isDatabaseOnline() {
-        if (!MainConfig.getInstance().databaseEnabled() || EvenMoreFish.getInstance().getPluginDataManager().getDatabase().getMigrationManager().usingV2())
-            return false;
+    public static boolean isDatabaseOffline() {
+        final EvenMoreFish plugin = EvenMoreFish.getInstance();
 
-        return EvenMoreFish.getInstance().getPluginDataManager().getDatabase() != null;
+        if (!MainConfig.getInstance().databaseEnabled()) {
+            plugin.debug("Database is disabled in config.");
+            return true;
+        }
+
+        final Database database = plugin.getPluginDataManager().getDatabase();
+        if (database == null) {
+            plugin.debug("Database instance is null.");
+            return true;
+        }
+
+        boolean usingV2 = database.getMigrationManager().usingV2();
+        if (usingV2) {
+            plugin.debug("Database migration manager reports version 2.");
+            return true;
+        }
+
+        plugin.debug("Database is online and usable.");
+        return false;
+    }
+
+    public static boolean isDatabaseOnline() {
+        return !isDatabaseOffline();
     }
 
     public static void debugDatabaseTypeVersion(@NotNull ConnectionFactory connectionFactory)  {
