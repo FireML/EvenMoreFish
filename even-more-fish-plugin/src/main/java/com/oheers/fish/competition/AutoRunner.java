@@ -1,61 +1,40 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.EMFTimer;
+import com.oheers.fish.competition.configs.CompetitionFile;
+import com.oheers.fish.utils.TimeCode;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class AutoRunner {
+public class AutoRunner extends EMFTimer {
 
-    private static int lastMinute = -1;
+    public AutoRunner() {
+        super(TimeUnit.SECONDS, 1);
+    }
 
-    public static void init() {
-        EvenMoreFish.getScheduler().runTaskTimer(
-                () -> {
-                    // If the minute hasn't been checked against the competition queue.
-                    if (!wasMinuteChecked()) {
-                        int weekMinute = getCurrentTimeCode();
+    /**
+     * The action to be performed by this timer task.
+     */
+    @Override
+    public void run() {
+        EvenMoreFish.getScheduler().runTask(
+            () -> {
+                TimeCode now = TimeCode.now();
 
-                        // Beginning the competition set for schedule
-                        Map<Integer, Competition> competitions = EvenMoreFish.getInstance().getCompetitionQueue().getCompetitions();
-                        Competition competition = competitions.get(weekMinute);
-                        if (competition != null && !Competition.isActive()) {
-                            competition.begin();
-                        }
-
-                    }
-                }, (60 - LocalTime.now().getSecond()) * 20L, 20
+                // Beginning the competition set for schedule
+                Map<TimeCode, CompetitionFile> competitions = EvenMoreFish.getInstance().getCompetitionQueue().getCompetitions();
+                CompetitionFile file = competitions.get(now);
+                if (file != null && !Competition.isActive()) {
+                    new Competition(file).begin();
+                }
+            }
         );
     }
 
-    /**
-     * Feeds through the current timekey and day name to the generateTimeCode method in the competition queue.
-     *
-     * @return The integer timecode for the current minute.
-     */
-    public static int getCurrentTimeCode() {
-        // creates a key similar to the time key given in config.yml
-        String timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
-
-        // Obtaining how many minutes have passed since midnight last Sunday
-        DayOfWeek day = LocalDate.now().getDayOfWeek();
-        return EvenMoreFish.getInstance().getCompetitionQueue().generateTimeCode(day, timeKey);
-    }
-
-    /**
-     * Uses the last minute to work out whether the plugin should run calculations for this minute or not, it also
-     * automatically sets the lastMinute to the current minute if returning true.
-     *
-     * @return Whether minute checks need running to determine whether a competition needs to start.
-     */
-    private static boolean wasMinuteChecked() {
-        if (lastMinute != LocalTime.now().getMinute()) {
-            lastMinute = LocalTime.now().getMinute();
-            return false;
-        }
-
-        return true;
-    }
 }

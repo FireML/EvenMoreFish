@@ -80,6 +80,13 @@ public class MessageConfig extends ConfigBase {
 
                 document.remove("prefix");
             })
+
+            // Config Version 6 - Making the bossbar time format accessible outside the bossbar.
+            .addCustomLogic("6", document -> {
+                document.move("bossbar.hour", "duration.hour");
+                document.move("bossbar.minute", "duration.minute");
+                document.move("bossbar.second", "duration.second");
+            })
             .build();
     }
 

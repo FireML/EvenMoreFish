@@ -44,10 +44,12 @@ public enum ConfigMessage {
     BAIT_INVALID_ROD("<white>You cannot apply bait to this fishing rod!", PrefixType.ERROR, true, false, "bait-invalid-rod"),
 
     BAR_LAYOUT("{prefix}{time-formatted} {remaining}", PrefixType.NONE, true, false, "bossbar.layout"),
-    BAR_SECOND("<white>{second}s", PrefixType.NONE, true, false, "bossbar.second"),
-    BAR_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "bossbar.minute"),
-    BAR_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "bossbar.hour"),
     BAR_REMAINING("left", PrefixType.NONE, true, false, "bossbar.remaining"),
+
+    DURATION_SECOND("<white>{second}s", PrefixType.NONE, true, false, "duration.second"),
+    DURATION_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "duration.minute"),
+    DURATION_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "duration.hour"),
+    DURATION_DAY("<white>{day}d", PrefixType.NONE, true, false, "duration.day"),
 
     COMPETITION_ALREADY_RUNNING("<white>There's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 
@@ -160,6 +162,7 @@ public enum ConfigMessage {
 
     NO_BAITS("<white>The fishing rod does not have any baits applied.", PrefixType.ERROR, true, true, "admin.no-baits-on-rod"),
     NO_COMPETITION_RUNNING("<white>No competition running right now.", PrefixType.ERROR, false, false, "no-competition-running"),
+    COMPETITION_TIME_EXTENDED("<white>The active competition has been extended by {duration}!", PrefixType.DEFAULT, false, false, "competition-time-extended"),
     NO_FISH_CAUGHT("<white>You didn't catch any fish.", PrefixType.DEFAULT, true, true, "no-record"),
     NO_PERMISSION_FISHING("<red>You don't have permission to fish using this rod, you will catch vanilla fish.", PrefixType.DEFAULT, true, true, "no-permission-fishing"),
     NO_PERMISSION("<red>You don't have permission to run that command.", PrefixType.ERROR, false, true, "no-permission"),

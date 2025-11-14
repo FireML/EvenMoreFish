@@ -3,8 +3,10 @@ package com.oheers.fish.competition;
 import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
+import com.oheers.fish.api.Logging;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
@@ -19,6 +21,8 @@ import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
+import com.oheers.fish.utils.TimeCode;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -27,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -36,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +66,7 @@ public class Competition {
     private final Map<Integer, List<Reward>> rewards;
     private int playersNeeded;
     private Sound startSound;
-    private MyScheduledTask timingSystem;
+    private CompetitionTimer timingSystem;
     private CompetitionFile competitionFile;
     private int numberNeeded = 0;
     private Player singleWinner = null;
@@ -70,6 +77,7 @@ public class Competition {
         this.playersNeeded = competitionFile.getPlayersNeeded();
         this.startSound = competitionFile.getStartSound();
         this.maxDuration = competitionFile.getDuration() * 60L;
+        this.timeLeft = this.maxDuration;
         this.alertTimes = competitionFile.getAlertTimes();
         this.rewards = competitionFile.getRewards();
         this.competitionType = competitionFile.getType();
@@ -95,7 +103,7 @@ public class Competition {
         return bar;
     }
 
-    public Competition(final Integer duration, final CompetitionType type) {
+    public Competition(final long duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
@@ -111,6 +119,15 @@ public class Competition {
         this.maxDuration = duration;
     }
 
+    /**
+     * Adds more time to this competition.
+     * @param durationSeconds The duration to add in seconds.
+     */
+    public void addTime(int durationSeconds) {
+        this.maxDuration += durationSeconds;
+        this.timeLeft += durationSeconds;
+    }
+
     public static boolean isActive() {
         return getCurrentlyActive() != null;
     }
@@ -124,6 +141,11 @@ public class Competition {
     }
 
     public void begin() {
+        // Don't start a comp with no duration.
+        if (maxDuration <= 0) {
+            Logging.warn("Tried to start a competition with an invalid duration: " + competitionFile.getId());
+            return;
+        }
         try {
             if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
@@ -142,8 +164,6 @@ public class Competition {
                 active = null;
                 return;
             }
-
-            this.timeLeft = this.maxDuration;
 
             this.leaderboard = new Leaderboard(competitionType);
 
@@ -176,7 +196,7 @@ public class Competition {
         }
         // Print leaderboard
         if (timingSystem != null) {
-            timingSystem.cancel();
+            timingSystem.stop();
         }
         if (statusBar != null) {
             statusBar.hide();
@@ -248,17 +268,11 @@ public class Competition {
 
     }
 
-    // Starts a runnable to decrease the time left by 1s each second
+    // Starts a TimerTask to decrease the time left by 1s each second
     private void initTimer() {
-        this.timingSystem = new UniversalRunnable() {
-            @Override
-            public void run() {
-                statusBar.timerUpdate(timeLeft, maxDuration);
-                if (decreaseTime()) {
-                    cancel();
-                }
-            }
-        }.runTaskTimer(EvenMoreFish.getInstance(), 0, 20);
+        CompetitionTimer timer = new CompetitionTimer(this);
+        timer.start();
+        this.timingSystem = timer;
     }
 
     /**
@@ -290,25 +304,11 @@ public class Competition {
         return competitionType.getStrategy().getTypeFormat(this, configMessage);
     }
 
-    /**
-     * On servers with low tps, 20 ticks != 1 second, so competitions can last for considerably longer, this re-calibrates
-     * the time left with an epoch version of the time left. It runs through each second skipped to make sure all necessary
-     * processes take place i.e. alerts.
-     */
-    private boolean decreaseTime() {
-        long lagDif;
-        long current = Instant.now().getEpochSecond();
-
-        timeLeft = maxDuration - (current - epochStartTime);
-        // +1 to counteract the seconds starting on 0 (or something like that)
-        if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
-            for (long i = maxDuration - timeLeft; i < lagDif; i++) {
-                if (processCompetitionSecond(timeLeft)) {
-                    return true;
-                }
-                timeLeft--;
-            }
+    protected boolean decreaseTime() {
+        if (processCompetitionSecond(timeLeft)) {
+            return true;
         }
+        timeLeft--;
         return false;
     }
 
@@ -521,29 +521,20 @@ public class Competition {
             return ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP.getMessage();
         }
 
-        int remainingTime = getRemainingTime();
+        long remainingTime = getRemainingTime();
 
         EMFMessage message = ConfigMessage.PLACEHOLDER_TIME_REMAINING.getMessage();
-        message.setDays(Integer.toString(remainingTime / 1440));
-        message.setHours(Integer.toString((remainingTime % 1440) / 60));
-        message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
+        message.setDays(Long.toString(remainingTime / 1440));
+        message.setHours(Long.toString((remainingTime % 1440) / 60));
+        message.setMinutes(Long.toString((((remainingTime % 1440) % 60) % 60)));
 
         return message;
     }
 
-    private static int getRemainingTime() {
-        int competitionStartTime = EvenMoreFish.getInstance().getCompetitionQueue().getNextCompetition();
-        int currentTime = AutoRunner.getCurrentTimeCode();
-        if (competitionStartTime > currentTime) {
-            return competitionStartTime - currentTime;
-        }
-
-        return getRemainingTimeOverWeek(competitionStartTime, currentTime);
-    }
-
-    // time left of the current week + the time next week until next competition
-    private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
-        return (10080 - currentTime) + competitionStartTime;
+    private static long getRemainingTime() {
+        long startTime = EvenMoreFish.getInstance().getCompetitionQueue().getNextCompetition().toMillis();
+        long currentTime = System.currentTimeMillis();
+        return Duration.ofMillis(startTime - currentTime).toMinutes();
     }
 
     public void setCompetitionType(CompetitionType competitionType) {
@@ -572,6 +563,13 @@ public class Competition {
 
     public long getTimeLeft() {
         return this.timeLeft;
+    }
+
+    /**
+     * @return The configured max duration.
+     */
+    public long getMaxDuration() {
+        return this.maxDuration;
     }
 
     public boolean chooseFish() {

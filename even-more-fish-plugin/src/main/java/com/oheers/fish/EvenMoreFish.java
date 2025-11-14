@@ -54,6 +54,7 @@ public abstract class EvenMoreFish extends EMFPlugin {
     // Do some fish in some rarities have the comp-check-exempt: true.
     private boolean raritiesCompCheckExempt = false;
     private CompetitionQueue competitionQueue;
+    private final AutoRunner autoRunner = new AutoRunner();
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
@@ -151,7 +152,7 @@ public abstract class EvenMoreFish extends EMFPlugin {
         this.metricsManager = new MetricsManager(this);
         this.metricsManager.setupMetrics();
 
-        AutoRunner.init();
+        autoRunner.start();
 
         registerCommands();
 
@@ -239,6 +240,10 @@ public abstract class EvenMoreFish extends EMFPlugin {
 
     public CompetitionQueue getCompetitionQueue() {
         return competitionQueue;
+    }
+
+    public AutoRunner getAutoRunner() {
+        return autoRunner;
     }
 
     public Map<UUID, Rarity> getDecidedRarities() {

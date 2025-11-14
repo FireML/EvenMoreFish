@@ -15,6 +15,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
 import com.oheers.fish.utils.ItemUtils;
 import com.oheers.fish.api.Logging;
 import com.oheers.fish.utils.nbt.NbtKeys;
@@ -62,10 +63,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 
 public class FishUtils {
+
+    private static final DurationFormatter durationFormatter = new DurationFormatter(TimeUnit.SECONDS);
 
     private FishUtils() {
         throw new UnsupportedOperationException();
@@ -293,39 +297,7 @@ public class FishUtils {
     }
 
     public static @NotNull EMFMessage timeFormat(long timeLeft) {
-        long hours = timeLeft / 3600;
-        long minutes = (timeLeft % 3600) / 60;
-        long seconds = timeLeft % 60;
-
-        EMFSingleMessage formatted = EMFSingleMessage.empty();
-
-        if (hours > 0) {
-            EMFMessage message = ConfigMessage.BAR_HOUR.getMessage();
-            message.setVariable("{hour}", String.valueOf(hours));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        if (minutes > 0) {
-            EMFMessage message = ConfigMessage.BAR_MINUTE.getMessage();
-            message.setVariable("{minute}", String.valueOf(minutes));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        if (seconds > 0 || (minutes == 0 && hours == 0)) {
-            EMFMessage message = ConfigMessage.BAR_SECOND.getMessage();
-            message.setVariable("{second}", String.valueOf(seconds));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        // Remove the last space if it exists
-        if (!formatted.isEmpty()) {
-            formatted.trim();
-        }
-
-        return formatted;
+        return EMFSingleMessage.of(durationFormatter.format(timeLeft));
     }
 
     public static @NotNull String timeRaw(long timeLeft) {
