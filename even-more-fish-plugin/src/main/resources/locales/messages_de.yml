@@ -191,6 +191,13 @@ bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
 # Shown when /emf toggle is run, to turn off and on respectively.
 toggle-off: <reset>Du wirst keine EMF Fische mehr fangen.
 toggle-on: <reset>Du wirst wieder EMF Fische fangen.
+toggle:
+  fishing:
+    off: <white>You will no longer catch custom fish.
+    on: <white>You will now catch custom fish.
+  bossbar:
+    off: <white>You will no longer see competition bossbars.
+    on: <white>You will now see competition bossbars.
 admin:
   # Opens an /emf shop for another player
   open-fish-shop: <reset>Fisch Shop für {player} geöffnet.
@@ -267,4 +274,4 @@ bait:
   unused-slot: <gray>► ? <italic>Available Slot
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-version: 6
+version: 7
