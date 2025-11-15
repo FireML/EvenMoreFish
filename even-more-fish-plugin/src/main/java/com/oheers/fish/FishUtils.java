@@ -12,7 +12,6 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import com.oheers.fish.utils.DurationFormatter;
@@ -624,7 +623,7 @@ public class FishUtils {
     }
 
     public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString) {
-        return getPotionEffect(effectString, false);
+        return getPotionEffect(effectString, ":");
     }
 
     public static @Nullable Enchantment getEnchantment(@NotNull String namespace) {

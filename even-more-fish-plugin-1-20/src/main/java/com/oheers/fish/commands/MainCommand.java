@@ -92,7 +92,7 @@ public class MainCommand {
         return new CommandAPICommand(name)
             .withPermission(UserPerms.TOGGLE)
             .executesPlayer(info -> {
-                EvenMoreFish.getInstance().performFishToggle(info.sender());
+                EvenMoreFish.getInstance().getToggle().performFishToggle(info.sender());
             });
     }
 

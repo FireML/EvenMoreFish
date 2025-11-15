@@ -79,7 +79,7 @@ public class MainCommand {
     @Executes("toggle")
     @Permission(UserPerms.TOGGLE)
     public void onToggle(CommandSender sender, @Executor Player player) {
-        EvenMoreFish.getInstance().performFishToggle(player);
+        EvenMoreFish.getInstance().getToggle().performFishToggle(player);
     }
 
     @Executes("help")

@@ -190,8 +190,10 @@ public enum ConfigMessage {
     SELL_PRICE_FORMAT("#,##0.0", PrefixType.NONE, false, false, "sell-price-format"),
     TIME_ALERT("<white>There is {time_formatted} left on the competition for {type}", PrefixType.DEFAULT, false, true, "time-alert"),
 
-    TOGGLE_ON("<white>You will now catch custom fish.", PrefixType.DEFAULT, false, true, "toggle-on"),
-    TOGGLE_OFF("<white>You will no longer catch custom fish.", PrefixType.DEFAULT, false, true, "toggle-off"),
+    TOGGLE_FISHING_ON("<white>You will now catch custom fish.", PrefixType.DEFAULT, false, true, "toggle.fishing.on"),
+    TOGGLE_FISHING_OFF("<white>You will no longer catch custom fish.", PrefixType.DEFAULT, false, true, "toggle.fishing.off"),
+    TOGGLE_BOSSBAR_ON("<white>You will now see competition bossbars.", PrefixType.DEFAULT, false, true, "toggle.bossbar.on"),
+    TOGGLE_BOSSBAR_OFF("<white>You will no longer see competition bossbars.", PrefixType.DEFAULT, false, true, "toggle.bossbar.off"),
 
     WORTH_GUI_NAME("<dark_blue><b>Sell Fish</b>", PrefixType.NONE, false, false, "worth-gui-name"),
     WORTH_GUI_CONFIRM_ALL_BUTTON_NAME("<gold><b>CONFIRM</b>", PrefixType.NONE, false, false, "confirm-sell-all-gui-name"),
