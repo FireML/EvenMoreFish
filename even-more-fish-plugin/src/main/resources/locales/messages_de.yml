@@ -188,9 +188,6 @@ bait-survival-limited: <reset>Du musst im Spielmodus <underlined>survival<reset>
 bait-rod-protection: <reset>Protected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <reset>Du wirst keine EMF Fische mehr fangen.
-toggle-on: <reset>Du wirst wieder EMF Fische fangen.
 toggle:
   fishing:
     off: <white>You will no longer catch custom fish.
