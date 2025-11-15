@@ -188,9 +188,6 @@ bait-survival-limited: <reset>Du er nød til at være i <underlined>overlevelses
 bait-rod-protection: <white>Protected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <reset>Man vil ikke længere fange spiller-lavede fisk.
-toggle-on: <reset>Man vil nu fange spiller-lavede fisk.
 toggle:
   fishing:
     off: <white>You will no longer catch custom fish.

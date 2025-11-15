@@ -188,9 +188,6 @@ bait-survival-limited: <red>你必须在 <underlined>生存模式<reset> 中才�
 bait-rod-protection: <white>保护好你应用过饵料的钓鱼竿. 如果你试图修理他, 请将他放在第一个槽位上.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>你不能对这只钓鱼棒应用鱼饵!
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <white>您将无法再钓到自定义鱼。
-toggle-on: <white>您将无法再钓到自定义鱼。
 toggle:
   fishing:
     off: <white>You will no longer catch custom fish.

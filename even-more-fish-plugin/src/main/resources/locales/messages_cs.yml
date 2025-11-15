@@ -188,9 +188,6 @@ bait-survival-limited: <reset>Musíš být v <underlined>survivalu<reset> pro ap
 bait-rod-protection: <reset>Protected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <reset>Už nebudeš chytat speciální ryby.
-toggle-on: <reset>Nyní budeš chytat speciální ryby.
 toggle:
   fishing:
     off: <white>You will no longer catch custom fish.
