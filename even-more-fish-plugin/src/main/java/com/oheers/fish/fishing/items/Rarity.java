@@ -237,20 +237,7 @@ public class Rarity extends ConfigBase implements IRarity {
 
     private Requirement loadRequirements() {
         Section requirementSection = ConfigUtils.getSectionOfMany(getConfig(), "requirements", "requirement");
-        Requirement requirement = new Requirement();
-        if (requirementSection == null) {
-            return requirement;
-        }
-        requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
-            List<String> values = new ArrayList<>();
-            if (requirementSection.isList(requirementString)) {
-                values.addAll(requirementSection.getStringList(requirementString));
-            } else {
-                values.add(requirementSection.getString(requirementString));
-            }
-            requirement.add(requirementString, values);
-        });
-        return requirement;
+        return new Requirement(requirementSection);
     }
 
     private void updateRequirementFormats() {

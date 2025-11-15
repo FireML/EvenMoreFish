@@ -45,7 +45,7 @@ public class Fish implements IFish {
     private List<Reward> sellRewards;
     private String eventType;
 
-    private Requirement requirement = new Requirement();
+    private final Requirement requirement;
 
     private boolean wasBaited;
     private boolean silent;
@@ -111,7 +111,7 @@ public class Fish implements IFish {
         checkSellEvent();
         checkSilent();
 
-        handleRequirements();
+        this.requirement = loadRequirements();
     }
 
     /**
@@ -134,21 +134,9 @@ public class Fish implements IFish {
         return new Fish(rarity, section);
     }
 
-    private void handleRequirements() {
+    private Requirement loadRequirements() {
         Section requirementSection = ConfigUtils.getSectionOfMany(section, "requirements", "requirement");
-        requirement = new Requirement();
-        if (requirementSection == null) {
-            return;
-        }
-        requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
-            List<String> values = new ArrayList<>();
-            if (requirementSection.isList(requirementString)) {
-                values.addAll(requirementSection.getStringList(requirementString));
-            } else {
-                values.add(requirementSection.getString(requirementString));
-            }
-            requirement.add(requirementString, values);
-        });
+        return new Requirement(requirementSection);
     }
 
     @Override
