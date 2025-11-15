@@ -2,6 +2,7 @@ package com.oheers.fish.commands;
 
 import com.oheers.fish.Checks;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.Toggle;
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.commands.arguments.ArgumentHelper;
 import com.oheers.fish.commands.arguments.RarityArgument;
@@ -20,6 +21,7 @@ import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellHelper;
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -91,8 +93,16 @@ public class MainCommand {
         );
         return new CommandAPICommand(name)
             .withPermission(UserPerms.TOGGLE)
+            .withArguments(new MultiLiteralArgument("toggle", "fishing", "bossbar").setOptional(true))
             .executesPlayer(info -> {
-                EvenMoreFish.getInstance().performFishToggle(info.sender());
+                String toggleType = info.args().getUnchecked("toggle");
+                // Bossbar
+                if ("bossbar".equals(toggleType)) {
+                    EvenMoreFish.getInstance().getToggle().performBossBarToggle(info.sender());
+                // Unspecified, Invalid, or Fishing
+                } else {
+                    EvenMoreFish.getInstance().getToggle().performFishToggle(info.sender());
+                }
             });
     }
 

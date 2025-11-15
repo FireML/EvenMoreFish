@@ -1,6 +1,7 @@
 package com.oheers.fish.addons.internal.reward;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.reward.RewardType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,13 +16,13 @@ public class EffectRewardType extends RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        String[] parsedEffect = value.split(",");
-        if (parsedEffect.length < 3) {
+        PotionEffect effect = FishUtils.getPotionEffect(value, ",");
+        if (effect == null) {
             EvenMoreFish.getInstance().getLogger().warning("Invalid effect specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
         // Adds a potion effect in accordance to the config.yml "EFFECT:" value
-        EvenMoreFish.getScheduler().runTask(player, () -> player.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1]))));
+        EvenMoreFish.getScheduler().runTask(player, () -> player.addPotionEffect(effect));
     }
 
     @Override

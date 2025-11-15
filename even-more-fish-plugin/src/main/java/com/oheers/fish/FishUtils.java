@@ -12,7 +12,6 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import com.oheers.fish.utils.DurationFormatter;
@@ -587,25 +586,32 @@ public class FishUtils {
         return colour.substring(0, openingTagEnd + 1) + "{name}";
     }
 
-    public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString) {
-        String[] split = effectString.split(":");
+    /**
+     * Fetches a PotionEffect from a String.
+     * @param effectString The String to fetch the PotionEffect from.
+     * @param separator The string that separates the individual parts of the effect.
+     * @return A PotionEffect built from the provided String, or null if invalid.
+     */
+    public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString, @NotNull String separator) {
+
+        String[] split = effectString.split(separator);
         if (split.length != 3) {
-            Logging.error("Potion effect string is formatted incorrectly. Use \"potion:duration:amplifier\".");
+            Logging.error("Potion effect string is formatted incorrectly. Use \"potion:amplifier:duration\".");
             return null;
         }
-        PotionEffectType type = PotionEffectType.getByName(split[0]);
+        PotionEffectType type = PotionEffectType.getByName(split[0].toUpperCase());
         if (type == null) {
             Logging.error("Potion effect type " + split[0] + " is not valid.");
             return null;
         }
-        Integer duration = FishUtils.getInteger(split[1]);
-        if (duration == null) {
-            Logging.error("Potion effect duration " + split[1] + " is not valid.");
+        Integer duration = FishUtils.getInteger(split[2]);
+        if (duration == null || duration < 1) {
+            Logging.error("Potion effect duration " + split[2] + " is not valid.");
             return null;
         }
-        Integer amplifier = FishUtils.getInteger(split[2]);
-        if (amplifier == null) {
-            Logging.error("Potion effect amplifier " + split[2] + " is not valid.");
+        Integer amplifier = FishUtils.getInteger(split[1]);
+        if (amplifier == null || amplifier < 1) {
+            Logging.error("Potion effect amplifier " + split[1] + " is not valid.");
             return null;
         }
         return new PotionEffect(
@@ -614,6 +620,10 @@ public class FishUtils {
             amplifier - 1,
             false
         );
+    }
+
+    public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString) {
+        return getPotionEffect(effectString, ":");
     }
 
     public static @Nullable Enchantment getEnchantment(@NotNull String namespace) {

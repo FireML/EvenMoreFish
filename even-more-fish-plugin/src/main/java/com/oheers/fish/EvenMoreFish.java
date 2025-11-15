@@ -48,8 +48,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class EvenMoreFish extends EMFPlugin {
     private final Random random = ThreadLocalRandom.current();
-
-    private final NamespacedKey fishToggleKey = new NamespacedKey(this, "fish-disabled");
+    private final Toggle toggle;
 
     // Do some fish in some rarities have the comp-check-exempt: true.
     private boolean raritiesCompCheckExempt = false;
@@ -78,6 +77,10 @@ public abstract class EvenMoreFish extends EMFPlugin {
 
     public static TaskScheduler getScheduler() {
         return scheduler;
+    }
+
+    public EvenMoreFish() {
+        this.toggle = new Toggle(this);
     }
 
     @Override
@@ -229,6 +232,10 @@ public abstract class EvenMoreFish extends EMFPlugin {
         return random;
     }
 
+    public Toggle getToggle() {
+        return toggle;
+    }
+
 
     public boolean isRaritiesCompCheckExempt() {
         return raritiesCompCheckExempt;
@@ -260,28 +267,6 @@ public abstract class EvenMoreFish extends EMFPlugin {
 
     public List<Player> getVisibleOnlinePlayers() {
         return List.copyOf(Bukkit.getOnlinePlayers());
-    }
-
-    // FISH TOGGLE METHODS
-
-    public void performFishToggle(@NotNull Player player) {
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        // If custom fishing is disabled
-        if (isCustomFishingDisabled(player)) {
-            // Set fish-disabled to false
-            pdc.set(fishToggleKey, PersistentDataType.BOOLEAN, false);
-            ConfigMessage.TOGGLE_ON.getMessage().send(player);
-        } else {
-            // Set fish-disabled to true
-            pdc.set(fishToggleKey, PersistentDataType.BOOLEAN, true);
-            ConfigMessage.TOGGLE_OFF.getMessage().send(player);
-        }
-    }
-
-
-    public boolean isCustomFishingDisabled(@NotNull Player player) {
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        return pdc.getOrDefault(fishToggleKey, PersistentDataType.BOOLEAN, false);
     }
 
     public DependencyManager getDependencyManager() {

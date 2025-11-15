@@ -43,8 +43,8 @@ public abstract class Processor<E extends Event> implements Listener {
     }
 
     protected boolean isCustomFishAllowed(Player player) {
-        return isEnabled() && MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) && !EvenMoreFish.getInstance()
-                .isCustomFishingDisabled(player);
+        return isEnabled() && MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.getInstance().isRaritiesCompCheckExempt())
+            && !EvenMoreFish.getInstance().getToggle().isCustomFishingDisabled(player);
     }
 
     protected abstract boolean isEnabled();

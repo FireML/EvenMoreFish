@@ -96,7 +96,7 @@ public class GuiUtils {
         // Toggling custom fish should redraw the Gui and leave it at that
         newActionMap.put("fish-toggle", (gui, click) -> {
             if (click.getWhoClicked() instanceof Player player) {
-                EvenMoreFish.getInstance().performFishToggle(player);
+                EvenMoreFish.getInstance().getToggle().performFishToggle(player);
             }
             click.getGui().draw();
         });

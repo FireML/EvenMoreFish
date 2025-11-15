@@ -9,6 +9,7 @@ import com.oheers.fish.commands.admin.AdminCommand;
 import com.oheers.fish.commands.arguments.RarityArgument;
 import com.oheers.fish.commands.main.subcommand.JournalSubcommand;
 import com.oheers.fish.commands.main.subcommand.ShopSubcommand;
+import com.oheers.fish.commands.main.subcommand.ToggleSubcommand;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.DatabaseUtil;
@@ -33,14 +34,15 @@ import org.jetbrains.annotations.NotNull;
 public class MainCommand {
 
     private static final HelpMessageBuilder HELP_MESSAGE = HelpMessageBuilder.create()
-            .addUsage(MainConfig.getInstance().getHelpSubCommandName(), ConfigMessage.HELP_GENERAL_HELP::getMessage)
-            .addUsage(MainConfig.getInstance().getGuiSubCommandName(), ConfigMessage.HELP_GENERAL_GUI::getMessage)
-            .addUsage(MainConfig.getInstance().getTopSubCommandName(), ConfigMessage.HELP_GENERAL_TOP::getMessage)
-            .addUsage(MainConfig.getInstance().getSellAllSubCommandName(), ConfigMessage.HELP_GENERAL_SELLALL::getMessage)
-            .addUsage(MainConfig.getInstance().getApplyBaitsSubCommandName(), ConfigMessage.HELP_GENERAL_APPLYBAITS::getMessage)
-            .addUsage(MainConfig.getInstance().getJournalSubCommandName(), ConfigMessage.HELP_GENERAL_JOURNAL::getMessage)
-            .addUsage(MainConfig.getInstance().getNextSubCommandName(), ConfigMessage.HELP_GENERAL_NEXT::getMessage)
-            .addUsage(MainConfig.getInstance().getToggleSubCommandName(), ConfigMessage.HELP_GENERAL_TOGGLE::getMessage);
+        .addUsage(MainConfig.getInstance().getAdminSubCommandName(), ConfigMessage.HELP_GENERAL_ADMIN::getMessage)
+        .addUsage(MainConfig.getInstance().getHelpSubCommandName(), ConfigMessage.HELP_GENERAL_HELP::getMessage)
+        .addUsage(MainConfig.getInstance().getGuiSubCommandName(), ConfigMessage.HELP_GENERAL_GUI::getMessage)
+        .addUsage(MainConfig.getInstance().getTopSubCommandName(), ConfigMessage.HELP_GENERAL_TOP::getMessage)
+        .addUsage(MainConfig.getInstance().getSellAllSubCommandName(), ConfigMessage.HELP_GENERAL_SELLALL::getMessage)
+        .addUsage(MainConfig.getInstance().getApplyBaitsSubCommandName(), ConfigMessage.HELP_GENERAL_APPLYBAITS::getMessage)
+        .addUsage(MainConfig.getInstance().getJournalSubCommandName(), ConfigMessage.HELP_GENERAL_JOURNAL::getMessage)
+        .addUsage(MainConfig.getInstance().getNextSubCommandName(), ConfigMessage.HELP_GENERAL_NEXT::getMessage)
+        .addUsage(MainConfig.getInstance().getToggleSubCommandName(), ConfigMessage.HELP_GENERAL_TOGGLE::getMessage);
 
 
     @Subcommand("admin")
@@ -51,6 +53,9 @@ public class MainCommand {
 
     @Subcommand("journal")
     JournalSubcommand journalSubcommand = new JournalSubcommand();
+
+    @Subcommand("toggle")
+    ToggleSubcommand toggleSubcommand = new ToggleSubcommand();
 
     @DefaultExecutes
     public void onDefault(@NotNull CommandSender sender) {
@@ -73,12 +78,6 @@ public class MainCommand {
         EMFMessage message = Competition.getNextCompetitionMessage();
         message.prependMessage(PrefixType.DEFAULT.getPrefix());
         message.send(sender);
-    }
-
-    @Executes("toggle")
-    @Permission(UserPerms.TOGGLE)
-    public void onToggle(CommandSender sender, @Executor Player player) {
-        EvenMoreFish.getInstance().performFishToggle(player);
     }
 
     @Executes("help")

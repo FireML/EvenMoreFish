@@ -2,7 +2,11 @@ package com.oheers.fish.api.requirement;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.registry.EMFRegistry;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -11,20 +15,20 @@ import java.util.Map;
 
 public class Requirement {
 
-    private final Map<String, List<String>> checkMap;
+    private final Map<String, List<String>> checkMap = new HashMap<>();
 
-    public Requirement() {
-        checkMap = new HashMap<>();
-    }
+    public Requirement() {}
 
     public Requirement(@NotNull String identifier, @NotNull List<String> values) {
-        checkMap = new HashMap<>();
-        processRequirement(identifier, values);
+        add(identifier, values);
     }
 
     public Requirement(@NotNull Map<String, List<String>> requirements) {
-        checkMap = new HashMap<>();
-        requirements.forEach(this::processRequirement);
+        add(requirements);
+    }
+
+    public Requirement(@Nullable Section section) {
+        add(section);
     }
 
     public Requirement add(@NotNull String identifier, @NotNull List<String> values) {
@@ -34,6 +38,24 @@ public class Requirement {
 
     public Requirement add(@NotNull Map<String, List<String>> requirements) {
         requirements.forEach(this::processRequirement);
+        return this;
+    }
+
+    public Requirement add(@Nullable Section section) {
+        if (section == null) {
+            return this;
+        }
+        section.getRoutesAsStrings(false).forEach(requirementString -> {
+            if (section.isList(requirementString)) {
+                processRequirement(requirementString, section.getStringList(requirementString));
+            } else {
+                String value = section.getString(requirementString);
+                if (value == null) {
+                    return;
+                }
+                processRequirement(requirementString, List.of(value));
+            }
+        });
         return this;
     }
 

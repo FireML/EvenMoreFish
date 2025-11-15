@@ -284,11 +284,11 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
     }
 
     private @NotNull String handleCustomFishingBoolean(Player player, String identifier) {
-        return Boolean.toString(!plugin.isCustomFishingDisabled(player));
+        return Boolean.toString(!plugin.getToggle().isCustomFishingDisabled(player));
     }
 
     private @NotNull String handleCustomFishingStatus(Player player, String identifier) {
-        return plugin.isCustomFishingDisabled(player)
+        return plugin.getToggle().isCustomFishingDisabled(player)
                 ? ConfigMessage.CUSTOM_FISHING_DISABLED.getMessage().getLegacyMessage()
                 : ConfigMessage.CUSTOM_FISHING_ENABLED.getMessage().getLegacyMessage();
     }

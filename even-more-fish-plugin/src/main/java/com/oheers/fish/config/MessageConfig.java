@@ -87,6 +87,12 @@ public class MessageConfig extends ConfigBase {
                 document.move("bossbar.minute", "duration.minute");
                 document.move("bossbar.second", "duration.second");
             })
+
+            // Config Version 7 - Moving the toggle messages to the toggle section.
+            .addCustomLogic("7", document -> {
+                document.move("toggle-on", "toggle.fishing.on");
+                document.move("toggle-off", "toggle.fishing.off");
+            })
             .build();
     }
 
