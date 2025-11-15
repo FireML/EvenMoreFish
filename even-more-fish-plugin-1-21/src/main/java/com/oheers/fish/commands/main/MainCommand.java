@@ -9,6 +9,7 @@ import com.oheers.fish.commands.admin.AdminCommand;
 import com.oheers.fish.commands.arguments.RarityArgument;
 import com.oheers.fish.commands.main.subcommand.JournalSubcommand;
 import com.oheers.fish.commands.main.subcommand.ShopSubcommand;
+import com.oheers.fish.commands.main.subcommand.ToggleSubcommand;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.DatabaseUtil;
@@ -53,6 +54,9 @@ public class MainCommand {
     @Subcommand("journal")
     JournalSubcommand journalSubcommand = new JournalSubcommand();
 
+    @Subcommand("toggle")
+    ToggleSubcommand toggleSubcommand = new ToggleSubcommand();
+
     @DefaultExecutes
     public void onDefault(@NotNull CommandSender sender) {
         if (!sender.hasPermission(UserPerms.GUI) || MainConfig.getInstance().useOldBaseCommandBehavior()) {
@@ -74,12 +78,6 @@ public class MainCommand {
         EMFMessage message = Competition.getNextCompetitionMessage();
         message.prependMessage(PrefixType.DEFAULT.getPrefix());
         message.send(sender);
-    }
-
-    @Executes("toggle")
-    @Permission(UserPerms.TOGGLE)
-    public void onToggle(CommandSender sender, @Executor Player player) {
-        EvenMoreFish.getInstance().getToggle().performFishToggle(player);
     }
 
     @Executes("help")

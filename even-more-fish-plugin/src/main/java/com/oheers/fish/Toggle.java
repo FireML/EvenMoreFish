@@ -15,8 +15,8 @@ public class Toggle {
 
     public Toggle(@NotNull EvenMoreFish plugin) {
         this.plugin = plugin;
-        this.fishToggleKey = new NamespacedKey(EvenMoreFish.getInstance(), "fish-disabled");
-        this.bossBarToggleKey = new NamespacedKey(EvenMoreFish.getInstance(), "bossbar-disabled");
+        this.fishToggleKey = new NamespacedKey(plugin, "fish-disabled");
+        this.bossBarToggleKey = new NamespacedKey(plugin, "bossbar-disabled");
     }
 
     // Fish Toggle

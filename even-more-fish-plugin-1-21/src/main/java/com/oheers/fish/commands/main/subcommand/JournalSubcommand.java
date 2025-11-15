@@ -15,6 +15,7 @@ import net.strokkur.commands.annotations.arguments.CustomArg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@Permission(UserPerms.JOURNAL)
 public class JournalSubcommand {
 
     @DefaultExecutes

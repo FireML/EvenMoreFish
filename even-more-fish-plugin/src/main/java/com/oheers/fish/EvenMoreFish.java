@@ -48,7 +48,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class EvenMoreFish extends EMFPlugin {
     private final Random random = ThreadLocalRandom.current();
-    private final Toggle toggle = new Toggle(this);
+    private final Toggle toggle;
 
     // Do some fish in some rarities have the comp-check-exempt: true.
     private boolean raritiesCompCheckExempt = false;
@@ -77,6 +77,10 @@ public abstract class EvenMoreFish extends EMFPlugin {
 
     public static TaskScheduler getScheduler() {
         return scheduler;
+    }
+
+    public EvenMoreFish() {
+        this.toggle = new Toggle(this);
     }
 
     @Override

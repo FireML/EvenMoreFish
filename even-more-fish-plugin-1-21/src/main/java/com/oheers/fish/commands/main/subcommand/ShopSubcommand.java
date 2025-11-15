@@ -5,12 +5,15 @@ import com.oheers.fish.commands.main.MainCommand;
 import com.oheers.fish.gui.guis.SellGui;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.permissions.UserPerms;
 import net.strokkur.commands.annotations.DefaultExecutes;
 import net.strokkur.commands.annotations.Executes;
 import net.strokkur.commands.annotations.Executor;
+import net.strokkur.commands.annotations.Permission;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@Permission(UserPerms.SHOP)
 public class ShopSubcommand {
 
     @DefaultExecutes
