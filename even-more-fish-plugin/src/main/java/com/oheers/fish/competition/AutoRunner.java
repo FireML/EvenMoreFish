@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 public class AutoRunner extends EMFTimer {
 
+    private int lastMinute = -1;
+
     public AutoRunner() {
         super(TimeUnit.SECONDS, 1);
     }
@@ -25,6 +27,9 @@ public class AutoRunner extends EMFTimer {
     public void run() {
         EvenMoreFish.getScheduler().runTask(
             () -> {
+                if (hasMinuteBeenChecked()) {
+                    return;
+                }
                 TimeCode now = TimeCode.now();
 
                 // Beginning the competition set for schedule
@@ -35,6 +40,15 @@ public class AutoRunner extends EMFTimer {
                 }
             }
         );
+    }
+
+    private boolean hasMinuteBeenChecked() {
+        int nowMinute = LocalTime.now().getMinute();
+        if (this.lastMinute != nowMinute) {
+            this.lastMinute = nowMinute;
+            return false;
+        }
+        return true;
     }
 
 }
