@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.competition.Bar;
+import com.oheers.fish.competition.Competition;
 import com.oheers.fish.messages.ConfigMessage;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -45,15 +47,25 @@ public class Toggle {
 
     public void performBossBarToggle(@NotNull Player player) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
+
+        Competition activeComp = Competition.getCurrentlyActive();
+        Bar activeBar = activeComp == null ? null : activeComp.getStatusBar();
+
         // If custom fishing is disabled
         if (isBossBarDisabled(player)) {
             // Set fish-disabled to false
             pdc.set(bossBarToggleKey, PersistentDataType.BOOLEAN, false);
             ConfigMessage.TOGGLE_BOSSBAR_ON.getMessage().send(player);
+            if (activeBar != null) {
+                activeBar.addPlayer(player);
+            }
         } else {
             // Set fish-disabled to true
             pdc.set(bossBarToggleKey, PersistentDataType.BOOLEAN, true);
             ConfigMessage.TOGGLE_BOSSBAR_OFF.getMessage().send(player);
+            if (activeBar != null) {
+                activeBar.removePlayer(player);
+            }
         }
     }
 
