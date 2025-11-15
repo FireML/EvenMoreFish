@@ -211,10 +211,6 @@ bait-rod-protection: <white>Protected your baited fishing rod. If you are trying
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
 
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <white>You will no longer catch custom fish.
-toggle-on: <white>You will now catch custom fish.
-
 toggle:
   fishing:
     off: <white>You will no longer catch custom fish.
