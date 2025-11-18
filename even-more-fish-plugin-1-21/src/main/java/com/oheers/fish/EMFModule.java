@@ -25,10 +25,10 @@ public class EMFModule extends EvenMoreFish{
             event.registrar().register(altName);
 
             // Register the admin shortcut command
-            String adminShortcut = MainConfig.getInstance().getAdminShortcutCommandName();
-            if (adminShortcut == null) {
+            if (!MainConfig.getInstance().isAdminShortcutCommandEnabled()) {
                 return;
             }
+            String adminShortcut = MainConfig.getInstance().getAdminShortcutCommandName();
             LiteralCommandNode<CommandSourceStack> admin = AdminCommandBrigadier.create();
             LiteralCommandNode<CommandSourceStack> redirect = Commands.literal(adminShortcut).redirect(admin).build();
             event.registrar().register(redirect);
