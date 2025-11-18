@@ -166,6 +166,9 @@ public abstract class EvenMoreFish extends EMFPlugin {
 
     @Override
     public void onDisable() {
+        // Do this first.
+        autoRunner.stop();
+
         disableCommands();
 
         terminateGuis();

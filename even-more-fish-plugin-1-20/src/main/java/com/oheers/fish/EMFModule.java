@@ -25,11 +25,11 @@ public class EMFModule extends EvenMoreFish {
         new MainCommand().getCommand().register(this);
 
         // Shortcut command for /emf admin
-        if (MainConfig.getInstance().isAdminShortcutCommandEnabled()) {
-            new AdminCommand(
-                    MainConfig.getInstance().getAdminShortcutCommandName()
-            ).getCommand().register(this);
+        if (!MainConfig.getInstance().isAdminShortcutCommandEnabled()) {
+            return;
         }
+        String adminShortcut = MainConfig.getInstance().getAdminShortcutCommandName();
+        new AdminCommand(adminShortcut).getCommand().register(this);
     }
 
     @Override
