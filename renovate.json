@@ -84,5 +84,5 @@
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "dependencyDashboard": true,
-  "ignoreDeps": ["org.gradle.toolchains.foojay-resolver-convention"]
+  "ignoreDeps": ["org.gradle.toolchains.foojay-resolver-convention", "com.github.TechFortress:GriefPrevention"]
 }
