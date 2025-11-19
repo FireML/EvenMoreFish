@@ -130,35 +130,35 @@ help-list:
   rarities: '[noPrefix]顯示所有稀有度。'
 # Competition help (/emf admin competition help)
 help-competition:
-  start: '[noPrefix]Starts a competition of a specified duration'
-  end: '[noPrefix]Ends the current competition (if there is one)'
+  start: '[noPrefix]開始一場指定時長的比賽'
+  end: '[noPrefix]結束當前比賽（如有）'
 # Admin help (/emf admin help)
 help-admin:
-  bait: '[noPrefix]Gives baits to a player.'
-  competition: '[noPrefix]Starts or stops a competition'
-  clearbaits: '[noPrefix]Removes all applied baits from a fishing rod.'
-  fish: '[noPrefix]Gives a fish to a player.'
-  nbt-rod: '[noPrefix]Gives a custom NBT rod to a player required for catching EMF fish.'
-  custom-rod: '[noPrefix]Gives a custom fishing rod to a player.'
-  reload: '[noPrefix]Reloads the plugin''s config files.'
-  migrate: '[noPrefix]Migrate the database from Legacy (V2) to V3'
-  addons: '[noPrefix]Display all addons.'
-  version: '[noPrefix]Displays plugin information.'
-  rawitem: '[noPrefix]Displays the item in your main hand as raw NBT.'
+  bait: '[noPrefix]給玩家魚餌。'
+  competition: '[noPrefix]開始或停止比賽'
+  clearbaits: '[noPrefix]移除釣竿上的所有魚餌。'
+  fish: '[noPrefix]給玩家一條魚。'
+  nbt-rod: '[noPrefix]給玩家一支捕捉 EMF 魚所需的自訂 NBT 釣竿。'
+  custom-rod: '[noPrefix]給玩家自訂釣竿。'
+  reload: '[noPrefix]重新載入外掛的設定檔。'
+  migrate: '[noPrefix]將資料庫從舊版 (V2) 遷移到 V3'
+  addons: '[noPrefix]顯示所有外掛。'
+  version: '[noPrefix]顯示外掛資訊。'
+  rawitem: '[noPrefix]以原始 NBT 顯示你主手中的物品。'
 # Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
 no-player-in-place: <gray>------
 # Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist
-no-fish-in-place: Start fishing to take this place
+no-fish-in-place: 開始釣魚以取得此位置
 # Shown when the emf %emf_competition_place_size_*% placeholder requests a position in the leaderboard that doesn't exist
-no-size-in-place: Start fishing to take this place
+no-size-in-place: 開始釣魚以取得此位置
 # Shown when the emf %emf_competition_place_player_*% placeholder is used when there's no competition running
 no-competition-running: <gray>------
 # Shown when the emf %emf_competition_place_fish_*% placeholder is used when there's no competition running
-no-competition-running-fish: No competition running right now.
+no-competition-running-fish: 目前沒有進行中的比賽。
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
-no-competition-running-size: No competition running right now.
+no-competition-running-size: 目前沒有進行中的比賽。
 # Broadcasted to all players when a competition is extended.
-competition-time-extended: <white>The active competition has been extended by {duration}!
+competition-time-extended: <white>目前進行中的比賽已延長 {duration}！
 # HOw should %emf_custom_fishing_status% be formatted?
 custom-fishing-enabled: <green>啟用
 custom-fishing-disabled: <red>已停用
@@ -185,16 +185,16 @@ bait-use: <green>你使用了一根釣竿的 {bait_theme}<bold>{bait} </bold></g
 # Sent when someone tries to use a bait in creative
 bait-survival-limited: <red>你必須在 <underlined>生存模式<reset> 中才能將魚餌應用在釣竿上。
 # Sent when someone tries to merge a baited rod into an unbaited rod
-bait-rod-protection: <white>Protected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.
+bait-rod-protection: <white>你的釣竿已被保護。如果你想修理它，請將它放在第一個欄位。
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
-bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
+bait-invalid-rod: <white>這支釣竿無法裝上魚餌！
 toggle:
   fishing:
-    off: <white>You will no longer catch custom fish.
-    on: <white>You will now catch custom fish.
+    off: <white>你將不再捕捉自訂魚類。
+    on: <white>你現在可以捕捉自訂魚類。
   bossbar:
-    off: <white>You will no longer see competition bossbars.
-    on: <white>You will now see competition bossbars.
+    off: <white>你將不再看到比賽的 Boss 狀態條。
+    on: <white>你現在可以看到比賽的 Boss 狀態條。
 admin:
   # Opens an /emf shop for another player
   open-fish-shop: <green>為玩家{player}打開了釣魚商店.
@@ -225,19 +225,19 @@ admin:
   # When an invalid competition type is provided
   competition-type-invalid: '<green>這不是一個競爭類型，可用類型：MOST_FISH, LARGEST_FISH, SPECIFIC_FISH, LARGEST_TOTAL_FISH, SPECIFIC_RARITY'
   # When an invalid competition id is provided
-  competition-id-invalid: <white>That isn't a valid competition id.
+  competition-id-invalid: <white>比賽 id 無效。
   # When the command /emf admin custom-rod is run.
-  custom-rod-given: <white>You have given {player} a custom fishing rod.
+  custom-rod-given: <white>已給 {player} 自訂釣竿。
   # When there's a modrinth update available, don't translate the URL otherwise it won't direct to the correct page.
   update-available: '<green>釣魚大賽插件更新啦！還不來看看嗎https://modrinth.com/plugin/evenmorefish/versions?l=paper'
   # When the plugin is reloaded
   reload: <green>成功地重新加載了插件，由Kyle翻譯。
   # When checking a list of registered addons. The actual list is added to the end of this message.
-  list-addons: '<white>Registered {addon-type}s: '
+  list-addons: '<white>已註冊的 {addon-type}: '
 # When an invalid rarity is provided for a command.
-rarity-invalid: <white>That is not a valid rarity!
+rarity-invalid: <white>那不是有效的稀有度！
 # When the player can't access the Fishing Journal
-journal-disabled: <white>The Fishing Journal is not accessible. Please enable the plugin's database.
+journal-disabled: <white>釣魚記錄無法存取。請啟用外掛的資料庫。
 # Bait messages
 bait:
   # How the lore should look ({baits} takes up multiple lines)
@@ -255,7 +255,7 @@ bait:
     - '{boosts}'
     - '{lore}'
     - <white>
-    - '<#dadada>Drop onto a fishing rod to apply,'
+    - '<#dadada><#dadada>拖到釣竿上以套用，'
     - '<#dadada>或按住 <u>SHIFT</u> 來全部套用。'
     - <white>
   # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
