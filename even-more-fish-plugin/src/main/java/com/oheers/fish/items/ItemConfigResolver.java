@@ -37,6 +37,7 @@ public class ItemConfigResolver {
     private @NotNull Function<Section, ItemConfig<PotionEffect>> potionMetaResolver = PotionMetaItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Integer>> quantityResolver = QuantityItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver = UnbreakableItemConfig::new;
+    private @NotNull Function<Section, ItemConfig<String>> itemModelResolver = ItemModelItemConfig::new;
 
     private ItemConfigResolver() {}
 
@@ -135,6 +136,15 @@ public class ItemConfigResolver {
 
     public void setUnbreakableResolver(@NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver) {
         this.unbreakableResolver = unbreakableResolver;
+        EvenMoreFish.getInstance().reload(null);
+    }
+
+    public @NotNull ItemConfig<String> getItemModel(@NotNull Section section) {
+        return resolve(itemModelResolver, section);
+    }
+
+    public void setItemModelResolver(@NotNull Function<Section, ItemConfig<String>> itemModelResolver) {
+        this.itemModelResolver = itemModelResolver;
         EvenMoreFish.getInstance().reload(null);
     }
 
