@@ -8,6 +8,7 @@ import com.oheers.fish.items.configs.DisplayNameItemConfig;
 import com.oheers.fish.items.configs.DyeColourItemConfig;
 import com.oheers.fish.items.configs.EnchantmentsItemConfig;
 import com.oheers.fish.items.configs.GlowingItemConfig;
+import com.oheers.fish.items.configs.ItemConfig;
 import com.oheers.fish.items.configs.ItemDamageItemConfig;
 import com.oheers.fish.items.configs.LoreItemConfig;
 import com.oheers.fish.items.configs.PotionMetaItemConfig;
@@ -17,8 +18,11 @@ import com.oheers.fish.utils.ItemUtils;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NbtApiException;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,16 +43,17 @@ public class ItemFactory {
     private Consumer<ItemStack> finalChanges = null;
     private @NotNull ItemStack baseItem;
 
-    private final CustomModelDataItemConfig customModelData;
-    private final ItemDamageItemConfig itemDamage;
-    private final DisplayNameItemConfig displayName;
-    private final DyeColourItemConfig dyeColour;
-    private final GlowingItemConfig glowing;
-    private final LoreItemConfig lore;
-    private final PotionMetaItemConfig potionMeta;
-    private final EnchantmentsItemConfig enchantments;
-    private final UnbreakableItemConfig unbreakable;
-    private final QuantityItemConfig quantity;
+    private final ItemConfig<Float> customModelData;
+    private final ItemConfig<Integer> itemDamage;
+    private final ItemConfig<String> displayName;
+    private final ItemConfig<Color> dyeColour;
+    private final ItemConfig<Boolean> glowing;
+    private final ItemConfig<List<String>> lore;
+    private final ItemConfig<PotionEffect> potionMeta;
+    private final ItemConfig<Map<Enchantment, Integer>> enchantments;
+    private final ItemConfig<Boolean> unbreakable;
+    private final ItemConfig<Integer> quantity;
+    private final ItemConfig<String> itemModel;
 
     private ItemFactory(@NotNull Section initialSection, @Nullable String configLocation) {
         if (configLocation == null) {
@@ -60,16 +65,19 @@ public class ItemFactory {
         // Updates the configuration to put everything in the correct place
         new ItemFactoryConversion().performConversions(this.configuration);
 
-        this.customModelData = new CustomModelDataItemConfig(this.configuration);
-        this.itemDamage = new ItemDamageItemConfig(this.configuration);
-        this.displayName = new DisplayNameItemConfig(this.configuration);
-        this.dyeColour = new DyeColourItemConfig(this.configuration);
-        this.glowing = new GlowingItemConfig(this.configuration);
-        this.lore = new LoreItemConfig(this.configuration);
-        this.potionMeta = new PotionMetaItemConfig(this.configuration);
-        this.enchantments = new EnchantmentsItemConfig(this.configuration);
-        this.unbreakable = new UnbreakableItemConfig(this.configuration);
-        this.quantity = new QuantityItemConfig(this.configuration);
+        ItemConfigResolver resolver = ItemConfigResolver.getInstance();
+
+        this.customModelData = resolver.getCustomModelData(this.configuration);
+        this.itemDamage = resolver.getDamage(this.configuration);
+        this.displayName = resolver.getDisplayName(this.configuration);
+        this.dyeColour = resolver.getDyeColour(this.configuration);
+        this.glowing = resolver.getGlowing(this.configuration);
+        this.lore = resolver.getLore(this.configuration);
+        this.potionMeta = resolver.getPotionMeta(this.configuration);
+        this.enchantments = resolver.getEnchantments(this.configuration);
+        this.unbreakable = resolver.getUnbreakable(this.configuration);
+        this.quantity = resolver.getQuantity(this.configuration);
+        this.itemModel = resolver.getItemModel(this.configuration);
 
         this.baseItem = getBaseItem();
     }
@@ -111,6 +119,7 @@ public class ItemFactory {
             enchantments.apply(item, replacements);
             unbreakable.apply(item, replacements);
             quantity.apply(item, replacements);
+            itemModel.apply(item, replacements);
 
             if (finalChanges != null) {
                 finalChanges.accept(item);
@@ -196,44 +205,48 @@ public class ItemFactory {
 
     // Customization Methods //
 
-    public CustomModelDataItemConfig getCustomModelData() {
+    public ItemConfig<Float> getCustomModelData() {
         return customModelData;
     }
 
-    public ItemDamageItemConfig getItemDamage() {
+    public ItemConfig<Integer> getItemDamage() {
         return itemDamage;
     }
 
-    public DisplayNameItemConfig getDisplayName() {
+    public ItemConfig<String> getDisplayName() {
         return displayName;
     }
 
-    public DyeColourItemConfig getDyeColour() {
+    public ItemConfig<Color> getDyeColour() {
         return dyeColour;
     }
 
-    public GlowingItemConfig getGlowing() {
+    public ItemConfig<Boolean> getGlowing() {
         return glowing;
     }
 
-    public LoreItemConfig getLore() {
+    public ItemConfig<List<String>> getLore() {
         return lore;
     }
 
-    public PotionMetaItemConfig getPotionMeta() {
+    public ItemConfig<PotionEffect> getPotionMeta() {
         return potionMeta;
     }
 
-    public EnchantmentsItemConfig getEnchantments() {
+    public ItemConfig<Map<Enchantment, Integer>> getEnchantments() {
         return enchantments;
     }
 
-    public UnbreakableItemConfig getUnbreakable() {
+    public ItemConfig<Boolean> getUnbreakable() {
         return unbreakable;
     }
 
-    public QuantityItemConfig getQuantity() {
+    public ItemConfig<Integer> getQuantity() {
         return quantity;
+    }
+
+    public ItemConfig<String> getItemModel() {
+        return itemModel;
     }
 
     // Base Item Methods //
