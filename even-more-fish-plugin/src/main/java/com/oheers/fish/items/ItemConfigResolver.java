@@ -15,6 +15,7 @@ import com.oheers.fish.items.configs.QuantityItemConfig;
 import com.oheers.fish.items.configs.UnbreakableItemConfig;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Color;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class ItemConfigResolver {
     private @NotNull Function<Section, ItemConfig<PotionEffect>> potionMetaResolver = PotionMetaItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Integer>> quantityResolver = QuantityItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver = UnbreakableItemConfig::new;
-    private @NotNull Function<Section, ItemConfig<String>> itemModelResolver = ItemModelItemConfig::new;
+    private @NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver = ItemModelItemConfig::new;
 
     private ItemConfigResolver() {}
 
@@ -139,11 +140,11 @@ public class ItemConfigResolver {
         EvenMoreFish.getInstance().reload(null);
     }
 
-    public @NotNull ItemConfig<String> getItemModel(@NotNull Section section) {
+    public @NotNull ItemConfig<NamespacedKey> getItemModel(@NotNull Section section) {
         return resolve(itemModelResolver, section);
     }
 
-    public void setItemModelResolver(@NotNull Function<Section, ItemConfig<String>> itemModelResolver) {
+    public void setItemModelResolver(@NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver) {
         this.itemModelResolver = itemModelResolver;
         EvenMoreFish.getInstance().reload(null);
     }

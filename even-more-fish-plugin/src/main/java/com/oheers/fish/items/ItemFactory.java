@@ -20,6 +20,7 @@ import de.tr7zw.changeme.nbtapi.NbtApiException;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -53,7 +54,7 @@ public class ItemFactory {
     private final ItemConfig<Map<Enchantment, Integer>> enchantments;
     private final ItemConfig<Boolean> unbreakable;
     private final ItemConfig<Integer> quantity;
-    private final ItemConfig<String> itemModel;
+    private final ItemConfig<NamespacedKey> itemModel;
 
     private ItemFactory(@NotNull Section initialSection, @Nullable String configLocation) {
         if (configLocation == null) {
@@ -245,7 +246,7 @@ public class ItemFactory {
         return quantity;
     }
 
-    public ItemConfig<String> getItemModel() {
+    public ItemConfig<NamespacedKey> getItemModel() {
         return itemModel;
     }
 
