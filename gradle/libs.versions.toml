@@ -46,7 +46,7 @@ playerpoints = "org.black_ixx:playerpoints:3.3.3"
 headdatabase-api = "com.arcaniax:HeadDatabase-API:1.3.2"
 itemsadder-api = "com.github.LoneDev6:API-ItemsAdder:3.6.1"
 nbt-api = "de.tr7zw:item-nbt-api:2.15.3"
-oraxen = "io.th0rgal:oraxen:1.195.1"
+oraxen = "io.th0rgal:oraxen:1.196.0"
 nexo = "com.nexomc:nexo:1.15.0"
 
 # Craft Engine
