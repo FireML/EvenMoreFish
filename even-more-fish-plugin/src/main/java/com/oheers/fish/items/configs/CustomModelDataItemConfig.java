@@ -2,13 +2,14 @@ package com.oheers.fish.items.configs;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.inventory.ItemStack;
+import org.enginehub.linbus.stream.token.LinToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class CustomModelDataItemConfig extends ItemConfig<Integer> {
+public class CustomModelDataItemConfig extends ItemConfig<Float> {
 
     public CustomModelDataItemConfig(@NotNull Section section) {
         super(section);
@@ -16,15 +17,15 @@ public class CustomModelDataItemConfig extends ItemConfig<Integer> {
 
     @Override
     @NotNull
-    public Integer getConfiguredValue() {
-        return section.getInt("item.custom-model-data");
+    public Float getConfiguredValue() {
+        return section.getFloat("item.custom-model-data");
     }
 
     @Override
-    protected BiConsumer<ItemStack, Integer> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Float> applyToItem(@Nullable Map<String, ?> replacements) {
         return (item, value) -> {
             if (value != 0) {
-                item.editMeta(meta -> meta.setCustomModelData(value));
+                item.editMeta(meta -> meta.setCustomModelData(Math.round(value)));
             }
         };
     }
