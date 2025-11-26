@@ -1,6 +1,5 @@
 package com.oheers.fish.selling;
 
-import com.oheers.fish.FishUtils;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -15,87 +14,92 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public class WorthNBT {
 
     private WorthNBT() {
         throw new UnsupportedOperationException();
     }
 
-    public static ItemStack setNBT(@NotNull ItemStack fishItem, @NotNull Fish fish) {
+    public static void setNBT(@NotNull ItemStack fishItem, @NotNull Fish fish) {
         if (NbtUtils.isInvalidItem(fishItem)) {
-            return fishItem;
+            return;
         }
-        // creates key and plops in the value of "value"
         NBT.modify(fishItem, nbt -> {
             ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+
+            // Set Length
             if (fish.getLength() > 0) {
                 emfCompound.setFloat(NbtKeys.EMF_FISH_LENGTH, fish.getLength());
             }
+
+            // Set Fisherman
             if (!fish.hasFishermanDisabled() && fish.getFisherman() != null) {
                 emfCompound.setString(NbtKeys.EMF_FISH_PLAYER, fish.getFisherman().toString());
             }
+
+            // Set Fish Name
             emfCompound.setString(NbtKeys.EMF_FISH_NAME, fish.getName());
+
+            // Set Rarity
             emfCompound.setString(NbtKeys.EMF_FISH_RARITY, fish.getRarity().getId());
+
+            // Set Random Index
             emfCompound.setInteger(NbtKeys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getRandomIndex());
         });
-
-        return fishItem;
     }
 
-    public static void setNBT(Skull fishSkull, Fish fish) {
-        NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH);
-        NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_PLAYER);
-        NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY);
-        NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME);
-        NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX);
+    public static void setNBT(@NotNull Skull skull, @NotNull Fish fish) {
+        NamespacedKey lengthKey = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH);
+        NamespacedKey playerKey = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_PLAYER);
+        NamespacedKey rarityKey = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY);
+        NamespacedKey fishNameKey = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME);
+        NamespacedKey randomIndexKey = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX);
 
-        //TODO try with NBT-API
-        PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
+        PersistentDataContainer pdc = skull.getPersistentDataContainer();
 
-        if (fish.getLength() > 0) {
-            itemMeta.set(nbtlength, PersistentDataType.FLOAT, fish.getLength());
-        }
-        if (fish.getFisherman() != null && !fish.hasFishermanDisabled()) {
-            itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
-        }
-        itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getRandomIndex());
-        itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getId());
-        itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
-    }
-
-    public static double getValue(@NotNull ItemStack item) {
-        if (NbtUtils.isInvalidItem(item)) {
-            return -1.0;
+        // Set Length
+        float length = fish.getLength();
+        if (length > 0) {
+            pdc.set(lengthKey, PersistentDataType.FLOAT, length);
         }
 
-        // creating the key to check for
-        if (!FishUtils.isFish(item)) {
-            return -1.0;
-        }
-
-        // it's a fish so it'll definitely have these NBT values
-        Float length = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
-        String rarityStr = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
-        String name = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
-
-        // gets a possible set-worth in the fish config
-        try {
-            Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
-            Fish fish = rarity.getFish(name);
-            double value = fish.getSetWorth();
-
-            if (value == 0) {
-                throw new NullPointerException();
+        // Set Fisherman
+        if (!fish.hasFishermanDisabled()) {
+            UUID fisherman = fish.getFisherman();
+            if (fisherman != null) {
+                pdc.set(playerKey, PersistentDataType.STRING, fisherman.toString());
             }
-            return value;
-        } catch (NullPointerException npe) {
-            // there's no set-worth so we're calculating the worth ourselves
-            return length != null && length > 0 ? getMultipliedValue(length, rarityStr, name) : 0;
+        }
+
+        // Set Random Index
+        pdc.set(randomIndexKey, PersistentDataType.INTEGER, fish.getFactory().getRandomIndex());
+
+        // Set Rarity
+        pdc.set(rarityKey, PersistentDataType.STRING, fish.getRarity().getId());
+
+        // Set Fish Name
+        pdc.set(fishNameKey, PersistentDataType.STRING, fish.getName());
+    }
+
+    public static @NotNull Optional<Double> getValue(@NotNull Fish fish) {
+        double setWorth = fish.getSetWorth();
+        float length = fish.getLength();
+        if (setWorth > 0) {
+            return Optional.of(setWorth);
+        } else if (length > 0.0D) {
+            return getMultipliedValue(length, fish.getRarity().getId(), fish.getName());
+        } else {
+            return Optional.of(0.0D);
         }
     }
 
-    private static double getMultipliedValue(Float length, String rarity, String name) {
-        return getWorthMultiplier(rarity, name) * length;
+    private static Optional<Double> getMultipliedValue(Float length, String rarity, String name) {
+        return Optional.of(
+            getWorthMultiplier(rarity, name) * length
+        );
     }
 
     private static double getWorthMultiplier(final String rarityStr, final String name) {
