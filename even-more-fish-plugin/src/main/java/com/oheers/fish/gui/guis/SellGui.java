@@ -28,15 +28,15 @@ public class SellGui extends ConfigGui {
 
         Economy economy = Economy.getInstance();
 
-        SellHelper shopHelper = new SellHelper(this.fishInventory, player);
-        addReplacement("{sell-price}", economy.getWorthFormat(shopHelper.getTotalWorth(), true));
+        double shopSaleValue = SellHelper.calculateInventoryWorth(this.fishInventory);
+        addReplacement("{sell-price}", economy.getWorthFormat(shopSaleValue, true));
 
-        SellHelper playerHelper = new SellHelper(player.getInventory(), player);
-        addReplacement("{sell-all-price}", economy.getWorthFormat(playerHelper.getTotalWorth(), true));
+        double playerSaleValue = SellHelper.calculateInventoryWorth(player.getInventory());
+        addReplacement("{sell-all-price}", economy.getWorthFormat(playerSaleValue, true));
 
         setCloseAction(close -> {
             if (MainConfig.getInstance().sellOverDrop()) {
-                new SellHelper(this.fishInventory, this.player).sellFish();
+                new SellHelper(this.fishInventory, this.player).sell();
             }
             doRescue();
             return false;

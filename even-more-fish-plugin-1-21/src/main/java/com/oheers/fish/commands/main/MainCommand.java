@@ -108,7 +108,7 @@ public class MainCommand {
     @Permission(UserPerms.SELL_ALL)
     public void onSellAll(CommandSender sender, @Executor Player player) {
         if (CommandUtils.isEconomyEnabled(player)) {
-            new SellHelper(player.getInventory(), player).sellFish();
+            new SellHelper(player.getInventory(), player).sell();
         }
     }
 
