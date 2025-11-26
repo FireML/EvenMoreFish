@@ -92,9 +92,9 @@ public class SellHelper {
 
     private static List<SoldFish> fetchFish(@NotNull Inventory inventory, boolean removeFromInventory) {
         List<SoldFish> list = new ArrayList<>();
-        Iterator<ItemStack> iterator = inventory.iterator();
-        while (iterator.hasNext()) {
-            ItemStack item = iterator.next();
+        int size = inventory.getSize();
+        for (int slot = 0; slot < size; slot++) {
+            ItemStack item = inventory.getItem(slot);
             if (item == null || hasEquipped(inventory, item)) {
                 continue;
             }
@@ -102,7 +102,7 @@ public class SellHelper {
                 SoldFish fish = new SoldFish(item);
                 list.add(fish);
                 if (removeFromInventory) {
-                    iterator.remove();
+                    inventory.setItem(slot, null);
                 }
             } catch (IllegalArgumentException exception) {
                 EvenMoreFish.getInstance().debug(exception.getMessage(), exception);
