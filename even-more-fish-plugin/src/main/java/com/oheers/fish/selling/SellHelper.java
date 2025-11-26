@@ -55,6 +55,14 @@ public class SellHelper {
         this.count = fish.stream().mapToInt(SoldFish::getAmount).sum();
     }
 
+    /**
+     * @deprecated use {@link #sell()} instead
+     */
+    @Deprecated(since = "2.1.4", forRemoval = true)
+    public void sellFish() {
+        sell();
+    }
+
     public void sell() {
         if (!Economy.getInstance().isEnabled()) {
             ConfigMessage.ECONOMY_DISABLED.getMessage().send(player);
