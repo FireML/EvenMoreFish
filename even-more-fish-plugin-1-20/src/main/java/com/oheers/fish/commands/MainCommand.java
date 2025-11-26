@@ -201,7 +201,7 @@ public class MainCommand {
             .executesPlayer(info -> {
                 Player player = info.sender();
                 if (CommandUtils.isEconomyEnabled(player)) {
-                    new SellHelper(player.getInventory(), player).sellFish();
+                    new SellHelper(player.getInventory(), player).sell();
                 }
             });
     }

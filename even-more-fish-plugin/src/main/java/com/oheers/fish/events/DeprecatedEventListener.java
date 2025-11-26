@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 @SuppressWarnings("removal")
 public class DeprecatedEventListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCaughtEvent(EMFFishCaughtEvent event) {
         EMFFishEvent deprecated = new EMFFishEvent(event.getFish(), event.getPlayer(), event.getCatchTime());
         if (!deprecated.callEvent()) {
@@ -20,7 +20,7 @@ public class DeprecatedEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHuntEvent(EMFFishHuntEvent event) {
         com.oheers.fish.api.EMFFishHuntEvent deprecated = new com.oheers.fish.api.EMFFishHuntEvent(event.getFish(), event.getPlayer(), event.getHuntTime());
         if (!deprecated.callEvent()) {
