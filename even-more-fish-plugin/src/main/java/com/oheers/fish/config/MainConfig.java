@@ -251,7 +251,7 @@ public class MainConfig extends ConfigBase {
         return adminShortcutEnabled;
     }
 
-    public String getAdminShortcutCommandName() {
+    public @NotNull String getAdminShortcutCommandName() {
         return adminShortcutName;
     }
 
