@@ -92,7 +92,7 @@ public class WorthNBT {
         } else if (length > 0.0D) {
             return getMultipliedValue(length, fish.getRarity().getId(), fish.getName());
         } else {
-            return Optional.of(0.0D);
+            return Optional.empty();
         }
     }
 
