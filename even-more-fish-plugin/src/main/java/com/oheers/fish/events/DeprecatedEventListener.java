@@ -3,6 +3,7 @@ package com.oheers.fish.events;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.api.events.EMFFishCaughtEvent;
 import com.oheers.fish.api.events.EMFFishHuntEvent;
+import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,7 +15,10 @@ public class DeprecatedEventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCaughtEvent(EMFFishCaughtEvent event) {
-        EMFFishEvent deprecated = new EMFFishEvent(event.getFish(), event.getPlayer(), event.getCatchTime());
+        if (!(event.getFish() instanceof Fish emfFish)) {
+            return;
+        }
+        EMFFishEvent deprecated = new EMFFishEvent(emfFish, event.getPlayer(), event.getCatchTime());
         if (!deprecated.callEvent()) {
             event.setCancelled(true);
         }
@@ -22,7 +26,10 @@ public class DeprecatedEventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHuntEvent(EMFFishHuntEvent event) {
-        com.oheers.fish.api.EMFFishHuntEvent deprecated = new com.oheers.fish.api.EMFFishHuntEvent(event.getFish(), event.getPlayer(), event.getHuntTime());
+        if (!(event.getFish() instanceof Fish emfFish)) {
+            return;
+        }
+        com.oheers.fish.api.EMFFishHuntEvent deprecated = new com.oheers.fish.api.EMFFishHuntEvent(emfFish, event.getPlayer(), event.getHuntTime());
         if (!deprecated.callEvent()) {
             event.setCancelled(true);
         }
