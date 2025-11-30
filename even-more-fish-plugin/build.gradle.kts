@@ -118,10 +118,15 @@ sourceSets {
 
 val copyAddons by tasks.registering(Copy::class) {
     // Make sure the plugin waits for the addons to be built first
-    dependsOn(":addons:even-more-fish-addons-j17:build", ":addons:even-more-fish-addons-j21:build")
+    dependsOn(
+        ":addons:even-more-fish-addons-j17:build",
+        ":addons:even-more-fish-addons-j21:build",
+        ":addons:even-more-fish-addons-itemmodel:build"
+    )
 
     from(project(":addons:even-more-fish-addons-j17").layout.buildDirectory.dir("libs"))
     from(project(":addons:even-more-fish-addons-j21").layout.buildDirectory.dir("libs"))
+    from(project(":addons:even-more-fish-addons-itemmodel").layout.buildDirectory.dir("libs"))
 
     into(file("src/main/resources/addons"))
 }
