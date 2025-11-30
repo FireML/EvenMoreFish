@@ -1,9 +1,11 @@
-package com.oheers.fish.config;
+package com.oheers.fish.api.config;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@ApiStatus.Internal
 public class ConfigUtils {
 
     public static @NotNull Section getOrCreateSection(@NotNull Section section, @NotNull String path) {

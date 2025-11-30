@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.AbstractFileBasedManager;
 import com.oheers.fish.api.fishing.items.AbstractFishManager;
+import com.oheers.fish.api.fishing.items.IFish;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
@@ -13,8 +14,12 @@ import com.oheers.fish.fishing.items.config.RarityConversions;
 import com.oheers.fish.fishing.rods.CustomRod;
 import com.oheers.fish.utils.WeightedRandom;
 import org.bukkit.Location;
+import org.bukkit.block.Skull;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,6 +87,19 @@ public class FishManager extends AbstractFishManager<Rarity> {
     public @Nullable Fish getFish(@NotNull String rarityName, @NotNull String fishName) {
         final Rarity rarity = getRarity(rarityName);
         return rarity != null ? rarity.getFish(fishName) : null;
+    }
+
+    @Override
+    public @Nullable IFish getFish(@NotNull ItemStack item) {
+        return FishUtils.getFish(item);
+    }
+
+    @Override
+    public @Nullable IFish getFish(@NotNull Entity itemEntity) {
+        if (!(itemEntity instanceof Item item)) {
+            return null;
+        }
+        return getFish(item.getItemStack());
     }
 
     private Rarity loadRaritySafely(File file) throws InvalidConfigurationException {

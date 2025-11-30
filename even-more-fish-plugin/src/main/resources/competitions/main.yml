@@ -11,3 +11,18 @@ blacklisted-days:
   - Sunday
 bossbar-colour: GREEN
 bossbar-prefix: '<bold><green>Fishing Contest: '
+
+rewards:
+  '1':
+    - MESSAGE:<green>Congratulations for coming 1st! You have received $5000 and 2 diamonds!
+    - MONEY:5000
+    - ITEM:DIAMOND,2
+  '2':
+    - MESSAGE:<green>Congratulations for coming 1st! You have received $2500 and a diamond!
+    - MONEY:2500
+    - ITEM:DIAMOND,1
+  '3':
+    - MESSAGE:<yellow>Congratulations for coming 3rd! You have received $1000!
+    - MONEY:1000
+  participation:
+    - MESSAGE:<yellow>Unfortunately only the top 3 players receive awards for fishing. Better luck next time. :)

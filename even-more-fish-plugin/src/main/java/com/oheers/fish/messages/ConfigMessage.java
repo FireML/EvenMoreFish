@@ -44,10 +44,12 @@ public enum ConfigMessage {
     BAIT_INVALID_ROD("<white>You cannot apply bait to this fishing rod!", PrefixType.ERROR, true, false, "bait-invalid-rod"),
 
     BAR_LAYOUT("{prefix}{time-formatted} {remaining}", PrefixType.NONE, true, false, "bossbar.layout"),
-    BAR_SECOND("<white>{second}s", PrefixType.NONE, true, false, "bossbar.second"),
-    BAR_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "bossbar.minute"),
-    BAR_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "bossbar.hour"),
     BAR_REMAINING("left", PrefixType.NONE, true, false, "bossbar.remaining"),
+
+    DURATION_SECOND("<white>{second}s", PrefixType.NONE, true, false, "duration.second"),
+    DURATION_MINUTE("<white>{minute}m", PrefixType.NONE, true, false, "duration.minute"),
+    DURATION_HOUR("<white>{hour}h", PrefixType.NONE, true, false, "duration.hour"),
+    DURATION_DAY("<white>{day}d", PrefixType.NONE, true, false, "duration.day"),
 
     COMPETITION_ALREADY_RUNNING("<white>There's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 
@@ -128,7 +130,6 @@ public enum ConfigMessage {
     HELP_ADMIN_RELOAD("[noPrefix]Reloads the plugin's config files", PrefixType.ADMIN, false, true, "help-admin.reload"),
     HELP_ADMIN_VERSION("[noPrefix]Displays plugin information.", PrefixType.ADMIN, false, true, "help-admin.version"),
     HELP_ADMIN_MIGRATE("[noPrefix]Migrate the database from Legacy (V2) to V3", PrefixType.ADMIN, false, true, "help-admin.migrate"),
-    HELP_ADMIN_REWARDTYPES("[noPrefix]Display all registered reward types", PrefixType.ADMIN, false, true, "help-admin.rewardtypes"),
     HELP_ADMIN_ADDONS("[noPrefix]Show all registered addons", PrefixType.ADMIN, false, true, "help-admin.addons"),
     HELP_ADMIN_RAWITEM("[noPrefix]Displays the item in your main hand as raw NBT.", PrefixType.ADMIN, false, true, "help-admin.rawitem"),
     HELP_LIST_FISH("[noPrefix]Display all fish in a specific rarity.", PrefixType.ADMIN, false, true, "help-list.fish"),
@@ -161,6 +162,7 @@ public enum ConfigMessage {
 
     NO_BAITS("<white>The fishing rod does not have any baits applied.", PrefixType.ERROR, true, true, "admin.no-baits-on-rod"),
     NO_COMPETITION_RUNNING("<white>No competition running right now.", PrefixType.ERROR, false, false, "no-competition-running"),
+    COMPETITION_TIME_EXTENDED("<white>The active competition has been extended by {duration}!", PrefixType.DEFAULT, false, false, "competition-time-extended"),
     NO_FISH_CAUGHT("<white>You didn't catch any fish.", PrefixType.DEFAULT, true, true, "no-record"),
     NO_PERMISSION_FISHING("<red>You don't have permission to fish using this rod, you will catch vanilla fish.", PrefixType.DEFAULT, true, true, "no-permission-fishing"),
     NO_PERMISSION("<red>You don't have permission to run that command.", PrefixType.ERROR, false, true, "no-permission"),
@@ -188,8 +190,10 @@ public enum ConfigMessage {
     SELL_PRICE_FORMAT("#,##0.0", PrefixType.NONE, false, false, "sell-price-format"),
     TIME_ALERT("<white>There is {time_formatted} left on the competition for {type}", PrefixType.DEFAULT, false, true, "time-alert"),
 
-    TOGGLE_ON("<white>You will now catch custom fish.", PrefixType.DEFAULT, false, true, "toggle-on"),
-    TOGGLE_OFF("<white>You will no longer catch custom fish.", PrefixType.DEFAULT, false, true, "toggle-off"),
+    TOGGLE_FISHING_ON("<white>You will now catch custom fish.", PrefixType.DEFAULT, false, true, "toggle.fishing.on"),
+    TOGGLE_FISHING_OFF("<white>You will no longer catch custom fish.", PrefixType.DEFAULT, false, true, "toggle.fishing.off"),
+    TOGGLE_BOSSBAR_ON("<white>You will now see competition bossbars.", PrefixType.DEFAULT, false, true, "toggle.bossbar.on"),
+    TOGGLE_BOSSBAR_OFF("<white>You will no longer see competition bossbars.", PrefixType.DEFAULT, false, true, "toggle.bossbar.off"),
 
     WORTH_GUI_NAME("<dark_blue><b>Sell Fish</b>", PrefixType.NONE, false, false, "worth-gui-name"),
     WORTH_GUI_CONFIRM_ALL_BUTTON_NAME("<gold><b>CONFIRM</b>", PrefixType.NONE, false, false, "confirm-sell-all-gui-name"),

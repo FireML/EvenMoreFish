@@ -1,7 +1,7 @@
 package com.oheers.fish.fishing.rods;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;

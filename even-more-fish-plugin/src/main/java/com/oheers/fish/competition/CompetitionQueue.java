@@ -1,23 +1,32 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.AbstractFileBasedManager;
 import com.oheers.fish.competition.configs.CompetitionConversions;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.fishing.rods.RodManager;
+import com.oheers.fish.utils.TimeCode;
+import org.enginehub.linbus.stream.token.LinToken;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> {
 
-    private final Map<Integer, Competition> competitions = new TreeMap<>();
+    private final TreeMap<TimeCode, CompetitionFile> competitions = new TreeMap<>(TimeCode.getComparator());
 
     public CompetitionQueue() {
         super(RodManager.getInstance());
@@ -40,11 +49,10 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         // Populate the competitions schedule
         competitions.clear();
         getItemMap().values().forEach(file -> {
-            Competition competition = new Competition(file);
-            if (loadSpecificDayTimes(competition)) {
+            if (loadSpecificDayTimes(file)) {
                 return;
             }
-            if (loadRepeatedTiming(competition)) {
+            if (loadRepeatedTiming(file)) {
                 return;
             }
             EvenMoreFish.getInstance().debug(
@@ -62,25 +70,24 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
         );
     }
 
-    public Map<Integer, Competition> getCompetitions() {
+    public Map<TimeCode, CompetitionFile> getCompetitions() {
         return competitions;
     }
 
-    private boolean loadSpecificDayTimes(@NotNull Competition competition) {
-        Map<DayOfWeek, List<String>> scheduledDays = competition.getCompetitionFile().getScheduledDays();
+    private boolean loadSpecificDayTimes(@NotNull CompetitionFile file) {
+        Map<DayOfWeek, List<String>> scheduledDays = file.getScheduledDays();
         if (scheduledDays.isEmpty()) {
             return false;
         }
         scheduledDays.forEach((day, times) ->
                 times.forEach(time ->
-                        competitions.put(generateTimeCode(day, time), competition)
+                        competitions.put(generateTimeCode(day, time), file)
                 )
         );
         return true;
     }
 
-    private boolean loadRepeatedTiming(@NotNull Competition competition) {
-        CompetitionFile file = competition.getCompetitionFile();
+    private boolean loadRepeatedTiming(@NotNull CompetitionFile file) {
         List<String> repeatedTimes = file.getTimes();
 
         if (repeatedTimes.isEmpty()) {
@@ -92,53 +99,45 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
 
         for (String time : repeatedTimes) {
             for (DayOfWeek day : daysToUse) {
-                competitions.put(generateTimeCode(day, time), competition);
+                competitions.put(generateTimeCode(day, time), file);
             }
         }
         return true;
     }
 
-    public int generateTimeCode(DayOfWeek day, String tfh) {
-        int beginning = Arrays.asList(DayOfWeek.values()).indexOf(day) * 24 * 60;
-        if (tfh != null) {
-            String[] time = tfh.split(":");
-            if (time.length != 2) {
-                return -1;
-            }
-
-            try {
-                beginning += Integer.parseInt(time[0]) * 60;
-                beginning += Integer.parseInt(time[1]);
-            } catch (NumberFormatException e) {
-                return -1;
-            }
+    public @Nullable TimeCode generateTimeCode(@NotNull DayOfWeek day, @NotNull String hourMinute) {
+        String[] time = hourMinute.split(":");
+        if (time.length != 2) {
+            return null;
         }
-        return beginning;
+        Integer hour = FishUtils.getInteger(time[0]);
+        Integer minute = FishUtils.getInteger(time[1]);
+        if (hour == null || minute == null) {
+            return null;
+        }
+        return TimeCode.exact(day, hour, minute);
     }
 
     public int getSize() {
         return competitions.size();
     }
 
-    public int getNextCompetition() {
-        int currentTimeCode = AutoRunner.getCurrentTimeCode();
-
-        if (competitions.containsKey(currentTimeCode)) {
-            return currentTimeCode;
+    public TimeCode getNextCompetition() {
+        TimeCode now = TimeCode.now();
+        if (competitions.containsKey(now)) {
+            return now;
         }
 
-        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH);
-        competitions.put(currentTimeCode, competition);
+        competitions.put(now, null);
+        TimeCode nextCode = findNextCode(now);
+        competitions.remove(now);
 
-        int nextTimeCode = findNextCompetitionTimeCode(currentTimeCode);
-
-        competitions.remove(currentTimeCode);
-        return nextTimeCode;
+        return nextCode;
     }
 
-    private int findNextCompetitionTimeCode(int currentTimeCode) {
-        List<Integer> timeCodes = new ArrayList<>(competitions.keySet());
-        int position = timeCodes.indexOf(currentTimeCode);
+    private TimeCode findNextCode(@NotNull TimeCode now) {
+        List<TimeCode> timeCodes = new ArrayList<>(competitions.keySet());
+        int position = timeCodes.indexOf(now);
 
         if (position == competitions.size() - 1) {
             return timeCodes.get(0);
@@ -146,5 +145,6 @@ public class CompetitionQueue extends AbstractFileBasedManager<CompetitionFile> 
 
         return timeCodes.get(position + 1);
     }
+
 }
 

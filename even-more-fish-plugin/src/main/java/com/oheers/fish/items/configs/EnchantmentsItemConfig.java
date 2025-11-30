@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class EnchantmentsItemConfig extends ItemConfig<Map<Enchantment, @NotNull Integer>> {
+public class EnchantmentsItemConfig extends ItemConfig<Map<Enchantment, Integer>> {
 
     public EnchantmentsItemConfig(@NotNull Section section) {
         super(section);
     }
 
     @Override
-    public Map<Enchantment, @NotNull Integer> getConfiguredValue() {
+    public Map<Enchantment, Integer> getConfiguredValue() {
         List<String> strings = section.getStringList("item.enchantments");
         if (strings.isEmpty()) {
             return Map.of();
@@ -49,7 +49,7 @@ public class EnchantmentsItemConfig extends ItemConfig<Map<Enchantment, @NotNull
     }
 
     @Override
-    protected BiConsumer<ItemStack, Map<Enchantment, @NotNull Integer>> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Map<Enchantment, Integer>> applyToItem(@Nullable Map<String, ?> replacements) {
         return ItemStack::addUnsafeEnchantments;
     }
 

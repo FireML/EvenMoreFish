@@ -1,6 +1,10 @@
 package com.oheers.fish.api.fishing.items;
 
 import com.oheers.fish.api.AbstractFileBasedManager;
+import org.bukkit.block.Skull;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +31,10 @@ public abstract class AbstractFishManager<T extends IRarity> extends AbstractFil
     public abstract @Nullable IRarity getRarity(@NotNull String rarityName);
 
     public abstract @Nullable IFish getFish(@NotNull String rarityName, @NotNull String fishName);
+
+    public abstract @Nullable IFish getFish(@NotNull ItemStack item);
+
+    public abstract @Nullable IFish getFish(@NotNull Entity itemEntity);
 
     public abstract @NotNull TreeMap<String, ? extends IRarity> getRarityMap();
 

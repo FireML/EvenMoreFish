@@ -5,6 +5,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.items.configs.DisplayNameItemConfig;
+import com.oheers.fish.items.configs.ItemConfig;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
@@ -33,7 +34,7 @@ public class BaitItemFactory {
     public ItemFactory createFactory() {
         ItemFactory factory = ItemFactory.itemFactory(config);
 
-        DisplayNameItemConfig displayNameConfig = factory.getDisplayName();
+        ItemConfig<String> displayNameConfig = factory.getDisplayName();
         displayNameConfig.setEnabled(true);
         displayNameConfig.setDefault("<yellow>" + baitId);
 

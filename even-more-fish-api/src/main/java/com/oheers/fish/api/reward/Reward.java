@@ -1,6 +1,7 @@
 package com.oheers.fish.api.reward;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.registry.EMFRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,7 +27,7 @@ public class Reward {
             this.key = split[0];
             this.value = String.join(":", Arrays.copyOfRange(split, 1, split.length));
         }
-        RewardType rewardType = RewardType.get(this.key);
+        RewardType rewardType = EMFRegistry.REWARD_TYPE.get(this.key);
         if (rewardType != null) {
             this.rewardType = rewardType;
         }

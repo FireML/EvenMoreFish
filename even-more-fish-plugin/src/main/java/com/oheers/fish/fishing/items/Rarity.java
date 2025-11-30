@@ -4,8 +4,8 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.fishing.items.IRarity;
 import com.oheers.fish.api.requirement.Requirement;
-import com.oheers.fish.config.ConfigBase;
-import com.oheers.fish.config.ConfigUtils;
+import com.oheers.fish.api.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigUtils;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.api.fishing.CatchType;
 import com.oheers.fish.fishing.items.config.RarityFileUpdates;
@@ -29,6 +29,7 @@ public class Rarity extends ConfigBase implements IRarity {
     private static final Logger logger = EvenMoreFish.getInstance().getLogger();
 
     private boolean fishWeighted;
+    private boolean showInJournal = true;
     private final Requirement requirement;
     private final List<Fish> fishList;
 
@@ -43,6 +44,7 @@ public class Rarity extends ConfigBase implements IRarity {
         updateRequirementFormats();
         this.requirement = loadRequirements();
         this.fishList = loadFish();
+        this.showInJournal = getConfig().getBoolean("journal", true);
     }
 
     // Current required config: id
@@ -188,6 +190,16 @@ public class Rarity extends ConfigBase implements IRarity {
         return item == null ? new ItemStack(Material.COD) : item;
     }
 
+    @Override
+    public boolean getShowInJournal() {
+        return showInJournal;
+    }
+
+    @Override
+    public void setShowInJournal(boolean showInJournal) {
+        this.showInJournal = showInJournal;
+    }
+
     // External variables
 
     @Override
@@ -225,20 +237,7 @@ public class Rarity extends ConfigBase implements IRarity {
 
     private Requirement loadRequirements() {
         Section requirementSection = ConfigUtils.getSectionOfMany(getConfig(), "requirements", "requirement");
-        Requirement requirement = new Requirement();
-        if (requirementSection == null) {
-            return requirement;
-        }
-        requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
-            List<String> values = new ArrayList<>();
-            if (requirementSection.isList(requirementString)) {
-                values.addAll(requirementSection.getStringList(requirementString));
-            } else {
-                values.add(requirementSection.getString(requirementString));
-            }
-            requirement.add(requirementString, values);
-        });
-        return requirement;
+        return new Requirement(requirementSection);
     }
 
     private void updateRequirementFormats() {

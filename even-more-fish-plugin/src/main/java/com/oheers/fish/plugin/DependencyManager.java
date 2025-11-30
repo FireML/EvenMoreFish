@@ -7,6 +7,7 @@ import com.oheers.fish.economy.PlayerPointsEconomyType;
 import com.oheers.fish.economy.VaultEconomyType;
 import com.oheers.fish.events.AuraSkillsFishingEvent;
 import com.oheers.fish.events.AureliumSkillsFishingEvent;
+import com.oheers.fish.events.DeprecatedEventListener;
 import com.oheers.fish.events.EconomyServiceRegisterEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
 import com.oheers.fish.placeholders.PlaceholderReceiver;
@@ -57,6 +58,9 @@ public class DependencyManager implements Listener {
 
         loadEconomy();
         checkPapi();
+
+        // Handle deprecated events.
+        pm.registerEvents(new DeprecatedEventListener(), plugin);
     }
 
     public void checkOptionalDependencies() {

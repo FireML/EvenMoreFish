@@ -1,11 +1,9 @@
 package com.oheers.fish.fishing.items.config;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.api.Logging;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.messagelib.message.ComponentMessage;
 

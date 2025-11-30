@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class GlowingItemConfig extends ItemConfig<@NotNull Boolean> {
+public class GlowingItemConfig extends ItemConfig<Boolean> {
 
     public GlowingItemConfig(@NotNull Section section) {
         super(section);
@@ -21,7 +21,7 @@ public class GlowingItemConfig extends ItemConfig<@NotNull Boolean> {
     }
 
     @Override
-    protected BiConsumer<ItemStack, @NotNull Boolean> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Boolean> applyToItem(@Nullable Map<String, ?> replacements) {
         return (item, value) -> {
             if (value) {
                 ItemUtils.glowify(item);

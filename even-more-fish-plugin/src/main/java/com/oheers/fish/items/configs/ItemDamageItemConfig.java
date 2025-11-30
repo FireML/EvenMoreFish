@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
-public class ItemDamageItemConfig extends ItemConfig<@NotNull Integer> {
+public class ItemDamageItemConfig extends ItemConfig<Integer> {
 
     public ItemDamageItemConfig(@NotNull Section section) {
         super(section);
@@ -24,7 +24,7 @@ public class ItemDamageItemConfig extends ItemConfig<@NotNull Integer> {
     }
 
     @Override
-    protected BiConsumer<ItemStack, @NotNull Integer> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Integer> applyToItem(@Nullable Map<String, ?> replacements) {
         return (item, value) -> {
             int maxDurability = item.getType().getMaxDurability();
             item.editMeta(Damageable.class, meta -> {

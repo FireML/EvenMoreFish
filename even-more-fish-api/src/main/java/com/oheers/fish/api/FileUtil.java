@@ -125,6 +125,8 @@ public class FileUtil {
             }
         } catch (final NoClassDefFoundError ignored) {
             //ignored
+        } catch(final UnsupportedClassVersionError e) {
+            EMFPlugin.getInstance().debug(e.getMessage());
         }
         return null;
     }

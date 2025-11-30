@@ -4,7 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.CompetitionType;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.messages.EMFSingleMessage;

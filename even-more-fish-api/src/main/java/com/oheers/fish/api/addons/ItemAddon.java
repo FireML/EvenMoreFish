@@ -1,6 +1,8 @@
 package com.oheers.fish.api.addons;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.registry.EMFRegistry;
+import com.oheers.fish.api.registry.RegistryItem;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -11,29 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public abstract class ItemAddon implements Listener {
-
-    private static final Map<String, ItemAddon> loaded = new HashMap<>();
-
-    public static Map<String, ItemAddon> getLoadedAddons() {
-        return Map.copyOf(loaded);
-    }
-
-    public static void unregisterAll() {
-        loaded.clear();
-    }
-
-    public static @Nullable ItemAddon get(final @NotNull String prefix) {
-        return loaded.get(prefix);
-    }
-
-    public static @Nullable ItemStack getItem(final @NotNull String prefix, final @NotNull String id) {
-        ItemAddon addon = loaded.get(prefix);
-        if (addon == null) {
-            return null;
-        }
-        return addon.getItemStack(id);
-    }
+public abstract class ItemAddon implements Listener, RegistryItem {
 
     /**
      * @param id id of the ItemStack without the prefix.
@@ -47,6 +27,11 @@ public abstract class ItemAddon implements Listener {
 
     public abstract String getIdentifier();
 
+    @Override
+    public @NotNull String getKey() {
+        return getIdentifier();
+    }
+
     public String getVersion() {
         return "0.0.0";
     }
@@ -56,17 +41,7 @@ public abstract class ItemAddon implements Listener {
     }
 
     public boolean register() {
-        if (!canLoad()) {
-            return false;
-        }
-        String id = getIdentifier();
-        if (loaded.containsKey(id)) {
-            return false;
-        }
-        Bukkit.getPluginManager().registerEvents(this, EMFPlugin.getInstance());
-        loaded.put(id, this);
-        EMFPlugin.getInstance().debug("Loaded " + getIdentifier() + " ItemAddon.");
-        return true;
+        return EMFRegistry.ITEM_ADDON.register(this);
     }
 
     @Override
@@ -76,6 +51,29 @@ public abstract class ItemAddon implements Listener {
 
     protected Logger getLogger() {
         return EMFPlugin.getInstance().getLogger();
+    }
+
+    // Deprecated
+
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static Map<String, ItemAddon> getLoadedAddons() {
+        return EMFRegistry.ITEM_ADDON.getRegistry();
+    }
+
+    /**
+     * @deprecated This method now does nothing as clearing the registry is unsupported.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static void unregisterAll() {}
+
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static @Nullable ItemAddon get(final @NotNull String prefix) {
+        return EMFRegistry.ITEM_ADDON.get(prefix);
+    }
+
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static @Nullable ItemStack getItem(final @NotNull String prefix, final @NotNull String id) {
+        return EMFRegistry.ITEM_ADDON.getItem(prefix, id);
     }
 
 }

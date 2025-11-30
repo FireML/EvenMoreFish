@@ -16,8 +16,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RandomStrategy implements CompetitionStrategy {
 
@@ -69,7 +71,7 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     public CompetitionType getRandomType(@NotNull Competition competition) {
-        List<CompetitionType> types = Arrays.stream(CompetitionType.values())
+        List<CompetitionType> types = getValidTypes(competition)
             .filter(type -> {
                 try {
                     return type.getStrategy().randomInit(competition);
@@ -78,7 +80,7 @@ public class RandomStrategy implements CompetitionStrategy {
                     return false;
                 }
             })
-            .collect(Collectors.toCollection(ArrayList::new));
+            .toList();
 
         if (types.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().warning("No competition types available for random strategy. Defaulting to LARGEST_FISH.");
@@ -87,6 +89,14 @@ public class RandomStrategy implements CompetitionStrategy {
 
         int type = EvenMoreFish.getInstance().getRandom().nextInt(types.size());
         return types.get(type);
+    }
+
+    private Stream<CompetitionType> getValidTypes(@NotNull Competition competition) {
+        List<String> types = competition.getCompetitionFile().getConfig().getStringList("random-selection");
+        if (types == null || types.isEmpty()) {
+            return Arrays.stream(CompetitionType.values());
+        }
+        return types.stream().map(CompetitionType::getType).filter(Objects::nonNull);
     }
 
     @Override

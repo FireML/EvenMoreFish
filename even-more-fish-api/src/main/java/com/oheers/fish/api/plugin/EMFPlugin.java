@@ -35,18 +35,39 @@ public abstract class EMFPlugin extends JavaPlugin {
 
     public void debug(final Level level, final String message) {
         if (isDebugSession()) {
-            getInstance().getLogger().log(level, () -> "DEBUG %s".formatted(message));
+            log(level, "DEBUG %s".formatted(message));
         }
     }
 
     public void debug(final Level level, final String message, Exception e) {
         if (isDebugSession()) {
-            getInstance().getLogger().log(level, "DEBUG %s".formatted(message), e);
+            log(level, "DEBUG %s".formatted(message), e);
         }
     }
 
     public abstract boolean isDebugSession();
 
     public abstract void reload(@Nullable CommandSender sender);
+
+
+    private static void log(final Level level, String message) {
+        log(level, message, null);
+    }
+
+    private static void log(final Level level, String message, Throwable throwable) {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+
+        String caller = "UnknownSource";
+        if (stack.length > 3) {
+            StackTraceElement element = stack[3];
+            caller = element.getClassName() + "#" + element.getMethodName() + ":" + element.getLineNumber();
+        }
+
+        if (throwable == null) {
+            getInstance().getLogger().log(level, "[" + caller + "] " + message);
+        } else {
+            getInstance().getLogger().log(level, "[" + caller + "] " + message, throwable);
+        }
+    }
 
 }

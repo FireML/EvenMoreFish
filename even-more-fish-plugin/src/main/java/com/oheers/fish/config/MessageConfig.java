@@ -1,6 +1,7 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.messages.EMFConfigLoader;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 
@@ -78,6 +79,19 @@ public class MessageConfig extends ConfigBase {
                 document.set("prefix-error", oldError + prefix);
 
                 document.remove("prefix");
+            })
+
+            // Config Version 6 - Making the bossbar time format accessible outside the bossbar.
+            .addCustomLogic("6", document -> {
+                document.move("bossbar.hour", "duration.hour");
+                document.move("bossbar.minute", "duration.minute");
+                document.move("bossbar.second", "duration.second");
+            })
+
+            // Config Version 7 - Moving the toggle messages to the toggle section.
+            .addCustomLogic("7", document -> {
+                document.move("toggle-on", "toggle.fishing.on");
+                document.move("toggle-off", "toggle.fishing.off");
             })
             .build();
     }

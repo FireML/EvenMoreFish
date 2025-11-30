@@ -1,41 +1,19 @@
 package com.oheers.fish.api.requirement;
 
-import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.registry.EMFRegistry;
+import com.oheers.fish.api.registry.RegistryItem;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A way to check if a player meets a certain requirement.
  * This interface can be implemented by third party plugins to register their own Requirement.
  */
-public abstract class RequirementType {
-
-    private static final Map<String, RequirementType> loadedTypes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-    public static Map<String, RequirementType> getLoadedTypes() {
-        return Map.copyOf(loadedTypes);
-    }
-
-    public static void unregisterAll() {
-        loadedTypes.clear();
-    }
-
-    public static @Nullable RequirementType get(@NotNull String identifier) {
-        return loadedTypes.get(identifier);
-    }
-
-    public static boolean unregister(@NotNull String identifier) {
-        if (!loadedTypes.containsKey(identifier)) {
-            return false;
-        }
-        loadedTypes.remove(identifier);
-        return true;
-    }
+public abstract class RequirementType implements RegistryItem {
 
     public RequirementType() {}
 
@@ -52,17 +30,17 @@ public abstract class RequirementType {
      */
     public abstract @NotNull String getIdentifier();
 
+    @Override
+    public @NotNull String getKey() {
+        return getIdentifier();
+    }
+
     public abstract @NotNull String getAuthor();
 
     public abstract @NotNull Plugin getPlugin();
 
     public boolean register() {
-        if (loadedTypes.containsKey(getIdentifier())) {
-            return false;
-        }
-        loadedTypes.put(getIdentifier(), this);
-        EMFPlugin.getInstance().debug("Registered " + getIdentifier() + " RequirementType");
-        return true;
+        return EMFRegistry.REQUIREMENT_TYPE.register(this);
     }
 
     public boolean unregister() {
@@ -83,6 +61,38 @@ public abstract class RequirementType {
     @Override
     public int hashCode() {
         return getIdentifier().hashCode();
+    }
+
+    // Deprecated
+
+    /**
+     * @deprecated Use {@link RequirementTypeRegistry#getRegistry()} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static Map<String, RequirementType> getLoadedTypes() {
+        return EMFRegistry.REQUIREMENT_TYPE.getRegistry();
+    }
+
+    /**
+     * @deprecated This method now does nothing as clearing the registry is unsupported.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static void unregisterAll() {}
+
+    /**
+     * @deprecated Use {@link RequirementTypeRegistry#get(String)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static @Nullable RequirementType get(@NotNull String identifier) {
+        return EMFRegistry.REQUIREMENT_TYPE.get(identifier);
+    }
+
+    /**
+     * @deprecated Use {@link RequirementTypeRegistry#unregister(String)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static boolean unregister(@NotNull String identifier) {
+        return EMFRegistry.REQUIREMENT_TYPE.unregister(identifier);
     }
 
 }

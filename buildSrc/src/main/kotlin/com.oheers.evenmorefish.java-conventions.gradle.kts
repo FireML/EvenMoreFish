@@ -10,6 +10,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
+//todo, should be in its own plugin
 tasks {
     if (project.name.contains("addons")) {
         jar {

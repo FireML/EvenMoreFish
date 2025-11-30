@@ -1,10 +1,11 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.fishing.items.IFish;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
-import com.oheers.fish.config.ConfigUtils;
+import com.oheers.fish.api.config.ConfigUtils;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.api.fishing.CatchType;
 import com.oheers.fish.items.ItemFactory;
@@ -45,7 +46,7 @@ public class Fish implements IFish {
     private List<Reward> sellRewards;
     private String eventType;
 
-    private Requirement requirement = new Requirement();
+    private @NotNull Requirement requirement;
 
     private boolean wasBaited;
     private boolean silent;
@@ -59,6 +60,8 @@ public class Fish implements IFish {
 
     private final boolean disableFisherman;
     private final String displayName;
+
+    private boolean showInJournal;
 
     private int day = -1;
     private final double setWorth;
@@ -97,6 +100,8 @@ public class Fish implements IFish {
 
         this.displayName = factory.getDisplayName().getConfiguredValue();
 
+        this.showInJournal = section.getBoolean("journal", true);
+
         factory.getLore().setEnabled(!section.getBoolean("disable-lore", false));
 
         setSize();
@@ -107,7 +112,7 @@ public class Fish implements IFish {
         checkSellEvent();
         checkSilent();
 
-        handleRequirements();
+        this.requirement = loadRequirements();
     }
 
     /**
@@ -130,21 +135,9 @@ public class Fish implements IFish {
         return new Fish(rarity, section);
     }
 
-    private void handleRequirements() {
+    private Requirement loadRequirements() {
         Section requirementSection = ConfigUtils.getSectionOfMany(section, "requirements", "requirement");
-        requirement = new Requirement();
-        if (requirementSection == null) {
-            return;
-        }
-        requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
-            List<String> values = new ArrayList<>();
-            if (requirementSection.isList(requirementString)) {
-                values.addAll(requirementSection.getStringList(requirementString));
-            } else {
-                values.add(requirementSection.getString(requirementString));
-            }
-            requirement.add(requirementString, values);
-        });
+        return new Requirement(requirementSection);
     }
 
     @Override
@@ -254,15 +247,12 @@ public class Fish implements IFish {
     }
 
     private void checkEffects() {
-
         String effectConfig = section.getString("effect");
 
         // if the config doesn't have an effect stated to be given
         if (effectConfig == null) {
             return;
         }
-
-        String[] separated = effectConfig.split(":");
 
         // Check if fisherman is null
         if (this.fisherman == null) {
@@ -274,35 +264,14 @@ public class Fish implements IFish {
             return;
         }
 
-        Runnable fallback = () -> {
+        PotionEffect effect = FishUtils.getPotionEffect(effectConfig);
+        if (effect == null) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
             EvenMoreFish.getInstance().getLogger().warning("Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
-        };
-
-        // if it's formatted wrong, it'll just give the player this as a stock effect
-        if (separated.length < 3) {
-            fallback.run();
             return;
         }
 
-        PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
-        // Handle the effect type being null.
-        if (effect == null) {
-            fallback.run();
-            return;
-        }
-        int amplitude = Integer.parseInt(separated[1]);
-        // *20 to bring it to seconds rather than ticks
-        int time = Integer.parseInt(separated[2]) * 20;
-
-        try {
-            player.addPotionEffect(new PotionEffect(effect, time, amplitude));
-        } catch (IllegalArgumentException e) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "ATTENTION! There was an error adding the effect from the " + this.name + " fish.");
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "ATTENTION! Check your config files and ensure spelling of the effect name is correct.");
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "ATTENTION! If the problem persists, ask for help on the support discord server.");
-        }
+        EvenMoreFish.getScheduler().runTask(player, () -> player.addPotionEffect(effect));
     }
 
     // prepares it to be given to the player
@@ -491,7 +460,7 @@ public class Fish implements IFish {
 
     @Override
     public @NotNull List<Reward> getSellRewards() {
-        return sellRewards == null ? new ArrayList<>() : fishRewards;
+        return sellRewards == null ? new ArrayList<>() : sellRewards;
     }
 
     @Override
@@ -587,6 +556,16 @@ public class Fish implements IFish {
             EvenMoreFish.getInstance().getLogger().warning("Fish " + getName() + " has an incorrect catch-type. Defaulting to its rarity's catch-type.");
             return rarity.getCatchType();
         }
+    }
+
+    @Override
+    public boolean getShowInJournal() {
+        return showInJournal;
+    }
+
+    @Override
+    public void setShowInJournal(boolean showInJournal) {
+        this.showInJournal = showInJournal;
     }
 
     @Override

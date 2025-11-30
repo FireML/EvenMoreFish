@@ -1,7 +1,7 @@
 package com.oheers.fish.fishing;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.api.EMFFishHuntEvent;
+import com.oheers.fish.api.events.EMFFishHuntEvent;
 import com.oheers.fish.api.fishing.CatchType;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
@@ -79,8 +79,7 @@ public class HuntingProcessor extends Processor<EntityDeathEvent> {
 
     @Override
     protected boolean fireEvent(@NotNull Fish fish, @NotNull Player player) {
-        EMFFishHuntEvent fishHuntEvent = new EMFFishHuntEvent(fish, player, LocalDateTime.now());
-        return fishHuntEvent.callEvent();
+        return new EMFFishHuntEvent(fish, player, LocalDateTime.now()).callEvent();
     }
 
     @Override

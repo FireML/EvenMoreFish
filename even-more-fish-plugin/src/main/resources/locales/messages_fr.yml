@@ -44,13 +44,15 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   layout: '{prefix}{time-formatted} {remaining}'
-  # The abbreviations used for different units of time in the {time-formatted} variable.
-  hour: <white>{hour}h
-  minute: <white>{minute}m
-  second: <white>{second}s
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   # This is the {remaining} variable.
   remaining: restantes
+# Formatting for time duration.
+duration:
+  day: <white>{day}d
+  hour: <white>{hour}h
+  minute: <white>{minute}m
+  second: <white>{second}s
 # The prefix shown in commands. Keeping the space in is recommended.
 prefix-regular: '<green>[EvenMoreFish] '
 # The prefix shown in admin commands.
@@ -141,7 +143,6 @@ help-admin:
   reload: '[noPrefix]Recharge les configurations du plugin'
   migrate: '[noPrefix]Migre la base de données de Legacy (V2) to V3'
   addons: '[noPrefix]Afficher tous les modules complémentaires.'
-  rewardtypes: '[noPrefix]Affiche tous les types de récompenses.'
   version: '[noPrefix]Affiche les informations du plugin.'
   rawitem: '[noPrefix]Affiche l''objet dans votre main principale en tant que NBT brut.'
 # Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
@@ -156,6 +157,8 @@ no-competition-running: Aucune compétition en cours actuellement.
 no-competition-running-fish: Aucune compétition en cours actuellement.
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
 no-competition-running-size: Aucune compétition en cours actuellement.
+# Broadcasted to all players when a competition is extended.
+competition-time-extended: <white>The active competition has been extended by {duration}!
 # HOw should %emf_custom_fishing_status% be formatted?
 custom-fishing-enabled: <green>Activé
 custom-fishing-disabled: <red>Désactivé
@@ -185,9 +188,13 @@ bait-survival-limited: <white>Vous devez être en <u>survie</u> pour appliquer d
 bait-rod-protection: <white>Protégé votre canne à pêche appâtée. Si vous essayez de la réparer, veuillez la mettre dans le premier emplacement.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>Tu ne peux pas appliquer d'appât sur cette canne à pêche !
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <white>Vous n'attraperez plus de poisson personnalisé.
-toggle-on: <white>Vous allez maintenant attraper des poissons personnalisés.
+toggle:
+  fishing:
+    off: <white>You will no longer catch custom fish.
+    on: <white>You will now catch custom fish.
+  bossbar:
+    off: <white>You will no longer see competition bossbars.
+    on: <white>You will now see competition bossbars.
 admin:
   # Opens an /emf shop for another player
   open-fish-shop: <white>Boutique ouverte pour {player}.
@@ -264,4 +271,4 @@ bait:
   unused-slot: <gray>► ? <i>Emplacement disponible
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-version: 5
+version: 7

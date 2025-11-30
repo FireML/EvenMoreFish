@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 public class UpdateChecker {
+    
     private final EvenMoreFish plugin;
 
     public UpdateChecker(final EvenMoreFish plugin) {
@@ -46,7 +47,9 @@ public class UpdateChecker {
             }
 
             JSONObject latestVersion = (JSONObject) versions.get(0);
-            return latestVersion.get("version_number").toString();
+            String version = latestVersion.get("version_number").toString();
+            int mcVersionSeparatorIndex = version.lastIndexOf("-");
+            return version.substring(0, mcVersionSeparatorIndex);
         } catch (Exception e) {
             plugin.getLogger().warning("Update check failed: " + e.getMessage());
             plugin.getLogger().info("Manual update check: https://modrinth.com/plugin/evenmorefish/versions");
@@ -64,4 +67,5 @@ public class UpdateChecker {
             return modrinthVersion.compareTo(serverVersion) > 0;
         });
     }
+
 }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class UnbreakableItemConfig extends ItemConfig<@NotNull Boolean> {
+public class UnbreakableItemConfig extends ItemConfig<Boolean> {
 
     public UnbreakableItemConfig(@NotNull Section section) {
         super(section);
@@ -20,7 +20,7 @@ public class UnbreakableItemConfig extends ItemConfig<@NotNull Boolean> {
     }
 
     @Override
-    protected BiConsumer<ItemStack, @NotNull Boolean> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Boolean> applyToItem(@Nullable Map<String, ?> replacements) {
         return (item, value) -> item.editMeta(meta -> meta.setUnbreakable(value));
     }
 

@@ -42,6 +42,10 @@ public interface IRarity {
 
     @NotNull ItemStack getMaterial();
 
+    boolean getShowInJournal();
+
+    void setShowInJournal(boolean showInJournal);
+
     boolean isFishWeighted();
 
     void setFishWeighted(boolean fishWeighted);

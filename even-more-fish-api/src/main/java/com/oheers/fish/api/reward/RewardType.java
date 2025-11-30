@@ -1,6 +1,8 @@
 package com.oheers.fish.api.reward;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.registry.EMFRegistry;
+import com.oheers.fish.api.registry.RegistryItem;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -10,29 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class RewardType {
-
-    private static final Map<String, RewardType> loadedTypes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-    public static Map<String, RewardType> getLoadedTypes() {
-        return Map.copyOf(loadedTypes);
-    }
-
-    public static void unregisterAll() {
-        loadedTypes.clear();
-    }
-
-    public static @Nullable RewardType get(@NotNull String identifier) {
-        return loadedTypes.get(identifier);
-    }
-
-    public static boolean unregister(@NotNull String identifier) {
-        if (!loadedTypes.containsKey(identifier)) {
-            return false;
-        }
-        loadedTypes.remove(identifier);
-        return true;
-    }
+public abstract class RewardType implements RegistryItem {
 
     public RewardType() {}
 
@@ -40,17 +20,17 @@ public abstract class RewardType {
 
     public abstract @NotNull String getIdentifier();
 
+    @Override
+    public @NotNull String getKey() {
+        return getIdentifier();
+    }
+
     public abstract @NotNull String getAuthor();
 
     public abstract @NotNull Plugin getPlugin();
 
     public boolean register() {
-        if (loadedTypes.containsKey(getIdentifier())) {
-            return false;
-        }
-        loadedTypes.put(getIdentifier(), this);
-        EMFPlugin.getInstance().debug("Registered " + getIdentifier() + " RewardType");
-        return true;
+        return EMFRegistry.REWARD_TYPE.register(this);
     }
 
     public boolean unregister() {
@@ -71,6 +51,38 @@ public abstract class RewardType {
     @Override
     public int hashCode() {
         return getIdentifier().hashCode();
+    }
+
+    // Deprecated
+
+    /**
+     * @deprecated Use {@link RewardTypeRegistry#getRegistry()} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static Map<String, RewardType> getLoadedTypes() {
+        return EMFRegistry.REWARD_TYPE.getRegistry();
+    }
+
+    /**
+     * @deprecated This method now does nothing as clearing the registry is unsupported.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static void unregisterAll() {}
+
+    /**
+     * @deprecated Use {@link RewardTypeRegistry#get(String)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static @Nullable RewardType get(@NotNull String identifier) {
+        return EMFRegistry.REWARD_TYPE.get(identifier);
+    }
+
+    /**
+     * @deprecated Use {@link RewardTypeRegistry#unregister(String)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "2.1.0")
+    public static boolean unregister(@NotNull String identifier) {
+        return EMFRegistry.REWARD_TYPE.unregister(identifier);
     }
 
 }

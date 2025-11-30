@@ -2,6 +2,7 @@ package com.oheers.fish.commands;
 
 import com.oheers.fish.Checks;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.Toggle;
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.commands.arguments.ArgumentHelper;
 import com.oheers.fish.commands.arguments.RarityArgument;
@@ -21,6 +22,7 @@ import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellHelper;
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -92,8 +94,16 @@ public class MainCommand {
         );
         return new CommandAPICommand(name)
             .withPermission(UserPerms.TOGGLE)
+            .withArguments(new MultiLiteralArgument("toggle", "fishing", "bossbar").setOptional(true))
             .executesPlayer(info -> {
-                EvenMoreFish.getInstance().performFishToggle(info.sender());
+                String toggleType = info.args().getUnchecked("toggle");
+                // Bossbar
+                if ("bossbar".equals(toggleType)) {
+                    EvenMoreFish.getInstance().getToggle().performBossBarToggle(info.sender());
+                // Unspecified, Invalid, or Fishing
+                } else {
+                    EvenMoreFish.getInstance().getToggle().performFishToggle(info.sender());
+                }
             });
     }
 
@@ -141,6 +151,7 @@ public class MainCommand {
             });
     }
 
+
     private CommandAPICommand getShop() {
         String name = MainConfig.getInstance().getShopSubCommandName();
         HELP_MESSAGE.addUsage(
@@ -161,7 +172,7 @@ public class MainCommand {
                     }
                     player = p;
                 }
-                if (!checkEconomy(player)) {
+                if (CommandUtils.isEconomyDisabled(player)) {
                     return;
                 }
                 if (sender == player) {
@@ -179,6 +190,7 @@ public class MainCommand {
             });
     }
 
+
     private CommandAPICommand getSellAll() {
         String name = MainConfig.getInstance().getSellAllSubCommandName();
         HELP_MESSAGE.addUsage(
@@ -189,11 +201,12 @@ public class MainCommand {
             .withPermission(UserPerms.SELL_ALL)
             .executesPlayer(info -> {
                 Player player = info.sender();
-                if (checkEconomy(player)) {
-                    new SellHelper(player.getInventory(), player).sellFish();
+                if (CommandUtils.isEconomyEnabled(player)) {
+                    new SellHelper(player.getInventory(), player).sell();
                 }
             });
     }
+
 
     private CommandAPICommand getApplyBaits() {
         String name = MainConfig.getInstance().getApplyBaitsSubCommandName();
@@ -212,6 +225,7 @@ public class MainCommand {
                 GuiManager.getInstance().openApplyBaitsMenu(player);
             });
     }
+
 
     private CommandAPICommand getJournal() {
         String name = MainConfig.getInstance().getJournalSubCommandName();
@@ -237,13 +251,4 @@ public class MainCommand {
     private void sendHelpMessage(@NotNull CommandSender sender) {
         HELP_MESSAGE.sendMessage(sender);
     }
-
-    private boolean checkEconomy(@NotNull CommandSender sender) {
-        if (!Economy.getInstance().isEnabled()) {
-            ConfigMessage.ECONOMY_DISABLED.getMessage().send(sender);
-            return false;
-        }
-        return true;
-    }
-
 }

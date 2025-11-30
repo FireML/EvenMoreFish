@@ -1,6 +1,5 @@
 package com.oheers.fish.utils;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -31,7 +30,6 @@ class WeightedRandomTest {
 
     record TestItem(String name, double weight) {
 
-        @NotNull
         @Override
             public String toString() {
                 return name;

@@ -7,6 +7,15 @@ version: 2.0.0
 
 EvenMoreFish uses libraries and icons from various locations.
 
+
+## Sponsors
+
+![YourKit Logo](https://www.yourkit.com/images/yklogo.png)
+
+YourKit supports open source projects with innovative and intelligent tools for monitoring and profiling Java and .NET applications.
+
+YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/), [YourKit .NET Profiler](https://www.yourkit.com/dotnet-profiler/), and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
+
 ## Documentation
 
 - https://iconoir.com/
@@ -16,6 +25,8 @@ EvenMoreFish uses libraries and icons from various locations.
 ## Plugin
 
 - https://papermc.io/
+- https://github.com/CommandAPI/CommandAPI (1.20)
+- https://github.com/Strokkur424/StrokkCommands (1.21+)
 
 :::info[This page is a WIP]
 

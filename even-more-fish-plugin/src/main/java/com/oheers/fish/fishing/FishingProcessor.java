@@ -4,6 +4,7 @@ import com.oheers.fish.Checks;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.api.events.EMFFishCaughtEvent;
 import com.oheers.fish.api.fishing.CatchType;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
@@ -111,8 +112,7 @@ public class FishingProcessor extends Processor<PlayerFishEvent> {
 
     @Override
     protected boolean fireEvent(@NotNull Fish fish, @NotNull Player player) {
-        EMFFishEvent fishEvent = new EMFFishEvent(fish, player, LocalDateTime.now());
-        return fishEvent.callEvent();
+        return new EMFFishCaughtEvent(fish, player, LocalDateTime.now()).callEvent();
     }
 
     @Override

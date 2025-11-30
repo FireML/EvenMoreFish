@@ -44,13 +44,15 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   layout: '{prefix}<reset>{time-formatted}<reset>{remaining}'
-  # The abbreviations used for different units of time in the {time-formatted} variable.
-  hour: <reset>{hour}时
-  minute: <reset>{minute}分
-  second: <reset>{second}秒
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   # This is the {remaining} variable.
   remaining: 剩余
+# Formatting for time duration.
+duration:
+  day: <white>{day}d
+  hour: <white>{hour}h
+  minute: <white>{minute}m
+  second: <white>{second}s
 # The prefix shown in commands. Keeping the space in is recommended.
 prefix-regular: '<bold><aqua>更多的鱼 <reset></aqua></bold><gray>>> '
 # The prefix shown in admin commands.
@@ -141,7 +143,6 @@ help-admin:
   reload: '[noPrefix]重新加载插件的配置文件.'
   migrate: '[noPrefix]将数据库从旧版(V2) 迁移到 V3.'
   addons: '[noPrefix]显示所有插件.'
-  rewardtypes: '[noPrefix]显示所有奖励类型.'
   version: '[noPrefix]显示插件信息.'
   rawitem: '[noPrefix]将主手中的物品显示为原生NBT格式.'
 # Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
@@ -156,6 +157,8 @@ no-competition-running: 目前没有正在进行的比赛
 no-competition-running-fish: 目前没有正在进行的比赛
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
 no-competition-running-size: 目前没有正在进行的比赛
+# Broadcasted to all players when a competition is extended.
+competition-time-extended: <white>The active competition has been extended by {duration}!
 # HOw should %emf_custom_fishing_status% be formatted?
 custom-fishing-enabled: <green>启用
 custom-fishing-disabled: <red>禁用
@@ -185,9 +188,13 @@ bait-survival-limited: <red>你必须在 <underlined>生存模式<reset> 中才�
 bait-rod-protection: <white>保护好你应用过饵料的钓鱼竿. 如果你试图修理他, 请将他放在第一个槽位上.
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>你不能对这只钓鱼棒应用鱼饵!
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <white>您将无法再钓到自定义鱼。
-toggle-on: <white>您将无法再钓到自定义鱼。
+toggle:
+  fishing:
+    off: <white>You will no longer catch custom fish.
+    on: <white>You will now catch custom fish.
+  bossbar:
+    off: <white>You will no longer see competition bossbars.
+    on: <white>You will now see competition bossbars.
 admin:
   # Opens an /emf shop for another player
   open-fish-shop: <green>为玩家{player}打开了钓鱼商店.
@@ -264,4 +271,4 @@ bait:
   unused-slot: <gray>► ? <i>Available Slot
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-version: 5
+version: 7

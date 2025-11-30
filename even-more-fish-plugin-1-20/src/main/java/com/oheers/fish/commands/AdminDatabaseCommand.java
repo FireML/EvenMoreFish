@@ -25,7 +25,7 @@ public class AdminDatabaseCommand extends CommandAPICommand {
                 .withPermission("emf.admin.debug.database.flyway")
                 .withShortDescription("Drops the flyway schema history, useful for when the database breaks")
                 .executes((commandSender, commandArguments) -> {
-                            if (isLogDbError(commandSender)) {
+                            if (CommandUtils.isLogDbError(commandSender)) {
                                 return;
                             }
                             EvenMoreFish.getInstance().getPluginDataManager().getDatabase().getMigrationManager().dropFlywaySchemaHistory();
@@ -39,7 +39,7 @@ public class AdminDatabaseCommand extends CommandAPICommand {
                 .withPermission("emf.admin.debug.database.flyway")
                 .withShortDescription("Attempt to repair the database")
                 .executes((commandSender, commandArguments) -> {
-                    if (isLogDbError(commandSender)) {
+                    if (CommandUtils.isLogDbError(commandSender)) {
                         return;
                     }
                     commandSender.sendMessage("Attempting to repair the migrations, check the logs.");
@@ -52,7 +52,7 @@ public class AdminDatabaseCommand extends CommandAPICommand {
                 .withShortDescription("Attempt to clean the database")
                 .withPermission("emf.admin.debug.database.clean")
                 .executes((commandSender, commandArguments) -> {
-                    if (isLogDbError(commandSender)) {
+                    if (CommandUtils.isLogDbError(commandSender)) {
                         return;
                     }
                     commandSender.sendMessage("Attempting to clean flyway, check the logs.");
@@ -65,19 +65,12 @@ public class AdminDatabaseCommand extends CommandAPICommand {
                 .withShortDescription("Migrate to the latest DB version.")
                 .withPermission("emf.admin.debug.database.migrate")
                 .executes((commandSender, commandArguments) -> {
-                    if (isLogDbError(commandSender)) {
+                    if (CommandUtils.isLogDbError(commandSender)) {
                         return;
                     }
                     EvenMoreFish.getInstance().getPluginDataManager().getDatabase().migrateFromDatabaseVersionToLatest();
                 });
     }
 
-    private boolean isLogDbError(final CommandSender sender) {
-        if (!DatabaseUtil.isDatabaseOnline()) {
-            sender.sendMessage("Database is offline.");
-            return true;
-        }
-        return false;
-    }
 
 }

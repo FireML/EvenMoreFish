@@ -76,4 +76,8 @@ public interface IFish {
 
     @NotNull CatchType getCatchType();
 
+    boolean getShowInJournal();
+
+    void setShowInJournal(boolean showInJournal);
+
 }

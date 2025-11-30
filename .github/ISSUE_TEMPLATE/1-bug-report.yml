@@ -35,14 +35,14 @@ body:
     attributes:
       label: Development Version
       description: What development version are you running?
-      placeholder: "ex. 1.7.4#1"
+      placeholder: "ex. 2.0.17-SNAPSHOT#229"
     validations:
       required: false
   - type: input
     id: serves
     attributes:
       label: "Server Version"
-      placeholder: "git-Purpur-2176 (MC: 1.20.4)"
+      placeholder: "1.21.10-91-main@9934c17"
     validations:
       required: true
   - type: dropdown
@@ -52,6 +52,7 @@ body:
       options:
         - "17"
         - "21"
+        - "25"
     validations:
       required: true
   - type: textarea

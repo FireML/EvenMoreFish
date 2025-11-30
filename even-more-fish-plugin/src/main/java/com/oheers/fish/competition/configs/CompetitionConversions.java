@@ -1,7 +1,7 @@
 package com.oheers.fish.competition.configs;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.api.Logging;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;

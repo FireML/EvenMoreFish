@@ -50,13 +50,15 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   layout: '{prefix}{time-formatted} {remaining}'
-  # The abbreviations used for different units of time in the {time-formatted} variable.
-  hour: <white>{hour}h
-  minute: <white>{minute}m
-  second: <white>{second}s
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   # This is the {remaining} variable.
   remaining: left
+# Formatting for time duration.
+duration:
+  day: <white>{day}d
+  hour: <white>{hour}h
+  minute: <white>{minute}m
+  second: <white>{second}s
 
 # The prefix shown in commands. Keeping the space in is recommended.
 prefix-regular: '<green>[EvenMoreFish] '
@@ -158,7 +160,6 @@ help-admin:
   reload: '[noPrefix]Reloads the plugin''s config files.'
   migrate: '[noPrefix]Migrate the database from Legacy (V2) to V3'
   addons: '[noPrefix]Display all addons.'
-  rewardtypes: '[noPrefix]Display all reward types.'
   version: '[noPrefix]Displays plugin information.'
   rawitem: '[noPrefix]Displays the item in your main hand as raw NBT.'
 
@@ -174,10 +175,13 @@ no-competition-running: No competition running right now.
 no-competition-running-fish: No competition running right now.
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
 no-competition-running-size: No competition running right now.
+# Broadcasted to all players when a competition is extended.
+competition-time-extended: <white>The active competition has been extended by {duration}!
 
-# How should %emf_custom_fishing_status% be formatted?
+# HOw should %emf_custom_fishing_status% be formatted?
 custom-fishing-enabled: <green>Enabled
 custom-fishing-disabled: <red>Disabled
+
 
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: '{length}cm <b>{rarity}</b> {fish}'
@@ -207,9 +211,13 @@ bait-rod-protection: <white>Protected your baited fishing rod. If you are trying
 # Sent when someone tries to apply a bait to a fishing rod they cannot use to fish
 bait-invalid-rod: <white>You cannot apply bait to this fishing rod!
 
-# Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: <white>You will no longer catch custom fish.
-toggle-on: <white>You will now catch custom fish.
+toggle:
+  fishing:
+    off: <white>You will no longer catch custom fish.
+    on: <white>You will now catch custom fish.
+  bossbar:
+    off: <white>You will no longer see competition bossbars.
+    on: <white>You will now see competition bossbars.
 
 admin:
   # Opens an /emf shop for another player
@@ -300,4 +308,4 @@ bait:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-version: 6
+version: 7

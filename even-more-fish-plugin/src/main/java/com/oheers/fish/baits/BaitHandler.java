@@ -5,7 +5,7 @@ import com.oheers.fish.baits.configs.BaitFileUpdates;
 import com.oheers.fish.baits.manager.BaitNBTManager;
 import com.oheers.fish.baits.model.ApplicationResult;
 import com.oheers.fish.baits.model.BaitData;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.data.FishRarityKey;
 import com.oheers.fish.exceptions.MaxBaitReachedException;

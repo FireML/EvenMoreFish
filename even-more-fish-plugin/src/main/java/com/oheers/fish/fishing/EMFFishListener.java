@@ -3,7 +3,8 @@ package com.oheers.fish.fishing;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.EMFFishEvent;
-import com.oheers.fish.api.EMFFishHuntEvent;
+import com.oheers.fish.api.events.EMFFishCaughtEvent;
+import com.oheers.fish.api.events.EMFFishHuntEvent;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.data.FishRarityKey;
@@ -31,13 +32,13 @@ Handles DB related logic.
 public class EMFFishListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEMFFishCatch(EMFFishEvent event) {
-        handleFishEvent(event.getPlayer(), event.getFish(), event.getCatchTime());
+    public void onEMFFishCatch(EMFFishCaughtEvent event) {
+        handleFishEvent(event.getPlayer(), (Fish) event.getFish(), event.getCatchTime());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEMFFishHunt(EMFFishHuntEvent event) {
-        handleFishEvent(event.getPlayer(), event.getFish(), event.getHuntTime());
+        handleFishEvent(event.getPlayer(), (Fish) event.getFish(), event.getHuntTime());
     }
 
     private void handleFishEvent(Player player, Fish fish, LocalDateTime catchTime) {

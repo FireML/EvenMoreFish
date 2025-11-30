@@ -1,5 +1,7 @@
 plugins {
     id("com.oheers.evenmorefish.java-conventions")
+    id("com.oheers.evenmorefish.publishing-conventions")
+
     `java-library`
 }
 
@@ -7,7 +9,11 @@ group = "com.oheers.evenmorefish"
 version = properties["project-version"] as String
 
 dependencies {
-    compileOnly(libs.paper.api)
+    compileOnly(libs.paper.api) {
+        version {
+            strictly("1.20.1-R0.1-SNAPSHOT")
+        }
+    }
     compileOnly(libs.annotations)
     compileOnly(libs.universalscheduler)
     compileOnlyApi(libs.boostedyaml)
@@ -22,21 +28,6 @@ java {
 }
 
 publishing {
-    repositories { // Copied directly from CodeMC's docs
-        maven {
-            url = uri("https://repo.codemc.io/repository/EvenMoreFish/")
-
-            val mavenUsername = System.getenv("JENKINS_USERNAME")
-            val mavenPassword = System.getenv("JENKINS_PASSWORD")
-
-            if (mavenUsername != null && mavenPassword != null) {
-                credentials {
-                    username = mavenUsername
-                    password = mavenPassword
-                }
-            }
-        }
-    }
     publications {
         create<MavenPublication>("api") {
             groupId = project.group.toString()
@@ -47,6 +38,7 @@ publishing {
         }
     }
 }
+
 
 testing {
     suites {

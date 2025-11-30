@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class QuantityItemConfig extends ItemConfig<@NotNull Integer> {
+public class QuantityItemConfig extends ItemConfig<Integer> {
 
     public QuantityItemConfig(@NotNull Section section) {
         super(section);
@@ -20,7 +20,7 @@ public class QuantityItemConfig extends ItemConfig<@NotNull Integer> {
     }
 
     @Override
-    protected BiConsumer<ItemStack, @NotNull Integer> applyToItem(@Nullable Map<String, ?> replacements) {
+    protected BiConsumer<ItemStack, Integer> applyToItem(@Nullable Map<String, ?> replacements) {
         return ItemStack::setAmount;
     }
 

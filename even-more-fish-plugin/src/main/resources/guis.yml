@@ -294,6 +294,9 @@ journal-menu:
   # The character to use for rarity items
   rarity-character: r
 
+  # How to sort the rarities. Valid options are: alphabetical, weight. (Default: alphabetical)
+  sort-type: alphabetical
+
   # Whether to show the undiscovered-rarity config below when a rarity has not been discovered by the player.
   hide-undiscovered-rarity: true
 
@@ -339,6 +342,9 @@ journal-rarity:
   filler: gray_stained_glass_pane
   # The character to use for fish items
   fish-character: f
+
+  # How to sort the fish. Valid options are: alphabetical, weight. (Default: alphabetical)
+  sort-type: alphabetical
 
   # Whether to show the undiscovered-fish config below when a fish has not been caught by the player.
   hide-undiscovered-fish: true

@@ -20,6 +20,9 @@ weight: 5
 # Should a catch of this fish be broadcasted to everyone (true) or just the fisher (false)?
 broadcast: true
 
+# Should this rarity be shown in the journal? (Default: true)
+journal: true
+
 # Should lore use the casing of `id`, or be fully uppercase?
 use-this-casing: false
 
@@ -116,6 +119,9 @@ fish:
     # Should the fisherman be removed from the fish lore?
     # This overrides the rarity's setting.
     disable-fisherman: false
+
+    # Should this fish be shown in the journal? (Default: true)
+    journal: true
 
     # Optionally choose an exact worth for this fish. If unspecified or set to 0, the normal maths are applied.
     set-worth: 0
