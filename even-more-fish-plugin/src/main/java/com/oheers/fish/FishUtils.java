@@ -4,7 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import com.oheers.fish.api.addons.ItemAddon;
+import com.oheers.fish.api.registry.EMFRegistry;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
@@ -12,9 +12,9 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
+import com.oheers.fish.utils.DurationFormatter;
 import com.oheers.fish.utils.ItemUtils;
 import com.oheers.fish.api.Logging;
 import com.oheers.fish.utils.nbt.NbtKeys;
@@ -30,6 +30,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -61,35 +62,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 
 public class FishUtils {
+
+    private static final DurationFormatter durationFormatter = new DurationFormatter(TimeUnit.SECONDS);
 
     private FishUtils() {
         throw new UnsupportedOperationException();
     }
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
-    public static boolean isFish(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) {
+    public static boolean isFish(@Nullable ItemStack item) {
+        if (item == null || item.isEmpty()) {
             return false;
         }
-
         return NbtUtils.hasKey(item, NbtKeys.EMF_FISH_NAME);
     }
 
-    public static boolean isFish(Skull skull) {
+    public static boolean isFish(@Nullable Skull skull) {
         if (skull == null) {
             return false;
         }
-
         return NbtUtils.hasKey(skull, NbtKeys.EMF_FISH_NAME);
     }
 
-    public static @Nullable Fish getFish(ItemStack item) {
-        // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-
+    public static @Nullable Fish getFish(@Nullable ItemStack item) {
+        if (item == null || item.isEmpty()) {
+            return null;
+        }
         String nameString = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
         String playerString = NbtUtils.getString(item, NbtKeys.EMF_FISH_PLAYER);
         String rarityString = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
@@ -127,8 +130,10 @@ public class FishUtils {
         return fish;
     }
 
-    public static @Nullable Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
-        // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
+    public static @Nullable Fish getFish(@Nullable Skull skull, @Nullable Player fisher) throws InvalidFishException {
+        if (skull == null) {
+            return null;
+        }
         final String nameString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME).toString()));
         final String playerString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_PLAYER).toString()));
         final String rarityString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY).toString()));
@@ -161,22 +166,22 @@ public class FishUtils {
             } catch (IllegalArgumentException exception) {
                 fish.setFisherman(null);
             }
-        } else {
+        } else if (fisher != null) {
             fish.setFisherman(fisher.getUniqueId());
         }
 
         return fish;
     }
 
-    public static void giveItems(List<ItemStack> items, Player player) {
-        if (items == null || items.isEmpty()) {
+    public static void giveItems(@NotNull List<ItemStack> items, @NotNull Player player) {
+        if (items.isEmpty()) {
             return; // Early return if the list is null or empty
         }
 
         // Remove null items and avoid modifying the original list
         List<ItemStack> filteredItems = items.stream()
-                .filter(Objects::nonNull)
-                .toList();
+            .filter(Objects::nonNull)
+            .toList();
 
         // Do not proceed if there are no valid items to give
         if (filteredItems.isEmpty()) {
@@ -194,15 +199,15 @@ public class FishUtils {
     }
 
 
-    public static void giveItems(ItemStack[] items, Player player) {
+    public static void giveItems(@NotNull ItemStack[] items, @NotNull Player player) {
         giveItems(Arrays.asList(items), player);
     }
 
-    public static void giveItem(ItemStack item, Player player) {
+    public static void giveItem(@NotNull ItemStack item, @NotNull Player player) {
         giveItems(List.of(item), player);
     }
 
-    public static boolean checkRegion(Location location, List<String> whitelistedRegions) {
+    public static boolean checkRegion(@NotNull Location location, @NotNull List<String> whitelistedRegions) {
         // If no whitelist is defined, allow all regions
         if (whitelistedRegions.isEmpty()) {
             return true;
@@ -238,7 +243,7 @@ public class FishUtils {
     }
 
 
-    public static @Nullable String getRegionName(Location location) {
+    public static @Nullable String getRegionName(@NotNull Location location) {
         if (!MainConfig.getInstance().isRegionBoostsEnabled()) {
             EvenMoreFish.getInstance().debug("Region boosts are disabled.");
             return null;
@@ -275,7 +280,7 @@ public class FishUtils {
     }
 
 
-    public static boolean checkWorld(Location l) {
+    public static boolean checkWorld(@NotNull Location l) {
         // if the user has defined a world whitelist
         if (!MainConfig.getInstance().worldWhitelist()) {
             return true;
@@ -291,39 +296,7 @@ public class FishUtils {
     }
 
     public static @NotNull EMFMessage timeFormat(long timeLeft) {
-        long hours = timeLeft / 3600;
-        long minutes = (timeLeft % 3600) / 60;
-        long seconds = timeLeft % 60;
-
-        EMFSingleMessage formatted = EMFSingleMessage.empty();
-
-        if (hours > 0) {
-            EMFMessage message = ConfigMessage.BAR_HOUR.getMessage();
-            message.setVariable("{hour}", String.valueOf(hours));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        if (minutes > 0) {
-            EMFMessage message = ConfigMessage.BAR_MINUTE.getMessage();
-            message.setVariable("{minute}", String.valueOf(minutes));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        if (seconds > 0 || (minutes == 0 && hours == 0)) {
-            EMFMessage message = ConfigMessage.BAR_SECOND.getMessage();
-            message.setVariable("{second}", String.valueOf(seconds));
-            formatted.appendMessage(message);
-            formatted.appendComponent(Component.space());
-        }
-
-        // Remove the last space if it exists
-        if (!formatted.isEmpty()) {
-            formatted.trim();
-        }
-
-        return formatted;
+        return EMFSingleMessage.of(durationFormatter.format(timeLeft));
     }
 
     public static @NotNull String timeRaw(long timeLeft) {
@@ -343,7 +316,7 @@ public class FishUtils {
         return returning;
     }
 
-    public static void broadcastFishMessage(EMFMessage message, Player referencePlayer, boolean actionBar) {
+    public static void broadcastFishMessage(@NotNull EMFMessage message, @NotNull Player referencePlayer, boolean actionBar) {
         if (message.isEmpty()) {
             return;
         }
@@ -386,11 +359,11 @@ public class FishUtils {
 
     public static boolean isHoldingMaterial(@NotNull Player player, @NotNull Material material) {
         return player.getInventory().getItemInMainHand().getType().equals(material)
-                || player.getInventory().getItemInOffHand().getType().equals(material);
+            || player.getInventory().getItemInOffHand().getType().equals(material);
     }
 
-    private static boolean isWithinRange(Player player1, Player player2, int rangeSquared) {
-        return player1.getWorld() == player2.getWorld() && player1.getLocation().distanceSquared(player2.getLocation()) <= rangeSquared;
+    private static boolean isWithinRange(@NotNull Player player1, @NotNull Player player2, int rangeSquared) {
+        return player1.getWorld().equals(player2.getWorld()) && player1.getLocation().distanceSquared(player2.getLocation()) <= rangeSquared;
     }
 
     /**
@@ -400,11 +373,10 @@ public class FishUtils {
      * @param item The item being considered.
      * @return Whether this ItemStack is a bait.
      */
-    public static boolean isBaitObject(ItemStack item) {
-        if (item.getItemMeta() != null) {
+    public static boolean isBaitObject(@NotNull ItemStack item) {
+        if (!item.isEmpty()) {
             return NbtUtils.hasKey(item, NbtKeys.EMF_BAIT);
         }
-
         return false;
     }
 
@@ -424,53 +396,12 @@ public class FishUtils {
     }
 
     public static @Nullable Biome getBiome(@NotNull String keyString) {
-        // Get the key and check if null
-        NamespacedKey key = NamespacedKey.fromString(keyString.toLowerCase());
-        if (key == null) {
-            EvenMoreFish.getInstance().getLogger().severe(keyString + " is not a valid biome.");
-            return null;
-        }
-        // Get the biome and check if null
-        Biome biome = Registry.BIOME.get(key);
+        Biome biome = getFromBukkitRegistry(keyString, Registry.BIOME);
         if (biome == null) {
             EvenMoreFish.getInstance().getLogger().severe(keyString + " is not a valid biome.");
-            return null;
         }
         return biome;
     }
-
-    /**
-     * Calculates the total weight of a list of fish, applying a boost to specific fish if applicable.
-     *
-     * @param fishList    The list of fish to process.
-     * @param boostRate   The boost multiplier for certain fish. If set to -1, only boosted fish are considered.
-     * @param boostedFish The list of fish that should receive the boost. Can be null if no boost is applied.
-     * @return The total calculated weight.
-     */
-    public static double getTotalWeight(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
-        double totalWeight = 0;
-        boolean applyBoost = boostRate != -1 && boostedFish != null;
-
-        for (Fish fish : fishList) {
-            // When boostRate is -1, we need to guarantee a fish, so fishList has already been filtered
-            // to only contain boosted fish. Otherwise, check if the fish should receive a boost.
-            boolean isBoosted = applyBoost && boostedFish.contains(fish);
-
-            // If the fish has no weight, assign a default weight of 1.
-            double weight = fish.getWeight();
-            double baseWeight = (weight == 0.0d) ? 1 : weight;
-
-            // Apply the boost if applicable.
-            if (isBoosted) {
-                totalWeight += baseWeight * boostRate;
-            } else {
-                totalWeight += baseWeight;
-            }
-        }
-
-        return totalWeight;
-    }
-
 
     public static @Nullable DayOfWeek getDay(@NotNull String day) {
         try {
@@ -488,27 +419,18 @@ public class FishUtils {
         }
     }
 
-    public static boolean classExists(@NotNull String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException exception) {
-            return false;
-        }
-    }
-
-    public static String getPlayerName(@Nullable OfflinePlayer player) {
+    public static @Nullable String getPlayerName(@Nullable OfflinePlayer player) {
         return player == null ? null : player.getName();
     }
 
-    public static String getPlayerName(@Nullable UUID uuid) {
+    public static @Nullable String getPlayerName(@Nullable UUID uuid) {
         if (uuid == null) {
             return null;
         }
         return getPlayerName(Bukkit.getOfflinePlayer(uuid));
     }
 
-    public static String getPlayerName(@Nullable String uuidString) {
+    public static @Nullable String getPlayerName(@Nullable String uuidString) {
         if (uuidString == null) {
             return null;
         }
@@ -529,7 +451,7 @@ public class FishUtils {
             final String prefix = split[0];
             final String id = split[1];
             EvenMoreFish.getInstance().debug("GET ITEM for Addon(%s) Id(%s)".formatted(prefix, id));
-            return ItemAddon.getItem(prefix, id);
+            return EMFRegistry.ITEM_ADDON.getItem(prefix, id);
         } catch (ArrayIndexOutOfBoundsException exception) {
             return null;
         }
@@ -540,7 +462,10 @@ public class FishUtils {
      * @param materialString The string to parse.
      * @return The ItemStack, or null if the material is invalid.
      */
-    public static @Nullable ItemStack getItem(@NotNull final String materialString) {
+    public static @Nullable ItemStack getItem(@Nullable final String materialString) {
+        if (materialString == null) {
+            return null;
+        }
         // Colon assumes an addon item
         if (materialString.contains(":")) {
             return getCustomItem(materialString);
@@ -554,7 +479,7 @@ public class FishUtils {
         return new ItemStack(material);
     }
 
-    public static @NotNull ItemStack getSkullFromBase64(String base64) {
+    public static @NotNull ItemStack getSkullFromBase64(@NotNull String base64) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         skull.editMeta(SkullMeta.class, meta -> {
             PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "EMFSkull");
@@ -564,7 +489,7 @@ public class FishUtils {
         return skull;
     }
 
-    public static @NotNull ItemStack getSkullFromUUID(UUID uuid) {
+    public static @NotNull ItemStack getSkullFromUUID(@NotNull UUID uuid) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         skull.editMeta(SkullMeta.class, meta -> {
             PlayerProfile profile = Bukkit.createProfile(uuid, "EMFSkull");
@@ -600,7 +525,7 @@ public class FishUtils {
      * @param value The double value to be formatted.
      * @return The formatted double
      */
-    public static Component formatDouble(@NotNull final String formatStr, final double value) {
+    public static @NotNull Component formatDouble(@NotNull final String formatStr, final double value) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
         DecimalFormat format = new DecimalFormat(formatStr, symbols);
         return Component.text(format.format(value));
@@ -625,7 +550,7 @@ public class FishUtils {
      * @param value The float value to be formatted.
      * @return The formatted float
      */
-    public static String formatFloat(@NotNull final String formatStr, final float value) {
+    public static @NotNull String formatFloat(@NotNull final String formatStr, final float value) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
         DecimalFormat format = new DecimalFormat(formatStr, symbols);
         return format.format(value);
@@ -644,7 +569,7 @@ public class FishUtils {
         }
     }
 
-    private static String getMiniMessageFormat(@NotNull String colour) {
+    private static @NotNull String getMiniMessageFormat(@NotNull String colour) {
         int openingTagEnd = colour.indexOf(">");
 
         if (openingTagEnd == -1) {
@@ -661,25 +586,32 @@ public class FishUtils {
         return colour.substring(0, openingTagEnd + 1) + "{name}";
     }
 
-    public static PotionEffect getPotionEffect(@NotNull String effectString) {
-        String[] split = effectString.split(":");
+    /**
+     * Fetches a PotionEffect from a String.
+     * @param effectString The String to fetch the PotionEffect from.
+     * @param separator The string that separates the individual parts of the effect.
+     * @return A PotionEffect built from the provided String, or null if invalid.
+     */
+    public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString, @NotNull String separator) {
+
+        String[] split = effectString.split(separator);
         if (split.length != 3) {
-            Logging.error("Potion effect string is formatted incorrectly. Use \"potion:duration:amplifier\".");
+            Logging.error("Potion effect string is formatted incorrectly. Use \"potion:amplifier:duration\".");
             return null;
         }
-        PotionEffectType type = PotionEffectType.getByName(split[0]);
+        PotionEffectType type = PotionEffectType.getByName(split[0].toUpperCase());
         if (type == null) {
             Logging.error("Potion effect type " + split[0] + " is not valid.");
             return null;
         }
-        Integer duration = FishUtils.getInteger(split[1]);
-        if (duration == null) {
-            Logging.error("Potion effect duration " + split[1] + " is not valid.");
+        Integer duration = FishUtils.getInteger(split[2]);
+        if (duration == null || duration < 1) {
+            Logging.error("Potion effect duration " + split[2] + " is not valid.");
             return null;
         }
-        Integer amplifier = FishUtils.getInteger(split[2]);
-        if (amplifier == null) {
-            Logging.error("Potion effect amplifier " + split[2] + " is not valid.");
+        Integer amplifier = FishUtils.getInteger(split[1]);
+        if (amplifier == null || amplifier < 1) {
+            Logging.error("Potion effect amplifier " + split[1] + " is not valid.");
             return null;
         }
         return new PotionEffect(
@@ -690,13 +622,12 @@ public class FishUtils {
         );
     }
 
-    public static Enchantment getEnchantment(@NotNull String namespace) {
-        namespace = namespace.toLowerCase();
-        NamespacedKey key = NamespacedKey.fromString(namespace);
-        if (key == null) {
-            return null;
-        }
-        return Registry.ENCHANTMENT.get(key);
+    public static @Nullable PotionEffect getPotionEffect(@NotNull String effectString) {
+        return getPotionEffect(effectString, ":");
+    }
+
+    public static @Nullable Enchantment getEnchantment(@NotNull String namespace) {
+        return getFromBukkitRegistry(namespace, Registry.ENCHANTMENT);
     }
 
     public static BossBar.Overlay modernizeBarStyle(@NotNull BarStyle style) {
@@ -707,6 +638,15 @@ public class FishUtils {
             case SEGMENTED_12 -> BossBar.Overlay.NOTCHED_12;
             case SEGMENTED_20 -> BossBar.Overlay.NOTCHED_20;
         };
+    }
+
+    private static <T extends Keyed> @Nullable T getFromBukkitRegistry(@NotNull String namespace, @NotNull Registry<T> registry) {
+        namespace = namespace.toLowerCase();
+        NamespacedKey key = NamespacedKey.fromString(namespace);
+        if (key == null) {
+            return null;
+        }
+        return registry.get(key);
     }
 
     public static @NotNull <E extends Enum<E>> E getEnumValue(@NotNull Class<E> enumClass, @Nullable String value, @NotNull E def) {

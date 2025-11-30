@@ -2,13 +2,11 @@ package com.oheers.fish.gui.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.Logging;
-import com.oheers.fish.config.ConfigBase;
-import com.oheers.fish.config.ConfigUtils;
+import com.oheers.fish.api.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigUtils;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.block.Comments;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.route.Route;
-import dev.dejvokep.boostedyaml.utils.format.NodeRole;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

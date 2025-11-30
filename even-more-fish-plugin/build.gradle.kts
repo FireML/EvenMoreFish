@@ -72,7 +72,7 @@ dependencies {
     api(libs.universalscheduler)
 
     implementation(libs.bstats)
-    implementation(libs.inventorygui)
+    implementation(libs.triumphgui)
     implementation(libs.vanishchecker)
     implementation(libs.messagelib)
 

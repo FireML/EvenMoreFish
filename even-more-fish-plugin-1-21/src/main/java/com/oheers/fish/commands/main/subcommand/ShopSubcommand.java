@@ -2,6 +2,7 @@ package com.oheers.fish.commands.main.subcommand;
 
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.commands.main.MainCommand;
+import com.oheers.fish.gui.SellState;
 import com.oheers.fish.gui.guis.SellGui;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
@@ -27,7 +28,7 @@ public class ShopSubcommand {
             ConfigMessage.ECONOMY_DISABLED.getMessage().send(player);
             return;
         }
-        new SellGui(target, SellGui.SellState.NORMAL, null).open();
+        new SellGui(target, SellState.NORMAL, null).open();
 
         if (!target.equals(player)) {
             EMFMessage message = ConfigMessage.ADMIN_OPEN_FISH_SHOP.getMessage();

@@ -119,7 +119,7 @@ public class MainCommand {
             ConfigMessage.BAIT_INVALID_ROD.getMessage().send(player);
             return;
         }
-        new ApplyBaitsGui(player, null).open();
+        new ApplyBaitsGui(player).open();
     }
 
     public static void sendHelpMessage(CommandSender sender) {

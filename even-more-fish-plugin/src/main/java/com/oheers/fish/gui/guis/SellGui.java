@@ -29,7 +29,7 @@ public class SellGui extends DepositConfigGui {
         StorageGui gui = getGui();
         gui.setCloseGuiAction(event -> {
             if (MainConfig.getInstance().sellOverDrop()) {
-                new SellHelper(getGui().getInventory(), this.player).sellFish();
+                new SellHelper(getGui().getInventory(), this.player).sell();
             }
             doRescue();
         });
@@ -43,18 +43,18 @@ public class SellGui extends DepositConfigGui {
 
     private void addActions() {
         actions.put("sell-inventory", event -> {
-            GuiManager.getInstance().openSellMenu(player, SellState.CONFIRM, getGui().getInventory());
+            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
         });
         actions.put("sell-inventory-confirm", event -> {
-            new SellHelper(player.getInventory(), player).sellFish();
+            new SellHelper(player.getInventory(), player).sell();
             doRescue();
             player.closeInventory();
         });
         actions.put("sell-shop", event -> {
-            GuiManager.getInstance().openSellMenu(player, SellState.CONFIRM, getGui().getInventory());
+            new SellGui(player, SellState.CONFIRM, getGui().getInventory()).open();
         });
         actions.put("sell-shop-confirm", event -> {
-            new SellHelper(getGui().getInventory(), player).sellFish();
+            new SellHelper(getGui().getInventory(), player).sell();
             doRescue();
             player.closeInventory();
         });

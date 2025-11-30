@@ -1,7 +1,7 @@
 package com.oheers.fish.gui.config;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiConfig {

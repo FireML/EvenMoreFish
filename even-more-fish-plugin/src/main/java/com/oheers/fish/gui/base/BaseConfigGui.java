@@ -2,7 +2,7 @@ package com.oheers.fish.gui.base;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.commands.MainCommand;
+import com.oheers.fish.Toggle;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.gui.GuiManager;
 import com.oheers.fish.gui.guis.BaitsGui;
@@ -110,7 +110,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
             GuiManager.getInstance().openMainMenu(player);
         });
         actions.put("fish-toggle", event -> {
-            EvenMoreFish.getInstance().performFishToggle(player);
+            EvenMoreFish.getInstance().getToggle().performFishToggle(player);
             // TODO look into possible performance issues.
             resetGui();
             open();
@@ -122,7 +122,7 @@ public abstract class BaseConfigGui<T extends BaseGui> {
         actions.put("show-command-help", event -> {
             doRescue();
             player.closeInventory();
-            MainCommand.HELP_MESSAGE.sendMessage(player);
+            player.performCommand("emf help");
         });
         actions.put("open-journal-menu", event -> {
             doRescue();

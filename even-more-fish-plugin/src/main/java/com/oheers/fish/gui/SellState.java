@@ -1,6 +1,6 @@
 package com.oheers.fish.gui;
 
-import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.api.config.ConfigBase;
 import com.oheers.fish.gui.config.GuiConfig;
 import org.jetbrains.annotations.NotNull;
 
