@@ -56,7 +56,6 @@ public class ItemConfigResolver {
 
     public void setCustomModelDataResolver(@NotNull Function<Section, ItemConfig<Float>> customModelDataResolver) {
         this.customModelDataResolver = customModelDataResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<String> getDisplayName(@NotNull Section section) {
@@ -65,7 +64,6 @@ public class ItemConfigResolver {
 
     public void setDisplayNameResolver(@NotNull Function<Section, ItemConfig<String>> displayNameResolver) {
         this.displayNameResolver = displayNameResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Color> getDyeColour(@NotNull Section section) {
@@ -74,7 +72,6 @@ public class ItemConfigResolver {
 
     public void setDyeColourResolver(@NotNull Function<Section, ItemConfig<Color>> dyeColourResolver) {
         this.dyeColourResolver = dyeColourResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Map<Enchantment, Integer>> getEnchantments(@NotNull Section section) {
@@ -83,7 +80,6 @@ public class ItemConfigResolver {
 
     public void setEnchantmentsResolver(@NotNull Function<Section, ItemConfig<Map<Enchantment, Integer>>> enchantmentsResolver) {
         this.enchantmentsResolver = enchantmentsResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Boolean> getGlowing(@NotNull Section section) {
@@ -92,7 +88,6 @@ public class ItemConfigResolver {
 
     public void setGlowingResolver(@NotNull Function<Section, ItemConfig<Boolean>> glowingResolver) {
         this.glowingResolver = glowingResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Integer> getDamage(@NotNull Section section) {
@@ -101,7 +96,6 @@ public class ItemConfigResolver {
 
     public void setDamageResolver(@NotNull Function<Section, ItemConfig<Integer>> damageResolver) {
         this.damageResolver = damageResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<List<String>> getLore(@NotNull Section section) {
@@ -110,7 +104,6 @@ public class ItemConfigResolver {
 
     public void setLoreResolver(@NotNull Function<Section, ItemConfig<List<String>>> loreResolver) {
         this.loreResolver = loreResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<PotionEffect> getPotionMeta(@NotNull Section section) {
@@ -119,7 +112,6 @@ public class ItemConfigResolver {
 
     public void setPotionMetaResolver(@NotNull Function<Section, ItemConfig<PotionEffect>> potionMetaResolver) {
         this.potionMetaResolver = potionMetaResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Integer> getQuantity(@NotNull Section section) {
@@ -128,7 +120,6 @@ public class ItemConfigResolver {
 
     public void setQuantityResolver(@NotNull Function<Section, ItemConfig<Integer>> quantityResolver) {
         this.quantityResolver = quantityResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<Boolean> getUnbreakable(@NotNull Section section) {
@@ -137,7 +128,6 @@ public class ItemConfigResolver {
 
     public void setUnbreakableResolver(@NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver) {
         this.unbreakableResolver = unbreakableResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
     public @NotNull ItemConfig<NamespacedKey> getItemModel(@NotNull Section section) {
@@ -146,7 +136,6 @@ public class ItemConfigResolver {
 
     public void setItemModelResolver(@NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver) {
         this.itemModelResolver = itemModelResolver;
-        EvenMoreFish.getInstance().reload(null);
     }
 
 }
