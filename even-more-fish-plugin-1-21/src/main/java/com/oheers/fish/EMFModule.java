@@ -4,6 +4,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.oheers.fish.commands.admin.AdminCommandBrigadier;
 import com.oheers.fish.commands.main.MainCommandBrigadier;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.items.ItemConfigResolver;
+import com.oheers.fish.items.configs.ModernGlowingItemConfig;
 import com.oheers.fish.permissions.AdminPerms;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -16,6 +18,13 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class EMFModule extends EvenMoreFish{
+
+    @Override
+    public void onLoad() {
+        ItemConfigResolver.getInstance().setGlowingResolver(ModernGlowingItemConfig::new);
+        super.onLoad();
+    }
+
     @Override
     public void loadCommands() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> {

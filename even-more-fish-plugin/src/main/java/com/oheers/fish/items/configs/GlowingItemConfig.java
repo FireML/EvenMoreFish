@@ -2,6 +2,8 @@ package com.oheers.fish.items.configs;
 
 import com.oheers.fish.utils.ItemUtils;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +26,10 @@ public class GlowingItemConfig extends ItemConfig<Boolean> {
     protected BiConsumer<ItemStack, Boolean> applyToItem(@Nullable Map<String, ?> replacements) {
         return (item, value) -> {
             if (value) {
-                ItemUtils.glowify(item);
+                item.editMeta(meta -> {
+                    meta.addEnchant(Enchantment.DURABILITY, 1, true);
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                });
             }
         };
     }
