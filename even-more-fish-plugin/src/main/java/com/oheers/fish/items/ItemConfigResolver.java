@@ -38,7 +38,9 @@ public class ItemConfigResolver {
     private @NotNull Function<Section, ItemConfig<PotionEffect>> potionMetaResolver = PotionMetaItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Integer>> quantityResolver = QuantityItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver = UnbreakableItemConfig::new;
-    private @NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver = ItemModelItemConfig::new;
+
+    // These are set elsewhere as they have no functionality in 1.20.1.
+    private @NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver = EmptyItemConfig::new;
 
     private ItemConfigResolver() {}
 
