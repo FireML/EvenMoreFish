@@ -40,22 +40,4 @@ public class ItemUtils {
         }
     }
 
-    public static void glowify(@NotNull ItemStack item) {
-        // plops on the unbreaking 1 enchantment to make it glow
-        item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        item.editMeta(meta -> meta.addItemFlags(ItemFlag.HIDE_ENCHANTS));
-    }
-
-    /**
-     * Creates a new ItemStack with the provided material and applies the old item's meta to it
-     * @param item The old item
-     * @param material The material to change to
-     * @return The provided ItemStack with a different material
-     */
-    public static ItemStack changeMaterial(@NotNull ItemStack item, @NotNull Material material) {
-        ItemStack newItem = new ItemStack(material);
-        newItem.setItemMeta(item.getItemMeta());
-        return newItem;
-    }
-
 }
