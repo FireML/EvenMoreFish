@@ -19,7 +19,7 @@ public abstract class ItemConfig<T> {
         this.section = section;
     }
 
-    public T getActualValue() {
+    public @Nullable T getActualValue() {
         if (override != null) {
             return override;
         }
@@ -44,15 +44,15 @@ public abstract class ItemConfig<T> {
         }
     }
 
-    public abstract T getConfiguredValue();
+    public abstract @Nullable T getConfiguredValue();
 
     protected abstract BiConsumer<ItemStack, T> applyToItem(@Nullable Map<String, ?> replacements);
 
-    public void setDefault(T def) {
+    public void setDefault(@Nullable T def) {
         this.def = def;
     }
 
-    public void setOverride(T override) {
+    public void setOverride(@Nullable T override) {
         this.override = override;
     }
 
