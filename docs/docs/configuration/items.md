@@ -5,7 +5,7 @@ title: Item Configs
 ## Introduction
 EvenMoreFish has a variety of item configs that can be set and changed to customize how items behave. 
 
-This page will cover every item config available in EvenMoreFish (as of 2.1.4), and how to use them.
+This page will cover every item config available in EvenMoreFish (as of 2.1.5), and how to use them.
 
 ### Setting the base item
 To set the base item, you can use one of the following settings:
@@ -20,6 +20,8 @@ To set the base item, you can use one of the following settings:
 - `head-uuid` - This takes a player's UUID, and will use that player's head as the item.
 - `multiple-head-uuid` - This takes a list of player UUIDs, and will randomly choose one when the item is created.
 - `own-head` - This will use the head of the player who owns the item, if available.
+
+If none of these are present, the item defaults to raw cod.
 
 ### CustomModelData
 CustomModelData is applied using the `custom-model-data` setting.
