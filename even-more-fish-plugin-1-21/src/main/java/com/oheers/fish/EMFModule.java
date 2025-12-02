@@ -5,6 +5,9 @@ import com.oheers.fish.commands.admin.AdminCommandBrigadier;
 import com.oheers.fish.commands.main.MainCommandBrigadier;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.items.ItemConfigResolver;
+import com.oheers.fish.items.configs.FireResistantItemConfig;
+import com.oheers.fish.items.configs.HideTooltipItemConfig;
+import com.oheers.fish.items.configs.ItemRarityItemConfig;
 import com.oheers.fish.items.configs.ModernGlowingItemConfig;
 import com.oheers.fish.permissions.AdminPerms;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -15,14 +18,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @SuppressWarnings("UnstableApiUsage")
 public class EMFModule extends EvenMoreFish{
 
     @Override
     public void onLoad() {
-        ItemConfigResolver.getInstance().setGlowingResolver(ModernGlowingItemConfig::new);
+        registerItemConfigs();
         super.onLoad();
+    }
+
+    private void registerItemConfigs() {
+        ItemConfigResolver inst = ItemConfigResolver.getInstance();
+        inst.setGlowingResolver(ModernGlowingItemConfig::new);
+        inst.setFireResistantResolver(FireResistantItemConfig::new);
+        inst.setHideTooltipResolver(HideTooltipItemConfig::new);
+        inst.setItemRarityResolver(ItemRarityItemConfig::new);
     }
 
     @Override

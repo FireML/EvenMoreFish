@@ -55,6 +55,9 @@ public class ItemFactory {
     private final ItemConfig<Boolean> unbreakable;
     private final ItemConfig<Integer> quantity;
     private final ItemConfig<NamespacedKey> itemModel;
+    private final ItemConfig<Boolean> fireResistant;
+    private final ItemConfig<Boolean> hideTooltip;
+    private final ItemConfig<String> itemRarity;
 
     private ItemFactory(@NotNull Section initialSection, @Nullable String configLocation) {
         if (configLocation == null) {
@@ -79,6 +82,9 @@ public class ItemFactory {
         this.unbreakable = resolver.getUnbreakable(this.configuration);
         this.quantity = resolver.getQuantity(this.configuration);
         this.itemModel = resolver.getItemModel(this.configuration);
+        this.fireResistant = resolver.getFireResistant(this.configuration);
+        this.hideTooltip = resolver.getHideTooltip(this.configuration);
+        this.itemRarity = resolver.getItemRarity(this.configuration);
 
         this.baseItem = getBaseItem();
     }
@@ -121,6 +127,9 @@ public class ItemFactory {
             unbreakable.apply(item, replacements);
             quantity.apply(item, replacements);
             itemModel.apply(item, replacements);
+            fireResistant.apply(item, replacements);
+            hideTooltip.apply(item, replacements);
+            itemRarity.apply(item, replacements);
 
             if (finalChanges != null) {
                 finalChanges.accept(item);
@@ -248,6 +257,18 @@ public class ItemFactory {
 
     public ItemConfig<NamespacedKey> getItemModel() {
         return itemModel;
+    }
+
+    public ItemConfig<Boolean> getFireResistant() {
+        return fireResistant;
+    }
+
+    public ItemConfig<Boolean> getHideTooltip() {
+        return hideTooltip;
+    }
+
+    public ItemConfig<String> getItemRarity() {
+        return itemRarity;
     }
 
     // Base Item Methods //

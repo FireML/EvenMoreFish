@@ -1,14 +1,13 @@
 package com.oheers.fish.items;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.items.configs.CustomModelDataItemConfig;
 import com.oheers.fish.items.configs.DisplayNameItemConfig;
 import com.oheers.fish.items.configs.DyeColourItemConfig;
+import com.oheers.fish.items.configs.EmptyItemConfig;
 import com.oheers.fish.items.configs.EnchantmentsItemConfig;
 import com.oheers.fish.items.configs.GlowingItemConfig;
 import com.oheers.fish.items.configs.ItemConfig;
 import com.oheers.fish.items.configs.ItemDamageItemConfig;
-import com.oheers.fish.items.configs.ItemModelItemConfig;
 import com.oheers.fish.items.configs.LoreItemConfig;
 import com.oheers.fish.items.configs.PotionMetaItemConfig;
 import com.oheers.fish.items.configs.QuantityItemConfig;
@@ -38,7 +37,12 @@ public class ItemConfigResolver {
     private @NotNull Function<Section, ItemConfig<PotionEffect>> potionMetaResolver = PotionMetaItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Integer>> quantityResolver = QuantityItemConfig::new;
     private @NotNull Function<Section, ItemConfig<Boolean>> unbreakableResolver = UnbreakableItemConfig::new;
-    private @NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver = ItemModelItemConfig::new;
+
+    // These are set elsewhere as they have no functionality in 1.20.1.
+    private @NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver = EmptyItemConfig::new;
+    private @NotNull Function<Section, ItemConfig<Boolean>> fireResistantResolver = EmptyItemConfig::new;
+    private @NotNull Function<Section, ItemConfig<Boolean>> hideTooltipResolver = EmptyItemConfig::new;
+    private @NotNull Function<Section, ItemConfig<String>> itemRarityResolver = EmptyItemConfig::new;
 
     private ItemConfigResolver() {}
 
@@ -136,6 +140,30 @@ public class ItemConfigResolver {
 
     public void setItemModelResolver(@NotNull Function<Section, ItemConfig<NamespacedKey>> itemModelResolver) {
         this.itemModelResolver = itemModelResolver;
+    }
+
+    public @NotNull ItemConfig<Boolean> getFireResistant(@NotNull Section section) {
+        return resolve(fireResistantResolver, section);
+    }
+
+    public void setFireResistantResolver(@NotNull Function<Section, ItemConfig<Boolean>> fireResistantResolver) {
+        this.fireResistantResolver = fireResistantResolver;
+    }
+
+    public @NotNull ItemConfig<Boolean> getHideTooltip(@NotNull Section section) {
+        return resolve(hideTooltipResolver, section);
+    }
+
+    public void setHideTooltipResolver(@NotNull Function<Section, ItemConfig<Boolean>> hideTooltipResolver) {
+        this.hideTooltipResolver = hideTooltipResolver;
+    }
+
+    public @NotNull ItemConfig<String> getItemRarity(@NotNull Section section) {
+        return resolve(itemRarityResolver, section);
+    }
+
+    public void setItemRarityResolver(@NotNull Function<Section, ItemConfig<String>> itemRarityResolver) {
+        this.itemRarityResolver = itemRarityResolver;
     }
 
 }

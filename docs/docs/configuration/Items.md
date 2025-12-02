@@ -150,3 +150,32 @@ Example:
 item:
   item-model: my:key
 ```
+
+### Fire Resistant
+On 1.21 and above, you can make the item resistant to fire and lava using the `fire-resistant` config.
+
+Example:
+```yaml
+item:
+  fire-resistant: true
+```
+
+### Hide Tooltip
+On 1.21 and above, you can hide the item's tooltip using the `hide-tooltip` config.
+
+This is particularly useful for GUI items.
+
+Example:
+```yaml
+item:
+  hide-tooltip: true
+```
+
+### Item Rarity
+On 1.21 and above, you can set the item's vanilla rarity using the `item-rarity` config.
+
+Example:
+```yaml
+item:
+  item-rarity: RARE
+```
