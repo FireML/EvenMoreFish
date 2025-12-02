@@ -90,34 +90,18 @@ public class WorthNBT {
         if (setWorth > 0) {
             return Optional.of(setWorth);
         } else if (length > 0.0D) {
-            return getMultipliedValue(length, fish.getRarity().getId(), fish.getName());
+            return getMultipliedValue(length, fish);
         } else {
             return Optional.empty();
         }
     }
 
-    private static Optional<Double> getMultipliedValue(Float length, String rarity, String name) {
-        return Optional.of(
-            getWorthMultiplier(rarity, name) * length
-        );
-    }
-
-    private static double getWorthMultiplier(final String rarityStr, final String name) {
-        Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
-        if (rarity == null) {
-            return 0.0D;
+    private static Optional<Double> getMultipliedValue(float length, @NotNull Fish fish) {
+        double multiplier = fish.getWorthMultiplier();
+        if (multiplier <= 0.0D) {
+            return Optional.empty();
         }
-        Fish fish = rarity.getFish(name);
-        if (fish == null) {
-            return 0.0D;
-        }
-        double value = fish.getWorthMultiplier();
-        // Is there a value set for the specific fish?
-        if (value == 0.0) {
-            return rarity.getWorthMultiplier();
-        }
-
-        return value;
+        return Optional.of(multiplier * length);
     }
 
 }
