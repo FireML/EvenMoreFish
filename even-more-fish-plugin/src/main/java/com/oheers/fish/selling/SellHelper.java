@@ -19,20 +19,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class SellHelper {
 
-    private final @NotNull Inventory inventory;
     private final @NotNull Player player;
     private final @NotNull List<SoldFish> fish;
 
@@ -47,12 +46,26 @@ public class SellHelper {
     private final double saleValue;
     private final int count;
 
-    public SellHelper(@NotNull Inventory inventory, @NotNull Player player) {
-        this.inventory = inventory;
+    public SellHelper(@NotNull Inventory inventory, @NotNull Player player, boolean removeFromInventory) {
         this.player = player;
-        this.fish = fetchFish(inventory, true);
+        this.fish = fetchFish(inventory, removeFromInventory);
         this.saleValue = fish.stream().mapToDouble(SoldFish::getTotalValue).sum();
         this.count = fish.stream().mapToInt(SoldFish::getAmount).sum();
+    }
+
+    public SellHelper(@Nullable ItemStack @NotNull[] itemStacks, @NotNull Player player, boolean removeStacks) {
+        this.player = player;
+        this.fish = fetchFish(itemStacks, removeStacks);
+        this.saleValue = fish.stream().mapToDouble(SoldFish::getTotalValue).sum();
+        this.count = fish.stream().mapToInt(SoldFish::getAmount).sum();
+    }
+
+    public SellHelper(@NotNull Inventory inventory, @NotNull Player player) {
+        this(inventory, player, true);
+    }
+
+    public SellHelper(@Nullable ItemStack @NotNull[] itemStacks, @NotNull Player player) {
+        this(itemStacks, player, true);
     }
 
     /**
@@ -111,6 +124,26 @@ public class SellHelper {
                 list.add(fish);
                 if (removeFromInventory) {
                     inventory.setItem(slot, null);
+                }
+            } catch (IllegalArgumentException exception) {
+                EvenMoreFish.getInstance().debug(exception.getMessage(), exception);
+            }
+        }
+        return list;
+    }
+
+    private static List<SoldFish> fetchFish(@Nullable ItemStack @NotNull[] itemStacks, boolean removeStack) {
+        List<SoldFish> list = new ArrayList<>();
+
+        for (ItemStack item : itemStacks) {
+            if (item == null) {
+                continue;
+            }
+            try {
+                SoldFish fish = new SoldFish(item);
+                list.add(fish);
+                if (removeStack) {
+                    item.setAmount(0);
                 }
             } catch (IllegalArgumentException exception) {
                 EvenMoreFish.getInstance().debug(exception.getMessage(), exception);
