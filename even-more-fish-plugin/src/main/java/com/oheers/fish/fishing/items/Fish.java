@@ -199,7 +199,7 @@ public class Fish implements IFish {
 
     @Override
     public double getWorthMultiplier() {
-        return section.getDouble("worth-multiplier", 0.0D);
+        return section.getDouble("worth-multiplier", rarity.getWorthMultiplier());
     }
 
     @Override
