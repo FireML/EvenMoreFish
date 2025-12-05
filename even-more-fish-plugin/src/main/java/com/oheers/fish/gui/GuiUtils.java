@@ -160,6 +160,9 @@ public class GuiUtils {
         });
         newActionMap.put("sell-shop-confirm", (gui, click) -> {
             SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
+            if (gui != null) {
+                gui.doRescue();
+            }
             closeGui(click.getWhoClicked());
         });
         newActionMap.put("open-baits-menu", (gui, click) -> {
