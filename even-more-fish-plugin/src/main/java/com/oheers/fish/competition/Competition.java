@@ -144,16 +144,16 @@ public class Competition {
         return EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() >= playersNeeded;
     }
 
-    public void begin() {
+    public boolean begin() {
         // Don't start a comp with no duration.
         if (maxDuration <= 0) {
             Logging.warn("Tried to start a competition with an invalid duration: " + competitionFile.getId());
-            return;
+            return false;
         }
         try {
             if (!isAdminStarted() && !isPlayerRequirementMet()) {
                 ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
-                return;
+                return false;
             }
 
             // Make sure the active competition has ended.
@@ -166,7 +166,7 @@ public class Competition {
             CompetitionStrategy strategy = competitionType.getStrategy();
             if (!strategy.begin(this)) {
                 active = null;
-                return;
+                return false;
             }
 
             this.leaderboard = new Leaderboard(competitionType);
@@ -189,8 +189,10 @@ public class Competition {
             getCompetitionFile().getStartCommands().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
 
             EvenMoreFish.getInstance().getDecidedRarities().clear();
+            return true;
         } catch (Exception ex) {
             end(true);
+            return false;
         }
     }
 
