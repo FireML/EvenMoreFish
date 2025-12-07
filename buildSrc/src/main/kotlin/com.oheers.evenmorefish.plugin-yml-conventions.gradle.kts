@@ -35,7 +35,12 @@ afterEvaluate {
             "PlaceholderAPI",
             "RedProtect",
             "Vault",
-            "WorldGuard"
+            "WorldGuard",
+            // VanishChecker dependencies.
+            "Essentials",
+            "CMI",
+            "SayanVanish",
+            "AdvancedVanish"
         )
         loadBefore = listOf("AntiAC")
 

@@ -38,6 +38,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.vanishchecker.VanishChecker;
 
 import java.util.HashMap;
 import java.util.List;
@@ -271,6 +272,9 @@ public abstract class EvenMoreFish extends EMFPlugin {
     }
 
     public List<Player> getVisibleOnlinePlayers() {
+        if (MainConfig.getInstance().shouldRespectVanish()) {
+            return VanishChecker.getVisibleOnlinePlayers();
+        }
         return List.copyOf(Bukkit.getOnlinePlayers());
     }
 
