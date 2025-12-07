@@ -4,6 +4,7 @@ import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.economy.Economy;
+import com.oheers.fish.api.events.EMFPluginReloadEvent;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.requirement.RequirementType;
 import com.oheers.fish.api.reward.RewardType;
@@ -228,7 +229,9 @@ public abstract class EvenMoreFish extends EMFPlugin {
         if (sender != null) {
             ConfigMessage.RELOAD_SUCCESS.getMessage().send(sender);
         }
-        
+
+        // This event is not cancellable.
+        new EMFPluginReloadEvent().callEvent();
     }
 
     public Random getRandom() {
@@ -238,7 +241,6 @@ public abstract class EvenMoreFish extends EMFPlugin {
     public Toggle getToggle() {
         return toggle;
     }
-
 
     public boolean isRaritiesCompCheckExempt() {
         return raritiesCompCheckExempt;
