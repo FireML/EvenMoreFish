@@ -140,6 +140,10 @@ public class Competition {
         return active;
     }
 
+    public boolean isPlayerRequirementMet() {
+        return EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() >= playersNeeded;
+    }
+
     public void begin() {
         // Don't start a comp with no duration.
         if (maxDuration <= 0) {
@@ -147,7 +151,7 @@ public class Competition {
             return;
         }
         try {
-            if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
+            if (!isAdminStarted() && !isPlayerRequirementMet()) {
                 ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
                 return;
             }
